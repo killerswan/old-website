@@ -1,0 +1,24 @@
+User-agent: * 
+
+Disallow: /*.pdf
+Disallow: /*.doc
+Disallow: /*.odt
+
+Disallow: /*.jpg
+Disallow: /*.jpeg
+Disallow: /*.gif
+Disallow: /*.bmp
+Disallow: /*.png
+
+Disallow: /*.mp3
+Disallow: /*.tar.gz
+Disallow: /*.zip
+Disallow: /*.tar.bz2
+
+Disallow: /temp/
+Disallow: /archive/
+Disallow: /resume/
+Disallow: /ars/
+Disallow: /images/
+Disallow: /style/
+
