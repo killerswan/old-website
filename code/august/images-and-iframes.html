@@ -1,0 +1,164 @@
+<!doctype html>
+<html>
+<head>
+<title>Testing iframes and images</title>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+<meta name="copyright" content="Kevin Cantu (c) 2010">
+
+<style>
+    body {
+        font-family: Helvetica, Arial, sans-serif;
+        font-size:         100%;
+        color:             #444;
+        background-color:  #fff;
+    }
+    #paper {
+        margin: 2px;
+    }
+    blockquote {
+        margin-left: 10px;
+        margin-right: 10px;
+    }
+    h1 {
+        letter-spacing: -4px;
+    }
+    a:link,a:hover,a:focus,a:active {
+        color:   #5fa900;
+    }
+    a:visited {
+        color:   #a95fa9; /* 5a7ac7 */
+    }
+    a:link,a:visited,a:hover,a:focus,a:active {
+        text-decoration: none;
+    }
+    a:hover {
+        background-color:  #5fa900;
+        color:             #000;
+    }
+    code, pre {
+        font-family: Consolas, Inconsolata, monospace;
+        background-color:  #eee;
+        color:             #000;
+    }
+</style>
+
+<script>
+    if(screen.width >= 481) {
+        document.write('<style> #paper { max-width: 700px; margin: auto; margin-top: 110px; margin-bottom: 50px; } </style>');
+    }
+</script>
+
+</head>
+<body>
+
+<div id="paper">
+
+<h1>Testing iframes and images</h1>
+
+<h2>Images</h2>
+
+<p>1. A full image:</p>
+<img src="flowers.jpg">
+
+<p>2. Resized to 50px square:</p>
+<img width="50px" height="50px" src="flowers.jpg">
+
+<p>Alternatively, not specifying "px" but simply the dimensions:</p>
+<img width="50" height="50" src="flowers.jpg">
+
+<p>3. Cropped to 50px square via a div:</p>
+<div style="height: 50px; width: 50px; overflow: hidden">
+        <img src="flowers.jpg">
+</div>
+
+<p>4. Invisible via a div (note the blank space):</p>
+<div style="visibility: hidden">
+        <img src="flowers.jpg">
+</div>
+
+<p>5. Image resized to 1px square:</p>
+<img width="1px" height="1px" src="flowers.jpg">
+
+<p>6. Div cropped to 1px square, with an image (note that the top left corner of the image is nearly white):</p>
+<div style="height: 1px; width: 1px; overflow: hidden">
+        <img src="flowers.jpg">
+</div>
+
+
+<h2>Iframes</h2>
+
+<p>7. An iframe containing the image:</p>
+<iframe src="flowers.jpg">
+        <p>Iframes supported?</p>
+</iframe>
+
+<p>8. An iframe set to 50px square:</p>
+<iframe frameborder="0" scrolling="no" style="width: 50px; height: 50px;" src="flowers.jpg">
+        <p>Iframes supported?</p>
+</iframe>
+
+<p>9. An iframe set to 1px square:</p>
+<iframe frameborder="0" scrolling="no" style="width: 1px; height: 1px;" src="http://farm4.static.flickr.com/3078/2430137243_8cd9119690.jpg">
+        <p>Iframes supported?</p>
+</iframe>
+
+<p>10. An iframe containing an HTML page containing the image:</p>
+<iframe src="myframe.html">
+        <p>Iframes supported?</p>
+</iframe>
+<p>That file is <a href="myframe.html">myframe.html</a>.</p>
+
+<p>11. A hidden div containing an iframe containing an HTML page containing the image (note the whitespace):</p>
+<div style="visibility: hidden">
+        <iframe src="myframe.html">
+                <p>Iframes supported?</p>
+        </iframe>
+</div>
+
+<p>12. A hidden div containing an iframe containing an HTML page with a JavaScript <code>alert()</code> telling the reader "Good morning!":</p>
+<div style="visibility: hidden">
+        <iframe src="good-morning.html">
+                <p>Iframes supported?</p>
+        </iframe>
+</div>
+<p>That file is <a href="good-morning.html">good-morning.html</a>.</p>
+
+<h2>File extension switching</h2>
+<p>13. The .htaccess file of a directory can be used to change the MIME type 
+of a particular file extension, like so:
+<blockquote><pre>
+# Add extension JPG to HTML mime type
+AddType text/html .jpg
+</pre></blockquote>
+
+<p>Thus, the following iframe shows a ".jpg" which is actually HTML (with another JavaScript <code>alert</code>):</p>
+<iframe src="extension-switcheroo/not.jpg">
+        <p>Iframes supported?</p>
+</iframe>
+
+<p>14. Compare that file (<a href="extension-switcheroo/not.jpg">extension-switcheroo/not.jpg</a>)
+and <a href="another-not.jpg">another-not.jpg</a>.
+The first will be served with a MIME type of "text/html", 
+while the second will be served with a MIME type of "image/jpeg", 
+because of the change made in the .htaccess file.
+</p>
+
+<p>This can be confirmed, for example, by using <strong>wget</strong> in Cygwin.</p>
+
+<!--
+<p>15. (new) This inserts the "not.jpg" script into an <code>img</code> tag (an error):
+</p>
+<img src="extension-switcheroo/not.jpg">
+
+
+<p>16. (new) This inserts the "another-not.jpg" script into an <code>img</code> tag (an error):
+</p>
+<img src="another-not.jpg">
+-->
+
+
+
+
+</div>
+</body>
+</html>

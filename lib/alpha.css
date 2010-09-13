@@ -1,0 +1,125 @@
+/* Kevin Cantu (c) 2010
+    kevincantu.org
+*/
+
+/* common colors: 
+    green   5fa900
+    blue    5a7ac7
+    purple  a95fa9
+    pink    ff0f83
+    orange  ff4912
+*/ 
+body {
+    font-family: Georgia,Utopia,"Hoefler Text","Droid Serif",serif;/* Junicode: interesting.. */
+    font-size:         100%;
+    color:             #444;
+    background-color:  #fff;
+    margin:0;
+    padding:0;
+}
+h1, h2, h3, h4, ul, ol, li, table, dt {
+    font-family: Arial,Helvetica,"Droid Sans", sans-serif;
+}
+#paper {
+    padding-left: 1em;
+    padding-right: 1em;
+    max-width: 700px; /* 800 */
+    margin: auto;
+    margin-top: 80px; /* 130 */
+    margin-bottom: 50px;
+}
+#left {
+    float: left;
+    margin-right: 10px;
+}
+#right {
+}
+#footer {
+}
+h1 {
+    letter-spacing: -4px;
+}
+a:link,a:visited,a:hover,a:focus,a:active {
+    text-decoration: none;
+}
+
+a:link,a:focus,a:active {
+    color: #5fa900;
+}
+a:hover {
+    background-color: #5fa900;
+    color: #000;
+}
+a:visited {
+    color: #5fa900;
+    /* color:   #a95fa9; */
+}
+a:visited:hover {
+    color: #000;
+    background-color:       #5fa900;
+    /* background-color:    #a95fa9; */
+}
+/*
+.hphoto {
+    border: 2px solid #444;
+    width: 500px;
+    height: 333px;
+    overflow: hidden;
+}
+*/
+img {
+    padding: 0px;
+    margin: 0px;
+    border: 8px solid #e0e0e0;
+}
+blockquote {
+    margin-left: 10px;
+    margin-right: 10px;
+}
+code, pre {
+    /* WHY WON'T THIS GIVE FIXED WIDTH FONT IN ANDROID????  */
+    font-family: Consolas,Inconsolata,"Droid Sans Mono",monospace;
+    background-color:  #f8f8f8;
+    color:             #444;
+    border: 2px solid #e0e0e0;
+}
+pre {
+    overflow: auto;
+    padding: 1em;
+}
+table {
+    border-collapse:collapse;
+    margin-bottom: 2em;
+    margin-top: 1em;
+}
+table, th, td {
+    border: 2px solid #444;
+    text-align: left;
+    padding: 2px;
+}
+th {
+    background-color: #444;
+    color: #fff;
+}
+td.clickable {
+    cursor: pointer;
+}
+tr.shaded td {
+    background-color: #f8f8f8;
+}
+p.warning, td span.highlightYellow {
+    background-color: #ffb;
+    border: 2px solid #ff8;
+}
+form {
+    margin-top: 1em;
+    margin-bottom: 2em;
+}
+dt {
+    margin-top: 1em;
+}
+dd {
+    margin-bottom: 1em;
+}
+
+

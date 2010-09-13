@@ -1,0 +1,333 @@
+<!doctype html>
+<html>
+<head>
+<title>Kevin Cantu</title>
+<meta http-equiv="content-type" content="text/html; charset=UTF-8">
+<meta name="copyright" content="Kevin Cantu (c) 2010">
+
+<!-- style -->
+<link rel="icon" href="http://kevincantu.org/lib/icon/udot.png" type="image/png">
+<link rel="stylesheet" type="text/css" href="http://kevincantu.org/lib/alpha.css">
+<link rel="stylesheet" type="text/css" href="http://kevincantu.org/lib/cantuHeader.css">
+
+<!-- jQuery 1.4.2 --> 
+<script src="http://kevincantu.org/lib/3p/jquery.js"></script>
+
+<!-- other JavaScript -->
+<script src="http://kevincantu.org/lib/3p/crockford.js"></script> 
+<script src="http://kevincantu.org/lib/cantu.js"></script>
+
+
+
+
+<script>
+// tested on Excel 11, WSH 5.7, IE 8, non-ActiveX on Chrome
+
+// TODO: 
+// REFACTOR: de-spaghettify and make unit tests
+// modularize better
+// allow many sheets, or previously open, active sheet
+// HTML5-ify for IE9?
+
+$(document).ready(function () {
+    
+    var verbose = false;
+    var testInChromium = false;
+
+    var XL = {};
+
+    var resultWarning = function (message) {
+        var prefix = "<p class=\"warning\"><strong>WARNING:<\/strong>"; var suffix = "<\/p>";
+
+        $('div#results').prepend(prefix + message + suffix);
+    };
+
+    var hasActiveX = (function () {
+        if (typeof(ActiveXObject) !== 'undefined') {
+
+            var boilerplate = "You may have to add this site to your list of \"trusted sites\" and ";
+            boilerplate += "adjust security levels to allow access to Microsoft Excel...";
+
+            resultWarning(boilerplate);
+            return true; 
+
+        } else { 
+
+            resultWarning("We are running in debug mode (without ActiveX calls, try IE)...");
+            return false;
+        }
+    }());  // do i have parens right here?
+
+    var openExcel = function () {
+        if (verbose) { alert("openExcel()"); }
+        if (!hasActiveX) { return {}; }
+
+        var XL = new ActiveXObject("Excel.Application");
+
+        if (XL && XL.findfile) {
+            XL.visible=true;  // Must be after FindFile for the activeworkbook.close to close Excel?
+            return XL;
+        } else{
+            alert("File not opened.");
+        }
+    };
+
+    var closeExcel = function (XL) {
+        if (verbose) { alert("closeExcel()"); }
+
+        if (XL && XL.activeworkbook) {
+            XL.activeworkbook.close(false);
+        } else {
+            alert("Nothing to close.");
+        }
+    };
+
+    var excelFind = function (XL, query) {
+        if (verbose) { alert("excelFind()"); }
+
+        var searchResult = {
+            error: null,
+            matches: []
+        };
+
+        if (!hasActiveX) {
+            if (!testInChromium) {
+
+                searchResult.error = "ActiveX isn't available...";
+
+                return searchResult;
+
+            } else {
+                var regexToFind = new RegExp("banana".entityify(), 'gi');
+
+                searchResult.matches = [
+                        {
+                            address: "AB3404343",
+                            select: function () { alert("Aha! select()"); },
+                            hits:   ["banana"],
+                            value:  "This yellow banana is pretty awesome",
+                            regexToFind: regexToFind
+
+                        },
+                        {
+                            address: "BLKSJDF",
+                            select: function () { alert("Muahaha! select()"); },
+                            hits:   ["red","red"],
+                            value:  "red is the favorite color of angry red faced people?",
+                            regexToFind: regexToFind
+                        }
+                ];
+
+                return searchResult;
+            }
+        }
+
+        var eachCellofRange = function (range, func) {
+            if (verbose) { alert("eachCellofRange()"); }
+
+            var y,x;
+            for ( x = 1; x <= range.columns.count; x += 1 ) {
+                for ( y = 1; y <= range.rows.count; y += 1 ) {
+                    //if (verbose) { alert("eachCellofRange()... func()..."); }
+                    func( range.cells(y,x) );
+                }
+            }
+        };
+
+        // This was an interesting experiment, but seems kind of inside-out:
+        var searchCell = function (stringToFind) {
+//            var regexToFind = new RegExp(stringToFind, 'gi');
+            var regexToFind = new RegExp(stringToFind.entityify(), 'gi');
+
+            return function (cell) {
+                //if (verbose) { alert("searchCell()(cell)"); }
+
+                if (cell && cell.value) {
+                    var valueAsString = cell.value.toString().entityify();
+
+                    //if( !cell.value.match || !cell.value.split // ... if numbers
+
+                    var hits = valueAsString.match(regexToFind);
+                    if (hits) {
+                        if (verbose) { alert("searchCell()... hits..."); }
+
+/* DEL
+                        var misses = valueAsString.split(regexToFind);
+                        if (misses) {
+                            if (verbose) { alert("searchCell()... misses..."); }
+
+
+                            // This happens sometimes:
+                            if ( hits.length + 1 != misses.length ) { 
+                                alert("match/split error?"); 
+                                alert("hits(" + hits.length + "): " + hits);
+                                alert("misses(" + misses.length + "): " + misses);
+                                return null;
+                            }
+    
+*/
+                            if (verbose) { alert("Cell " + cell.address + " contains \"" + stringToFind + "\""); }
+                        
+                            searchResult.matches.push({
+                                address:    cell.address,
+                                //          probably move this elsewhere: just return address here
+                                select:     function () { XL.activesheet.range(cell.address).select(); }, 
+                                //select:     function () { alert("Aha! select()"); },
+                                hits:       hits,
+                                //misses:     misses,
+                                value:      valueAsString,
+                                regexToFind:      regexToFind
+
+                                // app.ActiveSheet.Cells(3,181)
+                                // app.ActiveWorkBook.ActiveSheet.Cells(3,181)
+                                // app.Workbooks(1).Worksheets(1).Cells(3,181).value
+                            });
+/* DEL
+                        }
+*/
+                    }
+                }
+            };
+        };
+
+
+
+        eachCellofRange(XL.activesheet.usedrange, searchCell(query)); // run the search
+
+        return searchResult;
+    };
+
+    var appendTableRow = function (table, match) {
+        if (verbose) { alert("appendTableRow()"); }
+        //if ( match.hits.length + 1 !== match.misses.length ) { alert("match/split error?"); }
+
+        var idNum = Math.floor(Math.random()*100000).toString();
+
+        var newRow =    "<tr id=\"" + idNum + "\">"; 
+        newRow +=       "<td class=\"clickable\">" + match.address + "<\/td>";
+        newRow +=       "<td class=\"clickable\">";
+/*
+        for (var j = 0; j < match.hits.length; j += 1) {
+            newRow +=   match.misses[j].entityify();
+            newRow +=   "<span class=\"matchText\">" + match.hits[j].entityify() + "<\/span>";
+        }
+        newRow +=       match.misses[match.misses.length - 1].entityify();
+*/
+        newRow += match.value.replace(match.regexToFind, "<span class=\"highlightYellow\">$&<\/span>");  //TODO: but still entityify this?  Or go back and entityify the RegEx?
+        newRow +=       "<\/td>";
+        newRow +=       "<\/tr>";
+
+        table.append(newRow);
+
+        $("#" + idNum).click(function (){
+            if (verbose) { alert("Clicked: " + match.address); }
+            match.select();
+        });
+    };
+
+    var makeSearchTable = function (XL, query) {
+        if (verbose) { alert("makeSearchTable()"); } 
+
+        var searchResult = excelFind(XL, query);
+        
+        if (verbose) { alert("excelFind returned..."); }
+
+        if (!searchResult) {
+            alert("No searchResult object from excelFind!");
+            return;
+        }
+
+        if (searchResult.error) {
+            alert(searchResult.error);
+            return;
+        }
+
+        if (searchResult.matches.length === 0) {
+            if (verbose) { alert("No matches were found for \"" + query + "\"."); }
+            $('div#results').prepend("<p>No matches were found for \"" + query + "\".<\/p>");
+            return;
+        } 
+
+        if (verbose) { alert("making newMatchTable..."); }
+
+        var newMatchTable = "<p>These " + searchResult.matches.length + " matches were found for \"" + query + "\":<\/p>";
+        newMatchTable +=    "<table class=\"matches\"> <tr> <th>Address<\/th> <th>Content<\/th> <\/tr> <\/table>";
+
+        if (verbose) { alert("prepending newMatchTable..."); } 
+
+        $('div#results').prepend(newMatchTable);
+        var thisTable = $('div#results table.matches:first');   // TODO: ref. appended table
+
+        if (verbose) { alert("rows of newMatchTable..."); }
+
+        for (var i in searchResult.matches) {
+            if ( searchResult.matches.hasOwnProperty(i) ) {
+                appendTableRow(thisTable, searchResult.matches[i]);
+            }
+        }
+
+        $('div#results table.matches:first tr:even').addClass("shaded");
+    };
+
+    // EVENT BINDING
+
+    $('form#chooseSheet input#openSheet').click(function () {
+        try {
+            XL = openExcel();
+        } catch (e) {
+            alert(e);
+        }
+    });
+
+    $('form#chooseSheet input#closeSheet').click(function () {
+        try {
+            closeExcel(XL);
+        } catch (e) {
+            alert(e);
+        }
+    });
+
+    $('form#query').submit(function (){
+        try {
+            makeSearchTable(XL, this.querytext.value);
+        } catch (e) {
+            alert(e);
+        }
+        return false; // prevent submission
+    });
+});
+
+</script>
+
+</head>
+<body>
+
+<script>
+    CANTU.writeHeader();
+</script>
+
+<div id="paper">
+
+<h1>excelGrep</h1>
+
+<p>Begin by choosing an Excel spreadsheet to search within.</p>
+
+<form id="chooseSheet">
+    <input type="button" id="openSheet" value="Open Sheet">
+    <input type="button" id="closeSheet" value="Close Sheet">
+</form>
+
+<p>Now, type a <a href="https://developer.mozilla.org/en/JavaScript/Guide/Regular_Expressions">query</a>!</p>
+
+<form id="query">
+    <input type="text" value="" name="querytext" size="50">
+    <input type="submit" value="Search">
+    <!-- JS: $('form input').attr('disabled', true); -->
+</form>
+
+<div id="results"></div>
+
+</div><!-- paper -->
+
+</body>
+</html>

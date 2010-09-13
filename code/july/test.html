@@ -1,0 +1,88 @@
+<html>
+<body>
+<h1>Getting started</h1>
+
+<script>
+var KSAPP, opening, newobj, passphrase;
+var KSAPPSEC;
+
+//Function.prototype.method = function (name, func) {
+//    if (!this.prototype[name]) { 
+//        this.prototype[name] = func;
+//        return this;
+//    }
+//};
+
+
+passphrase = "abracadabra";
+
+var KSAPP = function () {
+    this.innerpassphrase = "oilspill";
+
+    document.write("Hello, fool!<br><br>");
+
+    document.write("Hello!<br>");
+    document.write("Passphrase: " + passphrase + "<br>");
+    document.write("(Inside) innerpassphrase: " + innerpassphrase + "<br>");
+
+    return "lalalala!";
+}();
+
+passphrase = "bananarama";
+
+var TEST = KSAPP;
+document.write(TEST + "<br>");
+document.write("(Out) innerpassphrase: " + TEST.innerpassphrase + "<br><br>"); // undefined
+
+
+
+// Less secure
+alert("Less secure...");
+
+var opening = function (door) {
+    document.write("I am opening the " + door + " to " + this.lair + "!!" + "<br>");
+};
+
+var newobj = {
+    lair: "your secret underground lair",
+//2    open_sesame: opening
+//1    open_sesame: function (door) {
+//        alert("I am opening the " + door + " to " + this.lair + "!!");
+//    }
+};
+//3newobj.method("open_sesame", opening);
+newobj.open_sesame = opening;
+newobj.open_sesame("secret passageway");
+
+document.write("found lair: " + newobj.lair + "<br><br>");
+
+
+// More secure lair, through closure
+alert("More secure...");
+
+KSAPPSEC = function () {
+    var lair = "the ninja turtle pizza kitchen";
+    
+    return {
+        open_sesame: function (door) {
+            document.write("I am stealthily opening the " + door + " to " + lair + "." + "<br>");
+        }
+    }; //return an object
+}();
+
+
+document.write("can't find lair: " + KSAPPSEC.lair + "<br>");
+
+KSAPPSEC.open_sesame("sewer cover");
+
+
+
+
+
+
+
+document.writeln("<br>Done...<br>");
+</script>
+
+</body>
+</html>

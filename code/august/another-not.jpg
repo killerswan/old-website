@@ -1,0 +1,66 @@
+<!doctype html> 
+<html> 
+<head> 
+<title>Testing iframes and images</title> 
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8" /> 
+<meta name="copyright" content="Kevin Cantu (c) 2010"> 
+ 
+<style> 
+    body {
+        font-family: Helvetica, Arial, sans-serif;
+        color:             #444;
+        background-color:  #fff;
+    }
+    #paper {
+        margin: 2px;
+    }
+    blockquote {
+        margin-left: 10px;
+        margin-right: 10px;
+    }
+    h1 {
+        letter-spacing: -4px;
+    }
+    a:link,a:hover,a:focus,a:active {
+        color:   #5fa900;
+    }
+    a:visited {
+        color:   #a95fa9; /* 5a7ac7 */
+    }
+    a:link,a:visited,a:hover,a:focus,a:active {
+        text-decoration: none;
+    }
+    a:hover {
+        background-color:  #5fa900;
+        color:             #000;
+    }
+    code {
+        font-family: Consolas, Inconsolata, monospace;
+        background-color:  #ddd;
+        color:             #000;
+    }
+</style> 
+ 
+<script> 
+    if(screen.width >= 481) {
+        document.write('<style> #paper { width: 700px; margin: auto; margin-top: 110px; margin-bottom: 50px; } </style>');
+    }
+</script> 
+ 
+</head> 
+<body> 
+ 
+<div id="paper"> 
+ 
+<p>A full image:</p> 
+<img src="../flowers.jpg"> 
+ 
+<script> 
+        // Now for some interactive JavaScript!
+        alert("You've now loaded my HTML file, thinking it was a JPEG!");
+</script> 
+ 
+ 
+</div> 
+</body> 
+</html> 

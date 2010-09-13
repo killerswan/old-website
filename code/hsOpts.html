@@ -1,0 +1,135 @@
+<!doctype html>
+<html>
+<head>
+<title>Kevin Cantu</title>
+<meta http-equiv="content-type" content="text/html; charset=UTF-8">
+<meta name="copyright" content="Kevin Cantu (c) 2010">
+
+<!-- style -->
+<link rel="icon" href="http://kevincantu.org/lib/icon/udot.png" type="image/png">
+<link rel="stylesheet" type="text/css" href="http://kevincantu.org/lib/alpha.css">
+<link rel="stylesheet" type="text/css" href="http://kevincantu.org/lib/cantuHeader.css">
+
+<!-- prettify -->
+<link  rel="stylesheet" type="text/css" href="http://kevincantu.org/lib/prettify.css">
+<script src="http://kevincantu.org/lib/3p/prettify/src/prettify.js"></script>
+<script src="http://kevincantu.org/lib/3p/prettify/src/lang-hs.js"></script>
+
+<!-- jQuery 1.4.2 --> 
+<script src="http://kevincantu.org/lib/3p/jquery.js"></script>
+
+<!-- other JavaScript -->
+<script src="http://kevincantu.org/lib/cantu.js"></script> 
+<script src="http://kevincantu.org/lib/3p/crockford.js"></script> 
+
+<script>
+    $(document).ready(function () {
+        prettyPrint();
+    });
+</script>
+
+</head>
+<body>
+
+<script>
+    CANTU.writeHeader();
+</script>
+
+<div id="paper">
+
+<h1>hsOpts</h1>
+
+<p>
+    Right now I'm fumbling around with <a href="http://www.haskell.org/haskellwiki/High-level_option_handling_with_GetOpt">this GetOpt example</a>, because it 
+    manages to look elegant and sound comprehensive, but also cover a big list of the 
+    n00b concepts I should learn.  I've seen <code>foldl</code> before, but in Scheme, 
+    I think, and while I think I understand <code>&gt;&gt;=</code> and <code>do</code>
+    blocks, they still take some extra thought.
+</p>
+<p>
+    As I learn how it works and begin to really modify it, I'll put my franken-program here!
+</p>
+
+<pre class="prettyprint lang-hs" title="Haskell source code">
+module Main (main) where
+
+import System.Console.GetOpt
+import System
+import Control.Monad
+import IO
+import List
+import Char
+
+data Options = Options  { optVerbose    :: Bool
+                        , optInput      :: IO String
+                        , optOutput     :: String -> IO ()
+                        }
+
+startOptions :: Options
+startOptions =  Options { optVerbose    = False
+                        , optInput      = getContents
+                        , optOutput     = putStr
+                        }
+
+
+options :: [ OptDescr (Options -> IO Options) ]
+options = 
+    [ Option "i" ["input"]
+        (ReqArg
+            (\arg opt -> return opt { optInput = readFile arg })
+            "FILE")
+        "Input file"
+    , Option "o" ["output"]
+        (ReqArg
+            (\arg opt -> return opt { optOutput = writeFile arg })
+            "FILE")
+        "Output file"
+    , Option "s" ["string"]
+        (ReqArg
+            (\arg opt -> return opt { optInput = return arg })
+            "FILE")
+        "Input string"
+    , Option "v" ["verbose"]
+        (NoArg
+            (\opt -> return opt { optVerbose = True }))
+        "Enable verbose messages"
+    , Option "V" ["version"]
+        (NoArg
+            (\_ -> do
+                hPutStrLn stderr "Version 0.01"
+                exitWith ExitSuccess))
+        "Print version"
+    , Option "h" ["help"]
+        (NoArg
+            (\_ -> do
+                prg <- getProgName
+                hPutStrLn stderr (usageInfo prg options)
+                exitWith ExitSuccess))
+        "Show help"
+     ]
+
+
+main = do
+    args <- getArgs
+
+    -- Parse options, getting a list of option actions
+    let (actions, nonOptions, errors) = getOpt RequireOrder options args
+
+    -- Here we thread startOptions through all supplied option actions
+    opts <- foldl (>>=) (return startOptions) actions
+
+    let Options { optVerbose = verbose
+                , optInput = input
+                , optOutput = output   } = opts
+
+    when verbose (hPutStrLn stderr "Hello!")
+
+    input >>= output
+
+</pre>
+
+</div><!-- paper -->
+</body>
+</html>
+
+

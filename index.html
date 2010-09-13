@@ -4,106 +4,87 @@
 <title>Kevin Cantu</title>
 <meta http-equiv="content-type" content="text/html; charset=UTF-8">
 <meta name="copyright" content="Kevin Cantu (c) 2006-2010">
-<link rel="icon" type="image/png" href="./udot.png">
 
-<style>
-/* 5a7ac7, 5fa900 */ 
-body {
-	font-family: Helvetica, Arial, Verdana, sans-serif;
-    color:             #444;
-    background-color:  #fff;
-}
-#paper {
-  width: 800px; /* 500 */
-  margin: auto;
-  margin-top: 110px; /* 130 */
-  margin-bottom: 50px;
-}
-#header {
-  text-align: center;
-}
-#left {
-  float: left;
-  margin-right: 10px;
-}
-#right {
-}
-#footer {
-  display: none;
-}
-h1 {
-    font-family: Helvetica, Arial, Tahoma, Verdana, sans-serif;
-    letter-spacing: -4px;
-}
-a:link,a:visited,a:hover,a:focus,a:active {
-	color:	#5fa900
-}
-a:link,a:visited,a:hover,a:focus,a:active {
-	text-decoration: 	none;
-}
-a:hover {
-	background-color:	#5fa900;
-	color:			#000;
-}
-.hphoto {
-    /* display: inline (vs. block) */
-    border: 2px solid #444;
-    width: 500px;
-    height: 333px;
+<!-- openid -->
+<link rel="openid.server"   href="http://www.myopenid.com/server">
+<link rel="openid.delegate" href="http://killerswan.myopenid.com/">
 
-    overflow: hidden;
-}
-a img {
-    border: 0px;    
-}
-.highlight {
-    color:	#5fa900
-}
-</style>
+<!-- style -->
+<link rel="icon" href="http://kevincantu.org/lib/icon/udot.png" type="image/png">
+<link rel="stylesheet" type="text/css" href="http://kevincantu.org/lib/alpha.css">
+<link rel="stylesheet" type="text/css" href="http://kevincantu.org/lib/cantuHeader.css">
+
+<!-- other JavaScript -->
+<script src="http://kevincantu.org/lib/cantu.js"></script>
+
 </head>
 <body>
+
+<noscript>
+<div id=cantuHeader>
+    <h1>KevinCant<a href="http://kevincantu.org/" title="Home: learn about me!">u.</a>org</h1>
+
+    <ul>
+        <li><a title="Home: learn about me!"                href="http://kevincantu.org/"               >About Me</a></li>
+        <li><a title="See computer sciencey stuff!"         href="http://kevincantu.org/code/"          >Code</a></li>
+        <li><a title="Read some thoughts!"                  href="http://log.kevincantu.org/"           >Log</a></li>
+        <li><a title="Look at my pictures!"                 href="http://flickr.com/photos/kevin751/"   >Photos</a></li>
+        <li class="last"><a title="Follow me on Twitter!"   href="https://twitter.com/killerswan"       >Twitter</a></li>
+    </ul>
+</div><!-- header -->
+</noscript>
+<script>
+    CANTU.writeHeader();
+</script>
+
 <div id="paper">
 
-<div id=header>
-    <h1>KevinCant<a href="http://kevincantu.org">u.</a>org</h1>
-</div>
+<!-- <h1>About Me</h1> -->
 
 <div id=left>
-    <div class=hphoto>
-        <a href="http://www.flickr.com/photos/kevin751/" title="flowers, on Flickr">
-            <img src="http://farm4.static.flickr.com/3078/2430137243_8cd9119690.jpg"
-                width="500" height="333" alt="rock flowers">
-        </a>
-    </div>
+    <a href="http://www.flickr.com/photos/kevin751/4940069538/" alt="Fourth of July">
+        <img src="fourthOfJuly.jpg" alt="Fourth of July">
+    </a>
 </div>
 
 <div id=right>
-    <p>
-      Hi there!  
-    </p>
-    <p>
-        My name is Kevin Cantu.  I live in Santa Barbara, and 
-        when I'm not working as a consultant (in software and intellectual property litigation)
-        you might catch me geeking out on technology and law, 
-        <a href="http://flickr.com/photos/kevin751/">taking photographs</a>
-        or otherwise enjoying California...
-    </p>
-    <p>
-        I can be emailed at <a href="mailto:kevincantu@gmail.com">kevincantu@gmail.com</a>, or
-        followed at <a href="http://www.linkedin.com/in/kevincantu">my LinkedIn profile</a> and
-        <a href="http://google.com/profiles/kevincantu">other places</a>.
-    </p>
-</div>
+<p>Hi there!</p>
+<p>My name is Kevin Cantu. I live in Santa Barbara, and 
+when I'm not working as a consultant (in software and 
+intellectual property litigation) you might catch me geeking out 
+on technology and law, 
+<a href="http://flickr.com/photos/kevin751/">taking photographs</a> or
+ otherwise enjoying California...</p>
+<p>I can be emailed at 
+<a href="mailto:kevincantu@gmail.com">kevincantu@gmail.com</a>, or 
+followed on <a href="https://twitter.com/killerswan">Twitter</a>, 
+<a href="http://flickr.com/photos/kevin751/">Flickr</a>, 
+<a href="http://www.linkedin.com/in/kevincantu">LinkedIn</a>, and 
+<a href="http://google.com/profiles/kevincantu">elsewhere</a>.</p>
+<!--<p><a title="photo by kevincantu, on Flickr" 
+href="http://www.flickr.com/photos/kevin751/4646417167/">
+<img alt="2010-03-06 14.39.48" height="500" width="375" 
+src="http://farm5.static.flickr.com/4037/4646417167_fd9fb194ee.jpg"></a>
+</p>-->
 
 </div>
 
+
+
+
+</div><!-- paper -->
+
+<!--
 <script>
+/*
     var gaJsHost = (("https:" == document.location.protocol) ? "https://ssl." : "http://www.");
     document.write(unescape("%3Cscript src='" + gaJsHost + "google-analytics.com/ga.js' type='text/javascript'%3E%3C/script%3E"));
     try {
         var pageTracker = _gat._getTracker("UA-13261525-1");
         pageTracker._trackPageview();
     } catch(err) {}
+*/
 </script>
+-->
 </body>
 </html>

@@ -1,0 +1,68 @@
+<!doctype html>
+<html>
+<head>
+<title>Kevin Cantu</title>
+<meta http-equiv="content-type" content="text/html; charset=UTF-8">
+<meta name="copyright" content="Kevin Cantu (c) 2010">
+
+<!-- style -->
+<link rel="icon" href="http://kevincantu.org/lib/icon/udot.png" type="image/png">
+<link rel="stylesheet" type="text/css" href="http://kevincantu.org/lib/alpha.css">
+<link rel="stylesheet" type="text/css" href="http://kevincantu.org/lib/cantuHeader.css">
+
+<!-- prettify -->
+<link  rel="stylesheet" type="text/css" href="http://kevincantu.org/lib/prettify.css">
+<script src="http://kevincantu.org/lib/3p/prettify/src/prettify.js"></script>
+<script src="http://kevincantu.org/lib/3p/prettify/src/lang-hs.js"></script>
+
+<!-- jQuery 1.4.2 --> 
+<script src="http://kevincantu.org/lib/3p/jquery.js"></script>
+
+<!-- other JavaScript -->
+<script src="http://kevincantu.org/lib/3p/crockford.js"></script> 
+<script src="http://kevincantu.org/lib/cantu.js"></script>
+
+<script>
+
+var load = function () {
+        
+    var newFile = document.getElementById("fileInput").files[2];
+
+    if (newFile) {
+        var reader = new FileReader();
+        reader.onload = function (e) { document.getElementById("results").innerHTML = e.target.result.entityify();
+        }
+        reader.readAsText(newFile);
+    }
+
+};
+</script>
+
+</head>
+<body>
+
+<script>
+    CANTU.writeHeader();
+</script>
+
+<div id="paper">
+
+<h1>inputFile</h1>
+
+<p>
+    For starters: <a href="http://arstechnica.com/open-source/news/2009/11/w3c-publishes-draft-of-new-file-api-spec.ars">ArsTechnica</a>...
+</p>
+
+<p>
+<input type="file" multiple="true" id="fileInput">
+<a href="#" onclick="load()">Load the file...</a>
+</p>
+
+<div id="results"></div>
+
+</div><!-- paper -->
+
+</body>
+</html>
+
+

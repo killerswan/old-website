@@ -1,0 +1,24 @@
+div#cantuHeader{
+    font-family: Arial,Helvetica,"Droid Sans", sans-serif;
+    text-align: center;
+    padding: 0;
+    margin: 0;
+    margin-bottom: 50px;
+    background-color: #f8f8f8;
+    border-bottom: 8px solid #eee;
+}
+div#cantuHeader h1{
+    padding: 0;
+    margin: 0;
+    display: inline;
+}
+div#cantuHeader ul, div#cantuHeader ul li{
+    display:inline;
+}
+div#cantuHeader ul li:after {
+    content: " : ";
+}
+div#cantuHeader ul li.last:after {
+    content: "";
+}
+
