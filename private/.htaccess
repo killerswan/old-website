@@ -1,0 +1,5 @@
+
+AuthType Digest
+AuthDigestFile "/home/kcantu/www/www/private/.htdigest"
+AuthName Limited!
+require valid-user
