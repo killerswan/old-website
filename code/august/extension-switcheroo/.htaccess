@@ -1,0 +1,2 @@
+# Add extension JPG to HTML mime type
+AddType text/html .jpg

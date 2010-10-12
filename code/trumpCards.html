@@ -1,0 +1,78 @@
+<!doctype html><html><head><meta charset="utf-8"><!-- Kevin Cantu © 2010 -->
+
+    <title>Kevin Cantu</title>
+
+    <link href="http://kevincantu.org/lib/beta.css" type="text/css" rel="stylesheet">
+    <link href="http://kevincantu.org/lib/icon/udot.png" type="image/png" rel="icon">
+
+    <script src="http://kevincantu.org/lib/3p/crockford.js"></script>
+
+    <script> 
+        // ANALYTICS
+        var _gaq = _gaq || [];
+        _gaq.push(['_setAccount', 'UA-13261525-1']);
+        _gaq.push(['_trackPageview']);
+        (function() {
+            var ga = document.createElement('script');
+            ga.type = 'text/javascript';
+            ga.async = true;
+            ga.src = ('https:' == document.location.protocol ? 'https://ssl' : 'http://www') +
+                        '.google-analytics.com/ga.js';
+            var s = document.getElementsByTagName('script')[0];
+            s.parentNode.insertBefore(ga, s);
+        })();
+    </script> 
+</head>
+<body>
+
+    <!-- depends on the body -->
+    <script src="http://kevincantu.org/lib/betaTitle.js"></script>
+
+    <div class="contentSection">
+
+        <div class="contentHeader"><h1>trumpCards</h1><p>October 2010</p></div>
+
+        <p>This is a work in progress, but you should be able to look at and move around a bunch of 
+            images from a site with an XML or JSON API, like Tumblr...
+        </p>
+
+        <!--
+        <input type="button" id="abortButton" value="Stop" disabled="true">
+        -->
+
+        <div id="apiCalls"></div>
+
+        <div id="results"></div>
+
+    </div>
+
+
+<script>
+////////////////////////////////////////////////
+
+    var cb = function (tumblr_json) {
+        tumblr_json.posts.forEach(function (post, i, posts) {
+            var i = document.createElement("img");
+            if(post["photo-url-500"]) {
+                i.src = post["photo-url-500"];
+                document.getElementById("results").appendChild(i);
+            }
+        });
+    }
+
+    var testpg = "http://killerswan.tumblr.com/api/read/json?num=15&callback=cb";
+
+    // TODO: don't overwrite?
+    var s = document.createElement("script");
+    s.src = testpg; 
+    document.getElementById("apiCalls").appendChild(s);
+    
+    var note = document.createElement("p");
+    note.innerHTML = "The following image URIs were returned from this Tumblr API call: \"" + testpg + "\"";
+    document.getElementById("results").appendChild(note);
+
+////////////////////////////////////////////////
+</script>
+
+
+</body></html>

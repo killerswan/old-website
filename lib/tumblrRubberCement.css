@@ -1,0 +1,577 @@
+/*
+Originally based on: 
+Rubber Cement Theme 1.0 by Sleepover.
+Released under Creative Commons Attribution-Noncommercial-Share Alike 3.0 Unported License
+http://creativecommons.org/licenses/by-nc-sa/3.0/
+Theme modified by Kevin Cantu, 2010.  Same license.
+
+League Gothic by The League of Movable Type released under the Open Type License
+http://scripts.sil.org/cms/scripts/page.php?site_id=nrsi&id=OFL
+*/
+
+span, applet, object, iframe,
+ h2, h3, h4, h5, h6, p, blockquote, pre,
+a, abbr, acronym, address, big, cite, code,
+del, dfn, em, font, img, ins, kbd, q, s, samp,
+small, strike, strong, sub, sup, tt, var,
+dl, dt, dd, ol, 
+fieldset, form, label, legend,
+table, caption, tbody, tfoot, thead, tr, th, td {
+	margin: 0;
+	padding: 0;
+	border: 0;
+	outline: 0;
+	font-weight: inherit;
+	font-style: inherit;
+	font-size: 1em;
+	font-family: inherit;
+	vertical-align: baseline;
+}
+:focus {
+	outline: 0;
+}
+body {
+    font-family: Georgia,"Hoefler Text","Droid Serif",serif;/* Junicode: interesting.. */
+    font-size:         100%;
+    color:             #444;
+    background-color:  #fff;
+    margin:0;
+    padding:0;
+}
+h1, h2, h3, h4, ul, ol, li, table, dt, .post-meta, #navigation {
+    font-family: "DejaVu Sans",Arial,Helvetica,"Droid Sans", sans-serif;
+}
+ol, ul {
+	list-style: none;
+}
+table {
+	border-collapse: separate;
+	border-spacing: 0;
+}
+caption, th, td {
+	text-align: left;
+	font-weight: normal;
+}
+blockquote:before, blockquote:after,
+q:before, q:after {
+	content: "";
+}
+blockquote, q {
+	quotes: "" "";
+}
+
+
+
+/*
+@font-face {
+    font-family: 'LeagueGothicRegular';
+    src: url('http://static.tumblr.com/usaykzx/xyTky45d1/league_gothic.eot');
+    src: local('League Gothic Regular'), local('LeagueGothic'),
+        url('http://static.tumblr.com/usaykzx/pheky45df/league_gothic.ttf') format('truetype');
+}
+*/
+a:link,a:visited {
+    text-decoration: none;
+    color: #5fa900;
+}
+a:hover {
+    opacity: .9;
+}
+
+.clear {
+    clear: both;
+}
+
+hr {
+  border-bottom: 0;
+  border-top: 1px solid rgba(128,128,128,.5);
+  margin: 22px auto;
+  width: 243px;
+}
+
+#container {
+  max-width: 772px;
+  margin: 0 auto;
+}
+
+#header {
+    text-align: center;
+    padding: 0;
+    margin: 0;
+}
+#header ul, #header ol, #header li {
+    display: inline;
+    padding: 0;
+    margin: 0;
+}
+#header ul li:after {
+    content: " : ";
+}
+#header ul li.last:after {
+    content: "";
+}
+
+/*
+  #header li {
+    display: inline;
+    margin: 0 12px;
+    letter-spacing: .05em;
+    font-size: 24px;
+    font-family: "LeagueGothicRegular", "HelveticaNeue-CondensedBold", "Franklin Gothic Demi Cond", "Franklin Gothic Medium Cond", "Impact", sans-serif;
+    text-shadow: 0 0 1px #fff;
+  }
+
+#header h1 {
+    text-align: center;
+    font-size: 72px;
+    font-family: "LeagueGothicRegular", "HelveticaNeue-CondensedBold", "Franklin Gothic Demi Cond", "Franklin Gothic Medium Cond", "Impact", sans-serif;
+    text-transform: uppercase;
+    letter-spacing: 2px;
+  }
+*/
+    
+/*
+  #header p {
+    width: 430px;
+    margin: 8px auto;
+    font-size: 22px;
+    text-align: center;
+    line-height: 1.09;
+    font-style: italic;
+    text-shadow: 0 0 1px #fff;
+  }
+*/
+
+.post-meta {
+    text-align: center;
+}
+
+/*
+.post-meta {
+  text-transform: uppercase;
+  color: rgba(128,128,128,.5);
+  text-align: center;
+  font-size: 14px;
+  font-weight: bold;
+  letter-spacing: 1px;
+  text-shadow: 0 0 1px #fff;
+}  
+  .post-meta a {
+    margin: 0 6px;
+  }
+*/
+  
+.post-content {
+  margin: 22px 0;
+}
+
+.photo .photo-wrapper {
+  text-align: center;
+}
+  .photo .photo-wrapper img {
+    border: 8px solid {color:Accent};
+    -webkit-box-shadow: 0 3px 3px rgba(128,128,128,.35);
+  }
+  .photo.captioned .photo-wrapper {
+    float: left;
+    margin: 0 22px 22px 0;
+  }
+  .photo .body {
+    padding-top: 4px;
+  }
+    .photo .body p, .photo .body blockquote {
+        text-align: left;
+    }
+  
+.video .video-wrapper {
+  width: 500px;
+  margin: 0 auto;
+  text-align: center;
+  border: 8px solid {color:Text};
+  border-left: 0;
+  border-right: 0;
+  -webkit-box-shadow: 0 3px 3px rgba(128,128,128,.35);
+}
+  .video.captioned .video-wrapper {
+    float: left; margin: 0 22px 22px 8px; } .video .body { padding-top: 4px; }
+    .video .body p, .video .body blockquote {
+        text-align: left;
+    }
+
+.quote .q-wrapper {
+  width: 500px;
+  margin: 0 auto 22px;
+  background: #e8e8e8;
+  padding: 8px;
+}
+  .quote q {
+    border: 1px solid {color:Text};
+    padding: 7px 10px;
+    display: block;
+    font-family: "LeagueGothicRegular", "HelveticaNeue-CondensedBold", "Franklin Gothic Demi Cond", "Franklin Gothic Medium Cond", "Impact", sans-serif;
+    text-transform: uppercase;
+    text-shadow: 0 0 1px {color:Accent};
+    line-height: 1.1;
+    text-align: left;
+  }
+    .quote p+p {
+      text-indent: 1em;
+    }
+    .quote q.short { font-size: 42px; }
+    .quote q.medium { font-size: 36px; }
+    .quote q.long { font-size: 30px; text-transform: none; }
+.quote .body {
+  width: 430px;
+  margin: 0 auto;
+}
+
+.text h2 {
+  width: 430px;
+  margin: 30px auto 16px;
+  text-align: center;
+  font-family: "LeagueGothicRegular", "HelveticaNeue-CondensedBold", "Franklin Gothic Demi Cond", "Franklin Gothic Medium Cond", "Impact", sans-serif;
+  font-size: 36px;
+}
+.text .body {
+  width: 430px;
+  margin: 0 auto;
+}
+
+.audio-info {
+  width: 207px;
+  margin: 0 auto 22px;
+}
+  .audio-info.hasart {
+    width: 368px;
+  }
+  .audio-info-left img {
+    width: 100px;
+    height: 100px;
+    -webkit-box-shadow: 0 2px 2px rgba(128,128,128,.35);
+  }
+  .audio-info-left {
+    width: 139px;
+    float: left;
+    background: url(http://static.tumblr.com/usaykzx/j6Kky45bc/vinyl.png) no-repeat right center;
+  }
+  .audio-info-right {
+    width: 207px;
+    float: right;
+    font-size: 18px;
+  }
+    .audio-info-right div {
+      margin: 0 0 5px;
+    }
+    .audio-trackname {
+      font-style: italic;
+    }
+    .audio-album {
+      text-transform: uppercase;
+      font-size: 14px;
+      letter-spacing: 2px;
+    }
+    .audio-info-right .audio-player {
+      margin-top: 12px;
+    }
+    
+.audio .body {
+  width: 430px;
+  margin: 0 auto;
+}
+
+.conversation h2 {
+  width: 430px;
+  margin: 30px auto 16px;
+  text-align: center;
+  font-family: "LeagueGothicRegular", "HelveticaNeue-CondensedBold", "Franklin Gothic Demi Cond", "Franklin Gothic Medium Cond", "Impact", sans-serif;
+  font-size: 36px;
+}
+.conversation table {
+  -webkit-border-radius: 10px;
+  -moz-border-radius: 10px;
+  border-radius: 10px;
+  background: {color:Accent};
+  width: 430px;
+  margin: 0 auto;
+}
+  .conversation th {
+    padding: 9px 0 9px 11px;
+    border-top: 1px solid #fff;
+    text-align: right;
+    text-transform: uppercase;
+    font-size: 12px;
+    font-weight: bold;
+    line-height: 1.2;
+  }
+
+  .conversation td {
+    padding: 9px;
+    border-top: 1px solid #fff;
+    font-size: 16px;
+    line-height: 1.2;
+  }
+    .conversation tr:first-child td,
+    .conversation tr:first-child th {
+      border-top: 0;
+    }
+
+.link h2 a {
+  color: {color:Text};
+  text-align: center;
+  font-size: 24px;
+  font-family: "LeagueGothicRegular", "HelveticaNeue-CondensedBold", "Franklin Gothic Demi Cond", "Franklin Gothic Medium Cond", "Impact", sans-serif;
+  text-shadow: 0 0 1px {color:Accent};
+  letter-spacing: 1px;
+  background: #e8e8e8;
+  display: block;
+  padding: 5px 0 5px;
+  margin: 30px auto 22px;
+  width: 430px;
+}
+  .link h2 a span {
+    display: block;
+    padding: 8px;
+    border: 1px solid #fff;
+    border-left: 0;
+    border-right: 0;
+  }
+
+.link .body {
+  width: 430px;
+  margin: 0 auto;
+}
+
+.answer {
+  width: 465px;
+  padding-right: 35px;
+  margin: 0 auto;
+}
+  .answer-question .body {
+    -webkit-border-radius: 10px;
+    -moz-border-radius: 10px;
+    border-radius: 10px;
+    background: #e8e8e8;
+    padding: 10px 16px;
+    width: 318px;
+    float: left;
+    line-height: 1.4;
+  }
+    .answer-asker {
+      float: right;
+      width: 80px;
+    }
+    .answer-point {
+      width: .7em;
+      float: left;
+      padding-top: 16px;
+    }
+    .answer-point-top,
+    .answer-point-bottom {
+      width: 0;
+      height: 0;
+    }
+    .answer-point-top {
+      border-bottom: 8px solid {color:Accent};
+      border-right: 8px solid rgba(0,0,0,0);
+    }
+    .answer-point-bottom {
+      border-left: 8px solid {color:Accent};
+      border-bottom: 8px solid rgba(0,0,0,0);
+    }
+    .answer-asker .answer-asker-avatar {
+      float: right;
+      -webkit-border-radius: 10px;
+      -moz-border-radius: 10px;
+      border-radius: 10px;
+      width: 64px;
+      height: 64px;
+      display: block;
+      text-indent: -9000px;
+      background-repeat: no-repeat;
+      background-position: top left;
+    }
+      .answer-asker .answer-asker-avatar a {
+        display: block;
+        text-indent: -9000px;
+        width: 64px;
+        height: 64px;
+      }
+  .answer-answer {
+    margin-top: 22px;
+  }
+    .answer-label {
+      width: 35px;
+      float: left;
+      color: {color:Accent};
+      font-family: "LeagueGothicRegular", "HelveticaNeue-CondensedBold", "Franklin Gothic Demi Cond", "Franklin Gothic Medium Cond", "Impact", sans-serif;
+      font-size: 48px;
+      overflow: hidden;
+    }
+    .answer-answer .body {
+      margin-left: 35px;
+    }
+
+.body {
+  font-size: 16px;
+}
+.body em {
+    font-style: italic;
+}
+.body strong {
+    font-weight: bold;
+}
+.body p,.body blockquote {
+    line-height: 1.3;
+    text-align: left;
+}
+.body p {
+    text-indent: 1em;
+            margin: .5em 0;  /* KEVIN */
+}
+/*
+.body ul+p,
+.body ol+p,
+.body blockquote+p,
+.body p:first-of-type {
+  text-indent: 0;
+}
+*/
+.body ul,.body ol {
+    margin: .75em 2em;
+}
+  .body li {
+        line-height: 1.2;
+        margin: .35em 0;
+        list-style-position: inside;
+  }
+    .body ol li {
+        list-style-type: decimal;
+    }
+    .body ul li {
+        list-style-type: circle;
+    }
+    .body ol ol,.body ul ul {
+         margin: .75em 2em; 
+    }
+    .body li ol li {
+        list-style-type: lower-alpha;
+    }
+    .body li ul li {
+        list-style-type: circle;
+    }
+.body blockquote {
+    padding: 0 .85em 0 .85em;
+    margin: .75em 1.15em;
+    border-left: 1px solid rgba(128,128,128,.5);
+    font-style: italic;
+}
+
+.post-notes {
+  width: 430px;
+  margin: 0 auto 40px;
+}
+  .post-notes li {
+    border-top: 1px solid rgba(128,128,128,.5);
+    padding: 6px 5px 7px;
+    font-size: 16px;
+  }
+  .post-notes .avatar {
+    display: none;
+  }
+  .post-notes blockquote {
+        padding: 0 1em 0 .45em;
+        margin: 7px 6px 0;
+        border-left: 1px solid rgba(128,128,128,.5);
+  }
+    .post-notes blockquote a {
+      color: {color:Text};
+    }
+    
+#disqus_thread {
+  width: 430px;
+  margin: 0 auto 40px;
+}
+
+#footer {
+  padding-bottom: 40px;
+}
+
+#navigation {
+  width: 500px;
+  margin: 0 auto;
+  border: 1px solid rgba(128,128,128,.5);
+  border-left: 0;
+  border-right: 0;
+/*  height: 25px;
+*/
+  padding: 16px 0;
+}
+  #navigation-left,
+  #navigation-right {
+    width: 129px;
+    font-size: 14px;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    line-height: 25px;
+  }
+    #navigation-left {
+      float: left;
+    }
+    #navigation-right {
+      float: right;
+      text-align: right;
+    }
+  #navigation-center {
+    width: 243px;
+    margin: 0 auto;
+    position: relative;
+  }
+    #navigation-center input {
+      border: 1px solid #5fa900;
+      -moz-border-radius: 5px;
+      -webkit-border-radius: 5px;
+      border-radius: 5px;
+      background: transparent;
+      height: 23px;
+      line-height: 23px;
+      color: {color:Text};
+      font-size: 14px;
+      width: 231px;
+      padding: 0 5px;
+      position: absolute;
+      top: 0;
+      left: 0;
+      z-index: 1;
+      font-family: Helvetica, Arial, Verdana, sans-serif;
+    }
+    #navigation-center #search-background {
+      background: #5fa900;
+      opacity: .5;
+      height: 25px;
+      -moz-border-radius: 5px;
+      -webkit-border-radius: 5px;
+      border-radius: 5px;
+    }
+    
+#credit {
+  text-align: center;
+  font-style: italic;
+/*
+  font-size: 16px;
+*/
+  margin-top: 18px;
+}
+
+
+
+img {
+    padding: 0px;
+    margin: 0px;
+    border: 8px solid #e0e0e0;
+}
+
+#disclaimer {
+    margin-top: 18px;
+    text-align: center;
+    font-style: italic;
+}

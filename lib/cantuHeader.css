@@ -1,24 +1,40 @@
-div#cantuHeader{
-    font-family: Arial,Helvetica,"Droid Sans", sans-serif;
+/* Kevin Cantu (c) 2010 */
+#cantuHeader{
     text-align: center;
-    padding: 0;
-    margin: 0;
     margin-bottom: 50px;
-    background-color: #f8f8f8;
+    background-color: #f6f6f6;
     border-bottom: 8px solid #eee;
 }
-div#cantuHeader h1{
+#cantuHeader h1, #cantuHeader ul {
     padding: 0;
     margin: 0;
-    display: inline;
 }
-div#cantuHeader ul, div#cantuHeader ul li{
+#cantuHeader h1, #cantuHeader nav, #cantuHeader ul, #cantuHeader ul li{
+    font-family: "DejaVu Sans",Arial,Helvetica,"Droid Sans", sans-serif;
     display:inline;
 }
-div#cantuHeader ul li:after {
+#cantuHeader h1{
+    letter-spacing: -4px;
+}
+#cantuHeader ul li:after {
     content: " : ";
 }
-div#cantuHeader ul li.last:after {
+#cantuHeader ul li.last:after {
     content: "";
 }
-
+#cantuHeader ul {
+    margin-left: 1em;
+    margin-right: 1em;
+}
+#cantuHeader a:link,
+#cantuHeader a:visited,
+#cantuHeader a:hover,
+#cantuHeader a:focus,
+#cantuHeader a:active {
+    text-decoration: none;
+    color: #5fa900;
+}
+#cantuHeader a:hover {
+    background-color: #5fa900;
+    color: #000;
+}

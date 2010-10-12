@@ -5,38 +5,244 @@
 <meta http-equiv="content-type" content="text/html; charset=UTF-8">
 <meta name="copyright" content="Kevin Cantu (c) 2010">
 
+<!--
+    Note: VIM insert mode's CTRL-V u XXXX unicode insertion is pretty cool! ❤
+    Note: No good can come of this!  ❊ ❊ ❊ ❊
+    see http://vim.wikia.com/wiki/Entering_special_characters
+-->
+
 <!-- style -->
 <link rel="icon" href="http://kevincantu.org/lib/icon/udot.png" type="image/png">
 <link rel="stylesheet" type="text/css" href="http://kevincantu.org/lib/alpha.css">
 <link rel="stylesheet" type="text/css" href="http://kevincantu.org/lib/cantuHeader.css">
 
-<!-- prettify -->
-<link  rel="stylesheet" type="text/css" href="http://kevincantu.org/lib/prettify.css">
-<script src="http://kevincantu.org/lib/3p/prettify/src/prettify.js"></script>
-<script src="http://kevincantu.org/lib/3p/prettify/src/lang-hs.js"></script>
+<script src="http://kevincantu.org/lib/3p/jquery.js"></script> <!-- jQuery 1.4.2 --> 
 
-<!-- jQuery 1.4.2 --> 
-<script src="http://kevincantu.org/lib/3p/jquery.js"></script>
+<!-- flot 0.6 --> 
+<!--
+<script src="http://kevincantu.org/lib/3p/flot/jquery.flot.js"></script>
+-->
+
+<!-- jqPlot -->
+<script src="http://kevincantu.org/lib/3p/jqPlot/jquery.jqplot.js"></script>
+<script src="http://kevincantu.org/lib/3p/jqPlot/plugins/jqplot.logAxisRenderer.js"></script>
 
 <!-- other JavaScript -->
 <script src="http://kevincantu.org/lib/3p/crockford.js"></script> 
 <script src="http://kevincantu.org/lib/cantu.js"></script>
 
 <script>
+var showContents = false;
+
+var freqSets = { data: [], series: [] };
+
+var countFrequencies = function (words) {
+            // COUNT
+            var freqs = [];
+
+            for (var i in words) {
+                var length = words[i].length;
+
+                if (freqs[length] >= 1) {
+                    freqs[length] += 1;
+                } else {
+                    freqs[length] = 1;
+                }
+                
+            }
+
+            
+            // PAIR
+            var freqPairs = [];
+
+            for (var j in freqs) {
+                freqPairs.push([ freqs[j], j ]);            
+            }
+
+            return freqPairs;
+};
+
+var graphFrequencies = function (freqPairs, fileName) {
+            // ADD TO GRAPH DATA
+            freqSets.data.push(freqPairs);
+
+            freqSets.series.push({
+                label: "\"" + fileName + "\"",
+                showLine: false,
+            });
+
+
+            // REBUILD GRAPH
+            document.getElementById("figure0").innerHTML = "";
+
+            try {
+                $.jqplot(
+                    "figure0",  // below, there is an id="figure0"
+                    freqSets.data,
+                    {
+                        title: "Word Length Frequencies",
+                        series: freqSets.series,
+                        legend: {
+                            show: true,
+                        },
+                        axes: {
+                            xaxis: {
+                                label: "Freq",
+                                min: 0
+                            },
+                            yaxis: {
+                                //label: "Frequency in file",
+                                min: 1,
+                                tickDistribution: 'power',
+                                renderer: $.jqplot.LogAxisRenderer
+                            },
+                        },
+                    }
+                );
+            } catch (e) {
+                if (e.name && e.message) {
+                    // suggested by Crockford?
+                    alert("Exception caught: " + e.name + ": " + e.message);
+                } else {
+                    // "e" actually works on Chrome
+                    alert("Exception caught: " + e);
+                }
+            }
+};
 
 var load = function () {
         
-    var newFile = document.getElementById("fileInput").files[2];
+    var files = document.getElementById("fileInput").files;
 
-    if (newFile) {
-        var reader = new FileReader();
-        reader.onload = function (e) { document.getElementById("results").innerHTML = e.target.result.entityify();
-        }
-        reader.readAsText(newFile);
+    var onload = function (fileName) {
+        return function (ev) {
+            var content = ev.target.result;
+
+            var words = content.split(/\s+/g); 
+
+            // SHOW FILE CONTENTS
+            if (showContents) {
+                var newResult = document.createElement("div");
+
+                newResult.innerHTML = "<p>Contents of \"" + fileName + "\": <\/p>" +
+                                      "<pre>" + content.entityify() + "<\/pre>";
+
+                document.getElementById("results").appendChild(newResult);
+            }
+
+            var freqPairs = countFrequencies(words);
+
+            graphFrequencies(freqPairs, fileName);
+        };
+    };
+
+    for ( var n = 0; n < files.length; n += 1 ) {
+        var r = new window.FileReader();
+
+        r.onload = onload(files[n].name); //onload() returns a funciton of event
+        r.onabort = function (ev) { alert("aborted..."); }
+        r.onerror = function (ev) { alert("error: " + ev + ": " + ev.error + ": " + ev.error.description); }
+        r.onloadend = function (ev) { alert("load end..."); }
+        r.onloadstart = function (ev) { alert("load start..."); }
+        r.onprogress = function (ev) { alert("progress..."); }
+    
+        r.readAsText(files[n]); // THIS IS ASYNCHRONOUS
     }
 
 };
-</script>
+
+
+var blobLoad = function () {
+
+
+    var readFileAsChunks = function (file) {
+
+        var blockSize = 4096;
+        var size = file.size;
+        var begin = 0;
+
+        var onloadCount = 0;
+        var totalBlocks = Math.ceil(file.size / blockSize);
+
+        var readBytes = 0;
+
+
+        // handle event data and do another read
+        // bootstraps itself when called with {} instead of an event
+        // 
+        // This recursion is interesting, but useless.  For reasonably large
+        // files, at this block size, reading the whole thing is fast enough
+        var processData = function (ev) {
+
+            content = [];
+
+            // HANDLE DATA IN EVENT
+            // UNLESS FIRST TIME: NULL EVENT
+            if (ev && ev.target && ev.target.result) {
+
+                onloadCount += 1;
+                begin += blockSize;
+
+                // DO SOMETHING MORE INTERESTING HERE...
+                readBytes += ev.target.result.length;
+
+                // TERMINAL CONDITION
+                if (onloadCount >= totalBlocks) {
+                    alert("loaded: " + readBytes + " bytes");
+                    return;
+                }
+            }
+
+            var reader = new window.FileReader();
+            reader.onload       = processData;
+            reader.onabort      = function (e) {};// alert("aborted..."); }
+            reader.onerror      = function (e) {};// alert("error: "+e+": "+e.error+": "+e.error.description);}
+            reader.onloadend    = function (e) {};// alert("load end..."); }
+            reader.onloadstart  = function (e) {};// alert("load start..."); }
+            reader.onprogress   = function (ev) { alert("progress..."); }
+
+            blob = file.slice(begin, blockSize);
+            reader.readAsBinaryString(blob); // ALSO TOYED WITH READING FILE SLICES AS TEXT: NOT RECOMMENDED
+        };
+
+        processData({});
+    }
+
+    var files = document.getElementById("blobInput").files;     // xs.forEach(function (x, i, xs) {
+
+    for ( var n = 0; n < files.length; n += 1 ) {
+        readFileAsChunks(files[n]);
+    }
+};
+
+
+
+        // ANALYTICS
+        var _gaq = _gaq || [];
+        _gaq.push(['_setAccount', 'UA-13261525-1']);
+        _gaq.push(['_trackPageview']);
+        (function() {
+            var ga = document.createElement('script');
+            ga.type = 'text/javascript';
+            ga.async = true;
+            ga.src = ('https:' == document.location.protocol ? 'https://ssl' : 'http://www') +
+                        '.google-analytics.com/ga.js';
+            var s = document.getElementsByTagName('script')[0];
+            s.parentNode.insertBefore(ga, s);
+        })();
+</script> 
+
+
+<style>
+    table.jqplot-table-legend,
+    td.jqplot-table-legend {
+        border: 0px;
+    }
+    div.jqplot-table-legend-swatch {
+        padding: 6px;
+        margin: 2px;
+    }
+</style>
 
 </head>
 <body>
@@ -47,18 +253,37 @@ var load = function () {
 
 <div id="paper">
 
-<h1>inputFile</h1>
+    <h1>inputFile</h1>
 
-<p>
-    For starters: <a href="http://arstechnica.com/open-source/news/2009/11/w3c-publishes-draft-of-new-file-api-spec.ars">ArsTechnica</a>...
-</p>
+    <p>
+On Chrome, at least, this page uses the <a href="http://www.html5rocks.com/tutorials/file/dndfiles/">FileReader</a> object to load up files and paste them below, while plotting word length statistics in the figure below using <a href="http://www.jqplot.com/tests/logAxisTests.php">jqPlot</a>. 
+    </p>
 
-<p>
-<input type="file" multiple="true" id="fileInput">
-<a href="#" onclick="load()">Load the file...</a>
-</p>
+    <fieldset>
+    <legend>Choose or drop files</legend>
+        <!-- makes a FileList of File objects -->
+        
+        <!-- for each: use whole files -->
+        <input type="file" multiple="true" id="fileInput" onchange="load();">
+    </fieldset>
 
-<div id="results"></div>
+    <div style="text-align: center; width: 600px; padding-top: 2em; padding-bottom: 2em;">
+        <div id="figure0" style=""></div>
+        <!--<div id="figure0" style="width: 600px; height: 400px"></div>-->
+    </div>
+
+    <div id="results"></div>
+
+    <p>And this is a test using File's <code>slice()</code> method and FileReader's <code>readAsBinaryString()</code>, without graphing:</p>
+
+    <fieldset>
+    <legend>Choose or drop files</legend>
+        <!-- for each: slice and read as blobs -->
+        <input type="file" multiple="true" id="blobInput" onchange="blobLoad();">
+    </fieldset>
+
+    <div id="status"></div>
+
 
 </div><!-- paper -->
 

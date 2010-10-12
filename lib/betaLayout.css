@@ -1,0 +1,26 @@
+/* Kevin Cantu (c) 2010 */
+
+body {
+    margin: 0;
+    padding: 0;
+}
+
+/* a content section */
+.contentSection {
+    margin: auto;
+    margin-top: 80px;
+    margin-bottom: 50px;
+
+    max-width: 700px;
+
+    padding-left: 1em;
+    padding-right: 1em;
+}
+
+/* e.g. inserted images */
+#left {
+    float: left;
+    margin-right: 10px;
+}
+
+/* NOTE: the title CSS has been moved to another file */

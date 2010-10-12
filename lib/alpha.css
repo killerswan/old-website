@@ -10,15 +10,15 @@
     orange  ff4912
 */ 
 body {
-    font-family: Georgia,Utopia,"Hoefler Text","Droid Serif",serif;/* Junicode: interesting.. */
+    font-family: Georgia,"Hoefler Text","Droid Serif",serif;/* Junicode: interesting.. */
     font-size:         100%;
-    color:             #444;
+    color:             #383838;
     background-color:  #fff;
     margin:0;
     padding:0;
 }
 h1, h2, h3, h4, ul, ol, li, table, dt {
-    font-family: Arial,Helvetica,"Droid Sans", sans-serif;
+    font-family: "DejaVu Sans",Arial,Helvetica,"Droid Sans", sans-serif;
 }
 #paper {
     padding-left: 1em;
@@ -61,7 +61,7 @@ a:visited:hover {
 }
 /*
 .hphoto {
-    border: 2px solid #444;
+    border: 2px solid #383838;
     width: 500px;
     height: 333px;
     overflow: hidden;
@@ -76,11 +76,31 @@ blockquote {
     margin-left: 10px;
     margin-right: 10px;
 }
+fieldset {
+    color:      #383838;
+    border:     2px solid #e0e0e0;
+/*
+    text-align: center;
+*/
+    padding:    1em;
+}
+fieldset input {
+    color: #383838;
+}
+legend {
+    font-family: "DejaVu Sans",Arial,Helvetica,"Droid Sans", sans-serif;
+/*    background-color:  #f8f8f8;
+*/
+    padding-left:    1em;
+    padding-right:    1em;
+    color:             #383838;
+    border: 2px solid #e0e0e0;
+}
 code, pre {
     /* WHY WON'T THIS GIVE FIXED WIDTH FONT IN ANDROID????  */
     font-family: Consolas,Inconsolata,"Droid Sans Mono",monospace;
     background-color:  #f8f8f8;
-    color:             #444;
+    color:             #383838;
     border: 2px solid #e0e0e0;
 }
 pre {
@@ -93,12 +113,12 @@ table {
     margin-top: 1em;
 }
 table, th, td {
-    border: 2px solid #444;
+    border: 2px solid #383838;
     text-align: left;
     padding: 2px;
 }
 th {
-    background-color: #444;
+    background-color: #383838;
     color: #fff;
 }
 td.clickable {
