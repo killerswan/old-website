@@ -425,17 +425,8 @@ hr {
     text-align: left;
 }
 .body p {
-    text-indent: 1em;
-            margin: .5em 0;  /* KEVIN */
+    margin-bottom: 1em;  /* KEVIN */
 }
-/*
-.body ul+p,
-.body ol+p,
-.body blockquote+p,
-.body p:first-of-type {
-  text-indent: 0;
-}
-*/
 .body ul,.body ol {
     margin: .75em 2em;
 }
