@@ -5,3 +5,4 @@ images/**
 *.swp
 *~
 3p/thinkup/**
+private/**
