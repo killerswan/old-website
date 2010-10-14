@@ -1,0 +1,37 @@
+<!doctype html><html><head><meta charset="utf-8"><!-- Kevin Cantu © 2010 -->
+
+    <title>Kevin Cantu</title>
+
+    <link href="http://kevincantu.org/lib/beta.css" type="text/css" rel="stylesheet">
+    <link href="http://kevincantu.org/lib/icon/udot.png" type="image/png" rel="icon">
+
+    <script src="http://kevincantu.org/code/prettifyXHR.js"></script>
+</head>
+<body>
+    <script src="http://kevincantu.org/lib/betaTitle.js"></script>
+
+    <div class="contentSection">
+        <div class="contentHeader"><h1>prettifyXHR</h1><p>October 2010</p></div>
+
+        <p>Below, I'm loading a files via XMLHttpRequests and applying syntax highlighting using <a>prettify</a>!
+        This first example should show the source of the <code>prettifyXHR.js</code> script.  Some imperfections remain, but it looks good...
+        </p>
+
+        <div id="sourceCode"></div>
+        <div id="sourceCode1"></div>
+
+        <script>
+            try {
+                var dir = "http://kevincantu.org/code/";
+
+                var target = document.getElementById("sourceCode");
+                prettifyXHR(target, dir + "prettifyXHR.js");
+
+                var target1 = document.getElementById("sourceCode1");
+                prettifyXHR(target1, dir + "hsOpts.hs", "lang-hs");
+                prettifyXHR(target1, dir + "hsOpts.hs", "garbage"); // This junk language example is only a bit "off"!
+                prettifyXHR(target1, dir + "hsOpts.hs", "lang-hs");
+            } catch (e) {}
+        </script>
+    </div>
+</body></html>
