@@ -47,12 +47,25 @@ var prettifyXHR = (function () {
     // initially, no specific languages loaded
     var loadedLanguages = [];
 
+    // contains (because IE8 doesn't have indexOf)
+    // todo: start using underscore.js?
+    if (!Array.prototype.contains) {
+        Array.prototype.contains = function (item) {
+            for (var i = 0; i < this.length; i += 1) {
+                if (this[i] === item) {
+                    return true;
+                }
+            }
+            return false;
+        };
+    }
+
     return function (node, uri, language) {
     
         // add script for specific language
-        if ( language &&                                            // exists
-            (-1 === loadedLanguages.lastIndexOf(language)) &&       // not yet loaded
-            (-1 !== availableLanguages.lastIndexOf(language))       // available
+        if ( language &&                            // exists
+            loadedLanguages.contains(language) &&   // not yet loaded
+            availableLanguages.contains(language)   // available
                                                                ) {
             var j1 = document.createElement("script");
             j1.src = srclib + language + ".js";

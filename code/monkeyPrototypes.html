@@ -1,0 +1,824 @@
+<!doctype html><html><head><meta charset='utf-8'><!-- Kevin Cantu © 2010 --> 
+    <title>Kevin Cantu</title> 
+
+    <link href='http://kevincantu.org/lib/beta.css' type='text/css' rel='stylesheet'> 
+    <link  rel='stylesheet' type='text/css' href='http://kevincantu.org/lib/prettify.css'> 
+    <script src='http://kevincantu.org/lib/3p/prettify/src/prettify.js'></script> 
+    <script src='http://kevincantu.org/lib/3p/crockford.js'></script> 
+
+    <style>
+        /* Round Rect: holy crap, 1981!
+            http://folklore.org/StoryView.py?story=Round_Rects_Are_Everywhere.txt
+        */
+        pre.prettyprint, code {
+            -moz-border-radius: 0.7em;
+            border-bottom-right-radius: 0.7em;
+            border-top-left-radius:     0.7em;
+            border-top-right-radius:    0.7em;
+            border-bottom-left-radius:  0.7em;
+        }
+        div.topCorners {
+            margin: 0;
+            padding: 0;
+            background: #f00; 
+            border: 2px solid #f00;
+        }
+        div.topPage {
+            background: #fff;
+            margin: 0;
+            padding: 0;
+            border-top-left-radius:     0.7em;
+            border-top-right-radius:    0.7em;
+        }
+        h2 {
+            letter-spacing: -2px;
+        }
+    </style>
+</head> 
+<body> 
+    <script src='http://kevincantu.org/lib/betaTitle.js'></script> 
+
+    <!--
+    <div class='topCorners'> <div class='topPage'>&nbsp;</div> </div>
+    -->
+ 
+    <div class='contentSection'> 
+        <div class='contentHeader'><h1>monkeyPrototypes</h1></div> 
+ 
+        <p>This is currently working in Chrome, and my goal is to ask
+            some simple questions about how objects really work in JavaScript. 
+            Follow along!
+        </p> 
+
+
+
+
+
+        <h2>Make some mistakes</h2>
+<!-- -->
+        <p>First, this is an empty object:</p>
+        <script class='show'>
+            var primate = {};
+        </script>
+
+<!-- -->
+        <p>Now we can make children of it:</p>
+        <script class='show'>
+            var monkey = Object(primate);
+            monkey.eat = function (food) {
+                alert('nom nom nom ' + food + '!');
+            };
+        </script>
+
+        <script>
+            var addButton = function (id, text, func) {
+                var btn = document.createElement('input');
+                btn.type = 'button';
+                btn.value = text;
+                btn.onclick = function () {
+                    try {
+                        func();
+                    } catch (e) {
+                        alert(e.message);
+                    }
+                };
+                document.getElementById(id).appendChild(btn);
+            };
+        </script>
+
+        <div id="test1"></div>
+        <script>
+            addButton('test1', 'monkey.eat banana', function () { monkey.eat("banana"); });
+        </script>
+
+
+<!-- -->
+        <p>Now, can any primate eat?</p>
+
+        <div id="test2"></div>
+        <script>
+            addButton('test2', 'primate.eat watermelon', function () { primate.eat("watermelon"); });
+        </script>
+
+
+<!-- -->
+        <p>What about just any animal?</p>
+        <script class=show>
+            var dog = {};
+        </script>
+
+        <div id="test3"></div>
+        <script>
+            addButton('test3', 'dog.eat potato', function () { dog.eat("potato"); });
+        </script>
+
+
+        
+<!-- -->
+        <p>So what is going on here? At least the dog can't <a href="http://littera-abactor.livejournal.com/7748.html" title="I Has a Sweet Potato">eat a potato</a>...
+            Let us experiment some more.
+        </p>
+
+        <script class=show>
+            var gorilla = primate;
+            gorilla.angryFace = function () {
+                alert("D:<");
+            };
+        </script>
+
+        <div id='test4'></div>
+        <script>
+            addButton('test4', 'gorilla.angryFace', gorilla.angryFace); 
+            addButton('test4', 'primate.angryFace', primate.angryFace); 
+            addButton('test4', 'dog.angryFace', dog.angryFace); 
+        </script>
+    
+
+<!-- -->
+        <p>How about we make the <a href="http://en.wikipedia.org/wiki/Gibbon" title="gibbon">gibbon</a> with <code>new</code>?
+        </p>
+
+        <script class="show">
+            var gibbon = new Object(primate); 
+            gibbon.brachiate = function () {
+                var tree0 = 0;
+                var tree1 = Math.random() * (20-1) + 1; // 1-20 feet away
+                
+                alert("Wheeeeee, swinging " + (tree1 - tree0) + " feet!");
+            };
+        </script>
+
+        <div id='test5'></div>
+        <script>
+            addButton('test5', 'gibbon.brachiate', gibbon.brachiate);
+            addButton('test5', 'gorilla.brachiate', gorilla.brachiate);
+            addButton('test5', 'primate.brachiate', primate.brachiate);
+            addButton('test5', 'monkey.brachiate', monkey.brachiate);
+            addButton('test5', 'dog.brachiate', dog.brachiate);
+        </script>
+        
+        <div id='test6'></div>
+        <script>
+            addButton('test6', 'gibbon.angryFace', gibbon.angryFace);
+        </script>
+ 
+<!-- -->
+        <p>On the bright side, the <code>dog</code> can't brachiate or make
+            the angry gorilla face, but this code, too, may not be behaving as we want...
+            In real life, only gibbons and siamangs truly brachiate, although
+            humans and monkeys and orangutangs have most of the right parts.  
+            It is strange that we never play on <em>gibbon bars</em>.  They can go 35 mph.  
+        </p>
+
+
+
+<!-- -->
+        <p>Now, how are the furry animals?
+        </p>
+
+        <script class='show'>
+            var bunny = Object();
+            bunny.poop = function () {
+                confirm("Did you bring a plastic bag?  Because you need one now.");
+            };
+
+            var cat = Object();
+        </script>
+        <div id='t7'></div>
+        <script>
+            addButton('t7', 'bunny.poop', bunny.poop);
+            addButton('t7', 'dog.poop', dog.poop);
+            addButton('t7', 'cat.poop', cat.poop);
+        </script>
+
+
+
+
+<!-- -->
+        <p>Hmmm...</p>  
+
+        <script class='show'>
+            cat.sleep = function () {
+                alert("zzzzzzzzzzz");
+            };
+            cat.hunt = function () {
+                alert("must find tasty food!");
+            };
+            
+
+            // snazzy stuff from Crockford that makes a create() method
+            if (typeof Object.create !== 'function') {
+                Object.create = function (o) {
+                    var F = function () {};
+                    F.prototype = o;
+                    return new F();
+                };
+            }
+            var housecat = Object.create(cat);
+            
+            housecat.play = function () {
+                alert("must attack fake mouse!!!!");
+            };
+
+            housecat.hunt = housecat.play;
+        </script>
+
+        <div id='t8'></div>
+        <script>
+            addButton('t8', 'cat.sleep', cat.sleep);
+            addButton('t8', 'housecat.sleep', housecat.sleep);
+        </script>
+
+        <div id='t9'></div>
+        <script>
+            addButton('t9', 'cat.play', cat.play);
+            addButton('t9', 'housecat.play', housecat.play);
+        </script>
+
+        <div id='t10'></div>
+        <script>
+            addButton('t10', 'cat.hunt', cat.hunt);
+            addButton('t10', 'housecat.hunt', housecat.hunt);
+        </script>
+
+
+
+        <p>Thanks to the little <code>create()</code> method, this is behaving much better.
+            Cats don't all <code>play()</code>, and they hunt differently, but housecats
+            <code>sleep()</code> the same way all cats do.  They make humans jealous.
+        </p>
+
+<!-- -->
+        <p>Let us clarify about housecats, though...
+        </p>
+
+        <script class='show'>
+            var howDoHouseCatsSleep = function () {
+                alert(housecat.hasOwnProperty("sleep") ? "like housecats" :
+                                                         "like cats");
+            };
+
+            var howDoHouseCatsPlay = function () {
+                alert(housecat.hasOwnProperty("play") ? "like housecats" :
+                                                        "like cats");
+            };
+
+            var howDoHouseCatsHunt = function () {
+                alert(housecat.hasOwnProperty("hunt") ? "like housecats" :
+                                                        "like cats");
+            };
+        </script>
+
+        <div id='t11'></div>
+        <script>
+            addButton('t11', 'How do they sleep?', howDoHouseCatsSleep);
+            addButton('t11', 'How do they play?', howDoHouseCatsPlay);
+            addButton('t11', 'How do they hunt?', howDoHouseCatsHunt);
+        </script>
+        
+
+<!-- -->
+        <p>How about that prototype?
+        </p>
+
+        <script class='show'>
+
+            var howDoCatsHunt1 = function () {
+                try {
+                    cat.hunt();
+                } catch (e) {
+                    alert(e.message);
+                }
+            };
+            var howDoCatsHunt2 = function () {
+                try {
+                    housecat.prototype.hunt();
+                } catch (e) {
+                    alert(e.message);
+                }
+            };
+
+
+            cat.tail = function (mood) {
+                if (mood === "impatient") {
+                    alert("flick flick flick");
+                } else if (mood === "scared") {
+                    alert("poof!");
+                } else {
+                    alert("tail like \'?\'");
+                }
+            };
+
+        </script>
+
+        <div id='t12'>
+            <input type=button onclick="howDoCatsHunt1()" value="How do cats hunt? (1)">
+            <input type=button onclick="howDoCatsHunt2()" value="How do cats hunt? (2)">
+        </div>
+
+        <p>The second question errors out!  Why?
+        </p>
+
+        <div id='t13'></div>
+        <script>
+            addButton('t13', 'cat.tail impatient', function () { cat.tail('impatient'); });
+            addButton('t13', 'housecat.tail impatient', function () { housecat.tail('impatient'); });
+        </script>
+
+        <p>The inherited tail behavior is cool, though...
+        </p>
+
+    
+
+
+
+
+
+<!-- -->
+<!-- -->
+        <h2>Constructors</h2>
+
+        <p>Now lets learn some more!  Following
+            <a href="http://ejohn.org/apps/learn/#78">Resig's new book, online</a>...
+        </p>
+
+
+<!-- -->
+        <script class='show'>
+            var MakeAnArthropod = function () {};
+
+            // give arthropods a method
+            MakeAnArthropod.prototype.alertHowManyLegs = function () {
+                alert("We are wiggling " + this.legs + " legs!");
+            };
+
+            // make a simple instance of an arthropod
+            var aSpider = new MakeAnArthropod();
+            aSpider.legs = 8;
+        </script>
+
+        <div id='t20'></div>
+        <script>
+            addButton('t20', 'aSpider.howManyLegs()', function () {
+                aSpider.alertHowManyLegs();
+            });
+        </script>
+
+
+<!-- -->
+        <script class='show'>
+            // make a sub type of arthropod
+            var MakeACentipede = function () {};
+            MakeACentipede.prototype = new MakeAnArthropod();
+
+            // give centipedes method
+            MakeACentipede.prototype.growLegPairs = function (num) {
+                if ((num % 2) === 0) {
+                    return false; // can't have even number of pairs of legs!
+                } else {
+                    this.legs = 2 * num;
+                    return true;
+                }
+            };
+
+            // make an instance of a centipede
+            var aCentipede = new MakeACentipede();
+            aCentipede.growLegPairs(21);
+        </script>
+
+        <div id='t21'></div>
+        <script>
+            addButton('t21', 'aCentipede.howManyLegs()', function () {
+                aCentipede.alertHowManyLegs();
+            });
+        </script>
+
+
+<!-- -->
+        <script class='show'>
+            // give aCentipede a property of its own
+            aCentipede.hungry = true;
+
+            // make a regular function to detect hunger
+            // functions are less horrifying than feeder mice D:
+            var isHungryF = function (centipede) {
+                if (centipede.hungry === true) {
+                    alert("hungry!  ;)");
+                } else {
+                    alert("not hungry.  yet.  :D");
+                }
+            };
+        </script>
+
+        <div id='t22'></div>
+        <script>
+            addButton('t22', 'aCentipede is hungry?', function () {
+                isHungryF(aCentipede);
+            });
+        </script>
+
+
+<!-- -->
+        <script class='show'>
+            // lets make a new centipede and see if it is hungry
+            var anotherCentipede = new MakeACentipede();
+        </script>
+        <div id='t23'></div>
+        <script>
+            addButton('t23', 'anotherCentipede is hungry?', function () {
+                isHungryF(anotherCentipede);
+            });
+        </script>
+
+
+<!-- -->
+        <p>That test for hunger really is pretty cheap.  (No biting necessary.)
+            Can all arthropods get hungry?
+        </p>
+
+        <script class='show'>
+            // add isHungryF to arthropods
+            MakeAnArthropod.prototype.isHungry = function () {
+                // use 'this.hungry', call 'isHungryF' (above) 
+                isHungryF(this);
+            };
+
+            // by default, not hungry
+            MakeAnArthropod.prototype.hungry = false;
+
+            // now it has been a while since we checked on that spider...
+            aSpider.hungry = true;
+        </script>
+
+        <div id='t24'></div>
+        <script>
+            addButton('t24', 'Is our spider hungry?', function () {
+                aSpider.isHungry();
+            });
+        </script>
+
+        <p>So what do the prototypes built here look like to the browser?
+            Functions have a <code>toString</code> method...
+        </p>
+        
+        <div id='t25'></div>
+        <script>
+            addButton('t25', 'MakeAnArthropod.prototype.toString()', function () {
+                alert(MakeAnArthropod.prototype.toString());
+            });
+            addButton('t25', 'MakeAnArthropod.toString()', function () {
+                alert(MakeAnArthropod.toString());
+            });
+            addButton('t25', 'MakeACentipede.prototype.toString()', function () {
+                alert(MakeACentipede.prototype.toString());
+            });
+            addButton('t25', 'MakeACentipede.toString()', function () {
+                alert(MakeACentipede.toString());
+            });
+        </script>
+
+        
+<!-- -->
+        <p>So, to show the properties of the prototypes:
+        </p>
+
+        <script class='show'>
+            // alert text showing the object in pseudo source code
+            var printObj = function (desc, obj) {
+                var str = desc + ': {\n';
+                
+                for (var i in obj) {
+                    str += '\t';
+
+                    if (!obj.hasOwnProperty(i)) {
+                        str += 'INHERITED: '; 
+                    }
+            
+                    str += i + ": " + obj[i].toString() + ",\n";
+                }
+                
+                str += '}';
+                return str;
+            };
+
+            var showObj = function (desc, obj) {
+                alert(printObj(desc, obj));
+            };
+
+        </script>
+
+        <div id='t26'></div>
+        <script>
+            addButton('t26', 'show MakeAnArthropod.prototype', function () {
+                showObj("MakeAnArthropod.prototype", MakeAnArthropod.prototype);
+            });
+            addButton('t26', 'show aSpider', function () {
+                showObj("aSpider", aSpider);
+            });
+        </script>
+
+        <div id='t27'></div>
+        <script>
+            addButton('t27', 'show MakeACentipede.prototype', function () {
+                showObj("MakeACentipede.prototype", MakeACentipede.prototype);
+            });
+            addButton('t27', 'show aCentipede', function () {
+                showObj("aCentipede", aCentipede);
+            });
+            addButton('t27', 'show anotherCentipede', function () {
+                showObj("anotherCentipede", anotherCentipede);
+            });
+        </script>
+
+
+
+
+
+
+<!-- -->
+
+        <h2>Some thoughts</h2>
+
+        <p>It seems that the constructor functions and the new keyword
+            provide a way to distinguish between object constructors,
+            which have accessible prototypes (because they are functions)
+            and object instances. 
+            
+        </p>
+        <p> Both instances and new constructors are
+            created with <code>new</code> and ancestral constructor functions. As above:
+        </p>
+            <pre class='prettyprint'>
+            ...
+
+            // a new instance
+            var aSpider = new MakeAnArthropod();
+
+            ...
+
+            // a new constructor
+            var MakeACentipede = function () {};
+            MakeACentipede.prototype = new MakeAnArthropod();
+
+            ...
+            </pre>
+            
+        <p>
+            Resig, by the way, <a href="http://ejohn.org/apps/learn/#38">suggests</a>
+            a mechanism to make a constructor that 
+            doesn't require <code>new</code> to be used to call it.  It uses 
+            <code>instanceof</code> like so:
+
+        </p>
+            <pre class='prettyprint'>
+                var Constructor = function (...) {
+                    if (!(this instanceof arguments.callee)) {
+                        return new Constructor(...)
+                    }
+                    ...
+                }</pre>
+
+        <p>He also mentions <a href="http://ejohn.org/apps/learn/#71">constructor</a>,
+            <a href="http://ejohn.org/apps/learn/#69">chaining</a> and
+            a bunch of other interesting things I'm working my way through now...
+        </p>
+
+        <p> Regardless, what I've done above seems a bit artificial. 
+            Can't I make a constructor out of
+            nearly anything and employ prototypal inheritance?
+        </p>
+
+        <p> And how did that snippet from Crockford really work?  Crockford suggests
+            adding that <code>create()</code> method to <code>Object</code>
+            and then never using <code>new</code> again.
+    
+            Here it is again:
+            
+        </p>
+        <pre class='prettyprint'>
+            // snazzy stuff from Crockford that makes a create() method
+            if (typeof Object.create !== 'function') {
+                Object.create = function (o) {
+                    var F = function () {};
+                    F.prototype = o;
+                    return new F();
+                };
+            }
+            var housecat = Object.create(cat);
+        </pre>
+
+        <p>First, <code>create</code> is defined as a method of <code>Object</code>
+            (this doesn't seem necessary). 
+
+            Second, within this method, a constructor <code>F</code>
+            is defined and its prototype set to the argument, <code>o</code>.  
+
+            Finally, the new constructor is called with <code>new</code>
+            to make the desired descendant object.
+        </p>
+
+        <p>This seems like a nice way to wrap the creation of an object with a prototype
+            ancestry in a normal method or function.  It might be better, though, 
+            to leave <code>Object</code> alone.  The next thing to try is to set up
+            some more functional and durable constructors as Crockford's book suggests...
+        </p>
+            
+        <p>(For something different, Coffee Script has <code>class</code> and
+            <code>extends</code> keywords in a way that seems to make everything more explicit. 
+            <a href="http://jashkenas.github.com/coffee-script/#classes">This tutorial</a>
+            has a section describing it.)
+        </p>
+
+        <p>(Also, the way Ruby does some of this stuff seems
+            <a href="http://railstips.org/blog/archives/2006/11/18/class-and-instance-variables-in-ruby/">rather
+            mindbending</a> at first glance.)
+        </p>
+
+
+
+
+
+
+        <h2>Evolution!</h2>
+
+        <p>To return to our theme, lets start with our old primate buddy.  He
+            was based on an empty object, <code>{}</code>, and has some 
+            properties that may or may not make sense, but he exists.  (He's printed
+            below using
+            <code>document.write(printObj("primate", primate))</code>, actually...)
+        </p>
+
+        <pre class='prettyprint'><script>document.write(printObj("primate", primate));</script></pre>
+
+
+
+
+<!-- -->
+        <p>We need some tools to work with.
+        </p>
+
+        <script class='show'>
+            // constructor
+            var evolve = function (obj) {
+                var F = function () {};
+                F.prototype = obj;
+                return new F();
+            };
+
+            // constructor with bonus
+            var evolveWithAbility = function (obj, abilityName, ability) {
+                var o = evolve(obj);
+                o[abilityName] = ability;
+                return o;
+            };
+        </script>
+
+
+<!-- -->
+        <p>Now, progress a few million years like so:
+        </p>
+
+
+        <script class='show'>
+            var homo = evolveWithAbility(primate, "tools", function () {
+                if (Math.random() > 0.5) {
+                    alert("WHACK!");
+                } else {
+                    alert("CHOP!");
+                }
+            });
+
+            var erectus = evolveWithAbility(homo, "speech", function () {
+                alert("Hey we're talking now!  WOOOOOOWEEEEE!");
+            });
+        </script>
+
+
+        <div id='t40'></div>
+        <script>
+            addButton('t40', 'homo.tools ?', homo.tools);
+            addButton('t40', 'homo.speech ?', homo.speech);
+            addButton('t40', 'erectus.tools ?', erectus.tools);
+            addButton('t40', 'erectus.speech ?', erectus.speech);
+            addButton('t40', 'Does erectus.prototype exist?', function () {
+                alert(erectus.prototype);
+            });
+        </script>
+
+
+        <p>This is easy to reason about.  Each primate or homo or erectus is simply 
+            an example of a species of one of our ancestors.  Although
+            they are each instances, the can still have descendants!
+        </p>
+
+
+<!-- -->
+        <script class='show'>
+            // these three guys, running around
+            
+            // 1
+            var neanderthal = evolveWithAbility(erectus, "hunt", function () {
+                alert("Wow, Urrk, this polar bear is tasty!");
+            });
+
+            // 2
+            var sapiens = evolveWithAbility(erectus, "civilization", function () {
+                alert("Hey man, I'll sell you this tasty rice for only two goats!");
+            });
+
+            // 3
+            var wolf = {
+                howl: function () {
+                    alert("Wooooooooooooo!");
+                }
+            };
+
+            // another type of deal is struck
+            var friendlyWolf = evolveWithAbility(wolf, "beFriendly", function () {
+                alert("Hows about a deal!?  You give me that chicken and I'll sit here and " +
+                        "tell you if a lion is coming?  Big lions 'round here... ;D");
+            });
+        </script>
+
+        <div id='t41'></div>
+        <script>
+            addButton('t41', 'friendlyWolf.howl', friendlyWolf.howl);
+            addButton('t41', 'sapiens.civilization', sapiens.civilization);
+            addButton('t41', 'neanderthal.hunt', neanderthal.hunt);
+            addButton('t41', 'neanderthal.civilization', neanderthal.civilization);
+        </script>
+
+
+        <p>Telling, I suppose, that Neandertal never really had the big civilization thing
+            going.  The best explanations I've seen for that are either
+            self referential (i.e., they didn't have a gene for civilization so they
+            didn't survive long enough to make civilization) or immunological (i.e. some
+            germ took them out).  But we do seem to have picked up some things from them.
+        </p>
+
+<!-- -->
+        <script class='show'>
+            var sapiensSapiens = evolveWithAbility(sapiens, "hunt", function () {
+                neanderthal.hunt();
+                alert("I'll show you how to clean that rifle in the morning!");
+            });
+        </script>
+
+        <div id='t42'></div>
+        <script>
+            addButton('t42', 'sapiensSapiens.hunt', sapiensSapiens.hunt);
+            addButton('t42', 'sapiensSapiens.tools', sapiensSapiens.tools);
+            addButton('t42', 'sapiensSapiens.speech', sapiensSapiens.speech);
+            addButton('t42', 'sapiensSapiens.brachiate !!', sapiensSapiens.brachiate);
+        </script>
+
+
+
+        <p>Now about our best friends... We defined some things above that
+            we can still use.  Especially without proper training.
+        </p>
+
+        <script class='show'>
+            var dogPrime = evolveWithAbility(friendlyWolf, "loseDignity", function () {
+                primate.eat("potato");
+            });
+        </script>
+
+        <div id='t43'></div>
+        <script>
+            addButton('t43', 'dogPrime.loseDignity', dogPrime.loseDignity);
+        </script>
+
+
+
+<!-- -->
+<!-- -->
+
+
+ 
+        <!-- xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx -->
+        <script>
+            // this function is fun...
+            var showScripts = function () {
+                var els = document.getElementsByClassName('show');
+                for (var i = 0; i < els.length; i += 1) {
+                    var el = els[i];
+
+                    var pre = document.createElement('pre');
+                    pre.className = "prettyprint";
+                    pre.innerHTML = el.innerHTML.entityify();
+
+                    el.parentNode.insertBefore(pre, el.nextSibling);
+                }
+            };
+
+            // now show them all
+            try {
+                showScripts();
+            } catch(e) { alert(e.message); }
+            try {
+                prettyPrint();
+            } catch(e) { alert(e.message); }
+        </script>
+    </div> 
+</body></html> 
