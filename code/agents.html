@@ -1,0 +1,80 @@
+<!doctype html><html><head><meta charset='utf-8'><!-- Kevin Cantu © 2011 -->
+
+<title>F# Agents</title>
+
+<base href='http://kevincantu.org/'>
+<link href='./lib/gamma/main.css' type='text/css' rel='stylesheet'>
+<link href='./lib/gamma/title.css' type='text/css' rel='stylesheet'>
+<script src='./lib/3p/jquery/jquery-1.4.3.min.js'></script>
+<script src='./lib/gamma/title.js'></script>
+<script src='./lib/3p/crockford/crockford.js'></script>
+<script src='./lib/3p/underscore/underscore-min.js'></script>
+<script src='./code/prettifyXHR.js'></script> 
+
+</head>
+<body>
+<div class='contentSection'>
+   <div class='contentHeader'> <h1>F# Agents</h1></div>
+
+
+   <p>I'm still working out the basics of these things, but I 
+      think the MailboxProcessor or agent based programming in F# is
+      fairly interesting.
+   </p>
+
+   <p>In the snippet below, I'm creating an agent named <code>agent</code>,
+      which handles two types of messages.  Playing around with this
+      has shown me a couple of things.
+   </p>
+
+   <ul><li>The <code>Post</code> method returns right away.
+      </li>
+      <li>Agent is doing one thing at a time, not spawning new threads,
+         so when these big <code>Sleep</code> calls happen, they delay
+         handling of other messages.
+      </li>
+      <li>When defined this way, I'm not sure a MailboxProcessor can 
+         send a message to itself...
+      </li>
+   </ul>
+
+
+   <p>Here is a snippet of the code:
+   </p>
+
+    <div id='agentsSource'></div> 
+   
+   <script> 
+      try {
+         prettifyXHR(document.getElementById('agentsSource'), 
+                     'http://kevincantu.org/code/agents.fs', 
+                     'lang-fs');
+      } catch (e) {
+      }
+   </script>   
+
+
+   <p>In <strong>fsi</strong>, this outputs something like the following:
+   </p>
+
+   <pre>a
+b
+c
+d
+reading: (1, 5)
+Got 1 to 5 of 9064
+-> id: 4127627445
+-> id: 4127627086
+-> id: 4127626626
+-> id: 4127609695
+-> id: 4127594821
+printing: omfg
+reading: (47, 2)
+Got 47 to 48 of 9064
+-> id: 3999958028
+-> id: 3999955114</pre>
+
+
+</div>
+</body>
+</html>

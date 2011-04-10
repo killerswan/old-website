@@ -31,6 +31,7 @@ var prettifyXHR = (function () {
         // BESIDES THE DEFAULT LIST at kevincantu.org/lib/3p/prettify/
         "lang-apollo",
         "lang-css",
+        "lang-go",
         "lang-hs",
         "lang-lisp",
         "lang-lua",
@@ -47,7 +48,7 @@ var prettifyXHR = (function () {
     // initially, no specific languages loaded
     var loadedLanguages = [];
 
-    // contains (because IE8 doesn't have indexOf)
+    // contains (because IE8 doesn't have indexOf?)
     // todo: start using underscore.js?
     if (!Array.prototype.contains) {
         Array.prototype.contains = function (item) {
@@ -87,9 +88,10 @@ var prettifyXHR = (function () {
                 if (request.status === 200) {
 
                     // insert source code
-                    var code = document.createElement("pre");
-                    code.innerHTML = request.responseText.entityify();
-                    code.className = "prettyprint" + (language ? (" " + language) : "");
+                    var code = document.createElement("div");
+                    code.innerHTML = "<pre class=\'prettyprint" + (language ? (" " + language) : "") + "\'>" +
+                                     request.responseText.entityify() +
+                                     "<\/pre>";
                     node.appendChild(code);
 
                     // insert a caption

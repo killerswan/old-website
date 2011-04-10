@@ -1,0 +1,369 @@
+<!doctype html><html><head><meta charset='utf-8'><!-- Kevin Cantu © 2010 -->
+
+<title>Kevin Cantu</title>
+
+<base href='http://kevincantu.org/'>
+<link href='./lib/beta.css' type='text/css' rel='stylesheet'>
+<script src='./lib/3p/crockford/crockford.js'></script>
+<script src='./lib/3p/underscore/underscore-min.js'></script>
+<script src='./lib/3p/prettify/src/prettify.js'></script> 
+
+<style>
+   h1 {
+      letter-spacing: -3px;
+   }
+   h2 {
+      letter-spacing: -2px;
+   }
+   h3 {
+      letter-spacing: -1px;
+   }
+   img, pre, code, canvas {
+      -moz-border-radius: 0.7em;
+      border-bottom-right-radius: 0.7em;
+      border-top-left-radius:     0.7em;
+      border-top-right-radius:    0.7em;
+      border-bottom-left-radius:  0.7em;
+   }
+   canvas {
+      border: 2px solid #e8e8e8;
+   }
+   .figure {
+      margin-top: 1em;
+      margin-bottom: 2em;
+   }
+   .caption {
+      margin-top: 0;
+      font-style: italic;
+   }
+   .name {
+      font-weight: bold;
+   }
+   .name:after {
+      content: ": ";     
+   }
+</style>
+
+<script>
+   // insert pre tags with copies of scripts
+   var showScripts = function () {
+      var els = document.getElementsByClassName('show');
+      _.each(els, function (el) {
+         var pre = document.createElement('pre');
+         pre.className = 'prettyprint lang-js';
+         pre.innerHTML = el.innerHTML.entityify();
+
+         el.parentNode.insertBefore(pre, el.nextSibling);
+      });
+   };
+
+   var photo0, context, canvas;
+
+   var photo0 = {
+      img: null,
+      coord: { col: 0, row: 0 },
+      zoom: { width: 100, height: 100 }
+   };
+
+   var clear = function (context) {
+      context.clearRect(0, 0, canvas.width, canvas.height);
+   };
+
+   var zoom = function (zoomIn) {
+      var scale = 1 + (zoomIn ? 1 : -1) * 1/8;
+
+
+      // MINIMUM SIZE
+      var minW = 64;
+      var minH = 64;
+
+      if (photo0.zoom.width * scale < minW) {
+         scale = minW / photo0.zoom.width; 
+      }
+
+      if (photo0.zoom.height * scale < minH) {
+         scale = minH / photo0.zoom.height; 
+      }
+
+/*
+      // MAXIMUM SIZE
+      var maxW = canvas.width;
+      var maxH = canvas.height;
+
+      if (photo0.zoom.width * scale > maxW) {
+         scale = maxW / photo0.zoom.width; 
+      }
+
+      if (photo0.zoom.height * scale > maxH) {
+         scale = maxH / photo0.zoom.height; 
+      }
+*/
+
+      photo0.coord.col     += photo0.zoom.width * (1 - scale) / 2;
+      photo0.coord.row     += photo0.zoom.height * (1 - scale) / 2;
+      photo0.zoom.width    *= scale;
+      photo0.zoom.height   *= scale;
+   };
+
+   var zoomOnWheel = function (ev) {
+      /* see http://concentriclivers.com/slippymap.html */
+
+      if (!ev) {
+         ev = window.event;
+      }
+      var delta = 0;
+      if (ev.wheelDelta) {
+         //alert('ev.wheelDelta: ' + ev.wheelDelta);  // chrome 7.0
+         delta = ev.wheelDelta/120;
+         if (window.opera) {
+            //alert('window.opera');
+            delta = -delta;  // NOT TESTED
+         }
+      } else if (ev.detail) {
+         //alert('ev.detail: ' + ev.detail); // firefox 3.6.1
+         delta = -ev.detail/3;
+      }
+
+      zoom(delta > 0 ? true : false);
+
+
+      ev.preventDefault();
+   };
+
+   var center = function () {
+      var pic = photo0;
+      pic.coord.col = canvas.width / 2 - photo0.zoom.width / 2;
+      pic.coord.row = canvas.height / 2 - photo0.zoom.height / 2;
+   };
+
+   var zoomFit = function () {
+      var pic = photo0;
+
+      wtoh = pic.img.width/pic.img.height;
+
+      if (wtoh > canvas.width/canvas.height) {
+         // max width
+         pic.zoom.width = canvas.width;
+         pic.zoom.height = pic.zoom.width / wtoh;
+      } else {
+         // max height
+         pic.zoom.height = canvas.height;
+         pic.zoom.width = pic.zoom.height * wtoh;
+      }
+   };
+   var keys = {
+      // left
+      37: {
+            func: function () {
+               photo0.coord.col -= 10;
+            }
+      }, 
+      // up
+      38: {
+            func: function () {
+               photo0.coord.row -= 10;
+            }
+      }, 
+      // right
+      39: {
+            func: function () {
+               photo0.coord.col += 10;
+            }
+      }, 
+      // down
+      40: {
+            func: function () {
+               photo0.coord.row += 10;
+            }
+      },
+      // numpad plus
+      107: {
+         func: function () {
+            zoom(true);
+         },
+      },
+      // numpad minus
+      109: {
+         func: function () {
+            zoom(false);
+         },
+      },
+      // c
+      67: {
+         func: center
+      },
+      // spacebar
+      32: {
+         func: function () {
+            center();
+            zoomFit();
+         }
+      }
+   };
+
+   // initialize as not pressed
+   _.each(keys, function (key) {
+      key.pressed = false;
+   });
+
+   var flipLR = false;
+   if (flipLR) {
+      var k = keys[37];
+      keys[37] = keys[39];
+      keys[39] = k;
+   }
+
+   keys[87] = keys[38]; // w: up
+   keys[65] = keys[37]; // a: left
+   keys[83] = keys[40]; // s: down
+   keys[68] = keys[39]; // d: right
+   keys[189] = keys[109]; // -/_: numpad -
+   keys[187] = keys[107]; // +/=: numpad +
+   keys[77] = keys[32]; // m: spacebar
+
+
+   var alreadyRun = false;
+
+   var redraw = function () {
+      clear(context);
+
+      _.each(keys, function (key) {
+         if (key.pressed === true) {
+            key.func();
+         }
+      });
+
+      // the following are not commutative
+
+      // rotate the coordinate plane +clockwise
+      //context.rotate(-45);
+
+      if (alreadyRun === false) {
+         alreadyRun = true;
+         
+         //alert('ok');
+
+         var i = "";
+
+         for (var prop in photo0.img) {
+           try {
+            i += "property: {" + prop + "} is {" + photo0.img[prop] + "}\n";
+           } catch (e) { }
+         }
+
+         //alert(i);
+      }
+
+      // draw the image starting at pixel col, row
+      context.drawImage(photo0.img, photo0.coord.col, photo0.coord.row, photo0.zoom.width, photo0.zoom.height);
+   };
+
+   var canvasMove = function (e) {
+      var ev = e || window.event;
+
+      if (keys[ev.keyCode]) {
+         keys[ev.keyCode].pressed = true;
+         ev.preventDefault();
+      }
+   };
+
+   var canvasStop = function (e) {
+      var ev = e || window.event;
+
+      if (keys[ev.keyCode]) {
+         keys[ev.keyCode].pressed = false;
+      }
+
+      if (console.log) {
+         console.log("lifted: " + ev.keyCode);
+      }
+   };
+
+   var draw = function () {
+      try {
+         // TO DO: figure out why this doesn't work when placed in the body later?
+         photo0.img = document.getElementById('fall');
+         photo0.zoom.width = photo0.img.width;
+         photo0.zoom.height = photo0.img.height;
+         canvas = document.getElementById('canvas0');
+         context = canvas.getContext('2d');
+
+
+         // loop/callback
+         setInterval(redraw, 30);
+
+         // side to side motion
+         document.onkeydown = canvasMove;
+         document.onkeyup = canvasStop;
+
+         // mouse wheel zooming
+         canvas.addEventListener('DOMMouseScroll', zoomOnWheel, false); // for firefox?
+			canvas.onmousewheel = zoomOnWheel;
+
+         // center by default
+         center();
+
+
+      } catch(e) { alert('draw: ' + e.type + ': ' + e.message); }
+   };
+
+</script>
+</head>
+<body onload='draw();'><script src='./lib/betaTitle.js'></script>
+   <div class='contentSection'>
+      <div class='contentHeader'> <h1>HTML5 Canvas Basics</h1> </div>
+
+      <p>Now it is past time to learn
+      <a href='http://www.selfhtml5.org/wp-content/uploads/2010/07/HTML5_Canvas_Cheat_Sheet.png'
+         >a thing or two</a> about how the <code>&lt;canvas&gt;</code> tag works!
+
+      <div class='figure'>
+         <img id='fall' src='http://kevincantu.org/lib/images/fall_500.jpg'>
+         <p class="caption">
+            <span class='name'>Figure 1</span>
+            This is an ordinary <code>&lt;img&gt;</code> tag.
+         </p>
+      </div>
+
+      <div class='figure'>
+         <canvas id='canvas0' width='600px' height='500px'>
+            (You should get <a href='http://opera.com'>a</a>
+            <a href='http://firefox.com'>browser</a>
+            <a href='http://www.google.com/chrome'>supporting</a>
+            the <code>&lt;canvas&gt;</code> tag and then come back!)
+         </canvas>
+         <p class='caption'>
+            <span class='name'>Figure 2</span>
+            A canvas tag can be inserted in much the same way.  I've added some functionality:
+            press your arrow keys: up|down|left|right or scroll your mouse wheel over the canvas.
+         </p>
+      </div>
+
+<!--
+      <p>To put an image in the canvas, put this function in the head and
+         invoke it in body's <code>onload</code> method:
+      </p>
+
+      <script>
+         document.write('<pre class=\'prettyprint\'>' + draw.toString().entityify() + '<\/pre>');
+      </script>
+-->
+
+      <p><a href='http://phosphorus.co/2010/10/html5-canvas-interactivity/'>This</a>
+         is where I want to take this testing: keyboard and mouse interactivity!
+      </p>
+
+
+
+
+
+   </div>
+   <script>
+      // display and syntax highlight
+      try {
+         showScripts();
+         //prettyPrint();
+      } catch(e) { alert('showing scripts: ' + e.type + ': ' + e.message); }
+   </script>
+</body></html>
+

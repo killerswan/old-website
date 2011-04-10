@@ -1,0 +1,55 @@
+<!doctype html><html><head><meta charset='utf-8'><!-- Kevin Cantu © 2010 -->
+
+<title>F#</title>
+
+<base href='http://kevincantu.org/'>
+<link href='./lib/gamma/main.css' type='text/css' rel='stylesheet'>
+<link href='./lib/gamma/title.css' type='text/css' rel='stylesheet'>
+<link href='./lib/prettify.css' type='text/css' rel='stylesheet'>
+<script src='./lib/3p/underscore/underscore-min.js'></script>
+<script src='./lib/3p/jquery/jquery-1.4.3.min.js'></script>
+<script src='./lib/gamma/title.js'></script>
+<script src='./lib/3p/crockford/crockford.js'></script>
+<script src='./lib/3p/prettify/src/prettify.js'></script>
+<script src='./lib/3p/prettify/src/lang-ml.js'></script>
+
+
+
+<script>
+$(document).ready(function () {
+  prettyPrint();
+}); // ready
+</script>
+
+</head><body>
+
+   <div class='contentSection'>
+      <div class='contentHeader'> <h1>F#, or the halt leading the blind!</h1> </div>
+
+<p>In F# I see a lot of programming magic I want to use.  There are a whole ton of  the neat things 
+from JavaScript and Underscore.js and CoffeeScript are there, plus a type system like Haskell's 
+(without the explicit monads) in addition to things like units of measure, and a variety 
+of strange animals like arrays, lists, and sequences: all watched over by the CLR / .NET parent alien.
+</p>
+
+<p>I'm going to teach myself how to get started: maybe this will help you, too.
+   I have to warn you, I'm not sure I've ever played any music in this key signature before...
+</p>
+
+<p>A brief example from <a href='http://www.ctocorner.com/fsharp/book/ch11.aspx'>here</a>:</p>
+<pre class='prettyprint lang-fs'>let walkTree tree =
+    let rec loop depth tree =
+        let spacer = new string(' ', depth)
+        match tree with
+        | Leaf(value) ->       
+            printfn "%s |- %A" spacer value
+        | Node(tree1, tree2) ->
+            printfn "%s |" spacer
+            loop (depth + 1) tree1
+            loop (depth + 1) tree2
+    loop 0 tree
+</pre>
+
+   </div>
+
+</body></html>

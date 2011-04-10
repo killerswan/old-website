@@ -17,7 +17,8 @@ h3.ct,
 p.ct,
 ul.ct,
 li.ct {
-    font-family: "DejaVu Sans",Tahoma,"Droid Sans", sans-serif;
+    /* font-family: "DejaVu Sans",Tahoma,"Droid Sans", sans-serif; */
+    font-family: Verdana, "DejaVu Sans", sans-serif;
     display:inline;
 }
 h1.ct {

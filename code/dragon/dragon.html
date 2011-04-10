@@ -1,0 +1,70 @@
+<!doctype html><html><head><meta charset='utf-8'><!-- Kevin Cantu © 2011 -->
+
+<title>Dragon curve in JavaScript</title>
+
+<base href='http://kevincantu.org/'>
+<link href='./lib/gamma/main.css' type='text/css' rel='stylesheet'>
+<link href='./lib/gamma/title.css' type='text/css' rel='stylesheet'>
+<script src='./lib/3p/jquery/jquery-1.4.3.min.js'></script>
+<script src='./lib/gamma/title.js'></script>
+<script src='./lib/3p/crockford/crockford.js'></script>
+<script src='./lib/3p/underscore/underscore-min.js'></script>
+<script src='./code/prettifyXHR.js'></script> 
+
+<!-- dragon specific -->
+<script src='./code/dragon/dragon.js'></script>
+<style> 
+   svg#fractal {
+      height: 500px; width: 700px;
+   }
+   svg path.dragon {
+      stroke: #ff0f83;
+      stroke-width: 2;
+   }
+</style> 
+
+</head>
+<body>
+<div class='contentSection'>
+   <div class='contentHeader'> <h1>Dragon curve in JavaScript</h1></div>
+
+   <div>
+      <svg xmlns='http://www.w3.org/2000/svg' id='fractal'></svg> 
+   </div>
+   
+   <script>
+      try {
+         DRAGON.fractal('fractal', [100,300], [500,300], 13, false, 700);
+      } catch (e) {
+         //alert(e.name + ': ' + e.type + ': ' + e.message);
+      }
+   </script>
+
+   <p>Tested in the Chrome browser.  I've put the source here and at 
+      <a href='https://github.com/killerswan/dragons'>github</a>.  
+      If you have a more graceful dragon curve algorithm, let me see it! 
+   </p>
+
+   <h1>Now updated</h1>
+   <p>There is ~50% less code. I've removed a dependency 
+      (underscore.js, although I do love it), and added my example to 
+      <a href='http://rosettacode.org/wiki/Dragon_curve#JavaScript'>Rosetta 
+      Code</a>.  In case you're really curious, a copy of 
+      the JavaScript should be shown here, below.
+   </p>
+
+   <div id='dragonSource'></div>
+   
+   <script>
+      try {
+         prettifyXHR(document.getElementById('dragonSource'), 
+                     'http://kevincantu.org/code/dragon/dragon.js', 
+                     'lang-js');
+      } catch (e) {
+      }
+   </script>
+
+
+</div>
+</body>
+</html>

@@ -21,4 +21,6 @@ Disallow: /resume/
 Disallow: /ars/
 Disallow: /images/
 Disallow: /style/
+Disallow: /3p/mirror/living/
+
 

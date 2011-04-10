@@ -1,0 +1,157 @@
+[/code/functionalIO/fs]$ 
+[/code/functionalIO/fs]$ 
+[/code/functionalIO/fs]$ 
+[/code/functionalIO/fs]$ which mono
+/usr/local/bin/mono
+[/code/functionalIO/fs]$ 
+[/code/functionalIO/fs]$ /usr/local/bin/mono -V
+Mono JIT compiler version 2.9 (master/06bb9ce Sat Jan  8 03:36:46 PST 2011)
+Copyright (C) 2002-2010 Novell, Inc and Contributors. www.mono-project.com
+	TLS:           __thread
+	SIGSEGV:       altstack
+	Notifications: epoll
+	Architecture:  amd64
+	Disabled:      none
+	Misc:          softdebug 
+	LLVM:          supported, not enabled.
+	GC:            Included Boehm (with typed GC and Parallel Mark)
+[/code/functionalIO/fs]$ 
+[/code/functionalIO/fs]$ 
+[/code/functionalIO/fs]$ /usr/local/bin/mono /usr/lib/fsharp/fsc.exe demand.fs
+Microsoft (R) F# 2.0 Compiler build 2.0.0.0
+Copyright (c) Microsoft Corporation. All Rights Reserved.
+[/code/functionalIO/fs]$ 
+[/code/functionalIO/fs]$ which mono
+/usr/local/bin/mono
+[/code/functionalIO/fs]$ 
+[/code/functionalIO/fs]$ /usr/local/bin/mono -V
+Mono JIT compiler version 2.9 (master/06bb9ce Sat Jan  8 03:36:46 PST 2011)
+Copyright (C) 2002-2010 Novell, Inc and Contributors. www.mono-project.com
+	TLS:           __thread
+	SIGSEGV:       altstack
+	Notifications: epoll
+	Architecture:  amd64
+	Disabled:      none
+	Misc:          softdebug 
+	LLVM:          supported, not enabled.
+	GC:            Included Boehm (with typed GC and Parallel Mark)
+[/code/functionalIO/fs]$ 
+[/code/functionalIO/fs]$ 
+[/code/functionalIO/fs]$ /usr/local/bin/mono /usr/lib/fsharp/fsc.exe demand.fs
+Microsoft (R) F# 2.0 Compiler build 2.0.0.0
+Copyright (c) Microsoft Corporation. All Rights Reserved.
+[/code/functionalIO/fs]$ 
+[/code/functionalIO/fs]$ ls -lh
+...
+-rwxr-xr-x 1 kcantu kcantu 4.5K 2011-01-09 20:07 demand.exe
+...
+[/code/functionalIO/fs]$ 
+[/code/functionalIO/fs]$ 
+[/code/functionalIO/fs]$ /usr/local/bin/mono demand.exe file.jpg  
+Unhandled Exception: System.TypeLoadException: Could not load type '<StartupCode$demand>.$Demand' from assembly 'demand, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null'.
+[/code/functionalIO/fs]$ 
+[/code/functionalIO/fs]$ 
+[/code/functionalIO/fs]$ 
+[/code/functionalIO/fs]$ /usr/local/bin/mono --verbose demand.exe /home/kcantu/iporn1.jpg 
+converting method System.OutOfMemoryException:.ctor (string)
+Method System.OutOfMemoryException:.ctor (string) emitted at 0x40a4a9e0 to 0x40a4aa09 (code length 41) [demand.exe]
+converting method (wrapper runtime-invoke) <Module>:runtime_invoke_void__this___object (object,intptr,intptr,intptr)
+Method (wrapper runtime-invoke) <Module>:runtime_invoke_void__this___object (object,intptr,intptr,intptr) emitted at 0x40a4aa20 to 0x40a4aabe (code length 158) [demand.exe]
+converting method System.SystemException:.ctor (string)
+Method System.SystemException:.ctor (string) emitted at 0x40a4aac0 to 0x40a4aae9 (code length 41) [demand.exe]
+converting method System.Exception:.ctor (string)
+Method System.Exception:.ctor (string) emitted at 0x40a4ab00 to 0x40a4ab2a (code length 42) [demand.exe]
+converting method System.NullReferenceException:.ctor (string)
+Method System.NullReferenceException:.ctor (string) emitted at 0x40a4ab30 to 0x40a4ab59 (code length 41) [demand.exe]
+converting method System.StackOverflowException:.ctor (string)
+Method System.StackOverflowException:.ctor (string) emitted at 0x40a4ab60 to 0x40a4ab79 (code length 25) [demand.exe]
+converting method System.AppDomain:DoAssemblyResolve (string,bool)
+Method System.AppDomain:DoAssemblyResolve (string,bool) emitted at 0x40a4ab90 to 0x40a4ae67 (code length 727) [demand.exe]
+converting method (wrapper runtime-invoke) <Module>:runtime_invoke_object__this___object_sbyte (object,intptr,intptr,intptr)
+Method (wrapper runtime-invoke) <Module>:runtime_invoke_object__this___object_sbyte (object,intptr,intptr,intptr) emitted at 0x40a4ae80 to 0x40a4af36 (code length 182) [demand.exe]
+converting method System.TypeLoadException:.ctor (string,string)
+Method System.TypeLoadException:.ctor (string,string) emitted at 0x40a4af40 to 0x40a4af77 (code length 55) [demand.exe]
+converting method (wrapper runtime-invoke) <Module>:runtime_invoke_void__this___object_object (object,intptr,intptr,intptr)
+Method (wrapper runtime-invoke) <Module>:runtime_invoke_void__this___object_object (object,intptr,intptr,intptr) emitted at 0x40a4af90 to 0x40a4b036 (code length 166) [demand.exe]
+converting method System.TypeLoadException:.ctor ()
+Method System.TypeLoadException:.ctor () emitted at 0x40a4b040 to 0x40a4b06d (code length 45) [demand.exe]
+converting method System.Exception:ToString ()
+Method System.Exception:ToString () emitted at 0x40a4b070 to 0x40a4b1f3 (code length 387) [demand.exe]
+converting method (wrapper runtime-invoke) <Module>:runtime_invoke_object__this__ (object,intptr,intptr,intptr)
+Method (wrapper runtime-invoke) <Module>:runtime_invoke_object__this__ (object,intptr,intptr,intptr) emitted at 0x40a4b220 to 0x40a4b2b6 (code length 150) [demand.exe]
+converting method System.Exception:get_ClassName ()
+Method System.Exception:get_ClassName () emitted at 0x40a4b2c0 to 0x40a4b2f5 (code length 53) [demand.exe]
+converting method System.MonoType:ToString ()
+Method System.MonoType:ToString () emitted at 0x40a4b300 to 0x40a4b319 (code length 25) [demand.exe]
+converting method (wrapper managed-to-native) System.MonoType:getFullName (System.MonoType,bool,bool)
+Method (wrapper managed-to-native) System.MonoType:getFullName (System.MonoType,bool,bool) emitted at 0x40a4b330 to 0x40a4b3e0 (code length 176) [demand.exe]
+converting method (wrapper managed-to-native) object:__icall_wrapper_mono_object_new_fast (intptr)
+Method (wrapper managed-to-native) object:__icall_wrapper_mono_object_new_fast (intptr) emitted at 0x40a4b3e0 to 0x40a4b455 (code length 117) [demand.exe]
+converting method System.Text.StringBuilder:.ctor (string)
+converting method string:.cctor ()
+Method string:.cctor () emitted at 0x40a4b460 to 0x40a4b4d6 (code length 118) [demand.exe]
+converting method (wrapper runtime-invoke) object:runtime_invoke_void (object,intptr,intptr,intptr)
+Method (wrapper runtime-invoke) object:runtime_invoke_void (object,intptr,intptr,intptr) emitted at 0x40a4b4f0 to 0x40a4b576 (code length 134) [demand.exe]
+converting method (wrapper managed-to-native) string:GetLOSLimit ()
+Method (wrapper managed-to-native) string:GetLOSLimit () emitted at 0x40a4b580 to 0x40a4b5ed (code length 109) [demand.exe]
+converting method (wrapper managed-to-native) object:__icall_wrapper_mono_array_new_specific (intptr,int)
+Method (wrapper managed-to-native) object:__icall_wrapper_mono_array_new_specific (intptr,int) emitted at 0x40a4b5f0 to 0x40a4b66d (code length 125) [demand.exe]
+converting method string:memcpy (byte*,byte*,int)
+Method string:memcpy (byte*,byte*,int) emitted at 0x40a4b670 to 0x40a4b787 (code length 279) [demand.exe]
+converting method string:memcpy4 (byte*,byte*,int)
+Method string:memcpy4 (byte*,byte*,int) emitted at 0x40a4b7b0 to 0x40a4b85b (code length 171) [demand.exe]
+Method System.Text.StringBuilder:.ctor (string) emitted at 0x40a4b860 to 0x40a4b8aa (code length 74) [demand.exe]
+converting method System.Text.StringBuilder:Append (string)
+Method System.Text.StringBuilder:Append (string) emitted at 0x40a4b8b0 to 0x40a4b97e (code length 206) [demand.exe]
+converting method System.Text.StringBuilder:InternalEnsureCapacity (int)
+Method System.Text.StringBuilder:InternalEnsureCapacity (int) emitted at 0x40a4b9a0 to 0x40a4bad0 (code length 304) [demand.exe]
+converting method (wrapper alloc) object:Alloc (intptr,int)
+Method (wrapper alloc) object:Alloc (intptr,int) emitted at 0x40a4baf0 to 0x40a4bbc8 (code length 216) [demand.exe]
+converting method (wrapper managed-to-native) object:__icall_wrapper_mono_string_alloc (intptr)
+Method (wrapper managed-to-native) object:__icall_wrapper_mono_string_alloc (intptr) emitted at 0x40a4bbd0 to 0x40a4bc45 (code length 117) [demand.exe]
+converting method string:CharCopy (string,int,string,int,int)
+Method string:CharCopy (string,int,string,int,int) emitted at 0x40a4bc50 to 0x40a4bca5 (code length 85) [demand.exe]
+converting method string:CharCopy (char*,char*,int)
+Method string:CharCopy (char*,char*,int) emitted at 0x40a4bcb0 to 0x40a4bd6b (code length 187) [demand.exe]
+converting method System.TypeLoadException:get_Message ()
+Method System.TypeLoadException:get_Message () emitted at 0x40a4bd70 to 0x40a4bdf1 (code length 129) [demand.exe]
+converting method string:op_Inequality (string,string)
+Method string:op_Inequality (string,string) emitted at 0x40a4be20 to 0x40a4be43 (code length 35) [demand.exe]
+converting method string:Equals (string,string)
+Method string:Equals (string,string) emitted at 0x40a4be50 to 0x40a4bfdb (code length 395) [demand.exe]
+converting method string:Format (string,object,object)
+Method string:Format (string,object,object) emitted at 0x40a4bfe0 to 0x40a4c059 (code length 121) [demand.exe]
+converting method (wrapper stelemref) object:virt_stelemref_object (intptr,object)
+Method (wrapper stelemref) object:virt_stelemref_object (intptr,object) emitted at 0x40a4c070 to 0x40a4c0bc (code length 76) [demand.exe]
+converting method string:Format (System.IFormatProvider,string,object[])
+Method string:Format (System.IFormatProvider,string,object[]) emitted at 0x40a4c0c0 to 0x40a4c0f6 (code length 54) [demand.exe]
+converting method string:FormatHelper (System.Text.StringBuilder,System.IFormatProvider,string,object[])
+Method string:FormatHelper (System.Text.StringBuilder,System.IFormatProvider,string,object[]) emitted at 0x40a4c100 to 0x40a4c99b (code length 2203) [demand.exe]
+converting method System.Text.StringBuilder:.ctor (int)
+Method System.Text.StringBuilder:.ctor (int) emitted at 0x40a4c9f0 to 0x40a4ca1d (code length 45) [demand.exe]
+converting method System.Text.StringBuilder:.ctor (string,int,int,int)
+Method System.Text.StringBuilder:.ctor (string,int,int,int) emitted at 0x40a4ca30 to 0x40a4ca5d (code length 45) [demand.exe]
+converting method System.Text.StringBuilder:.ctor (string,int,int,int,int)
+Method System.Text.StringBuilder:.ctor (string,int,int,int,int) emitted at 0x40a4ca70 to 0x40a4cdb8 (code length 840) [demand.exe]
+converting method System.Text.StringBuilder:Append (string,int,int)
+Method System.Text.StringBuilder:Append (string,int,int) emitted at 0x40a4cdd0 to 0x40a4ced8 (code length 264) [demand.exe]
+converting method string:ParseFormatSpecifier (string,int&,int&,int&,bool&,string&)
+Method string:ParseFormatSpecifier (string,int&,int&,int&,bool&,string&) emitted at 0x40a4cee0 to 0x40a4d1ff (code length 799) [demand.exe]
+converting method string:ParseDecimal (string,int&)
+Method string:ParseDecimal (string,int&) emitted at 0x40a4d230 to 0x40a4d2fc (code length 204) [demand.exe]
+converting method string:ToString ()
+Method string:ToString () emitted at 0x40a4d300 to 0x40a4d310 (code length 16) [demand.exe]
+converting method string:memcpy2 (byte*,byte*,int)
+Method string:memcpy2 (byte*,byte*,int) emitted at 0x40a4d310 to 0x40a4d3b3 (code length 163) [demand.exe]
+converting method System.Text.StringBuilder:ToString ()
+Method System.Text.StringBuilder:ToString () emitted at 0x40a4d3c0 to 0x40a4d469 (code length 169) [demand.exe]
+converting method string:InternalSetLength (int)
+Method string:InternalSetLength (int) emitted at 0x40a4d480 to 0x40a4d564 (code length 228) [demand.exe]
+converting method System.Exception:get_StackTrace ()
+Method System.Exception:get_StackTrace () emitted at 0x40a4d570 to 0x40a4d874 (code length 772) [demand.exe]
+
+Unhandled Exception: System.TypeLoadException: Could not load type '<StartupCode$demand>.$Demand' from assembly 'demand, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null'.
+[/code/functionalIO/fs]$ 
+[/code/functionalIO/fs]$ 
+[/code/functionalIO/fs]$ 
+[/code/functionalIO/fs]$ 

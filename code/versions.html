@@ -1,0 +1,236 @@
+<!doctype html><html><head><meta charset='utf-8'><!-- Kevin Cantu © 2010 -->
+
+<title>Version histories, graphed</title>
+
+<base href='http://kevincantu.org/'>
+<link href='./lib/gamma/main.css' type='text/css' rel='stylesheet'>
+<link href='./lib/gamma/title.css' type='text/css' rel='stylesheet'>
+<script src='./lib/3p/underscore/underscore-min.js'></script>
+<script src='./lib/3p/jquery/jquery-1.4.3.min.js'></script>
+<script src='./lib/gamma/title.js'></script>
+<script src='./lib/3p/crockford/crockford.js'></script>
+
+<!-- later, refer more to http://www.jqplot.com/tests/ -->
+<script src='./lib/3p/jqPlot/jquery.jqplot.js'></script>
+<script src='./lib/3p/jqPlot/plugins/jqplot.dateAxisRenderer.js'></script>
+<script src='./lib/3p/jqPlot/plugins/jqplot.canvasTextRenderer.js'></script>
+<script src='./lib/3p/jqPlot/plugins/jqplot.canvasAxisTickRenderer.js'></script>
+<script src='./lib/3p/jqPlot/plugins/jqplot.highlighter.js'></script>
+<script src='./lib/3p/jqPlot/plugins/jqplot.cursor.js'></script>
+
+<script>
+$(document).ready(function () {
+
+   var graphVersions = function (versions) {
+   };
+
+   var processVersions = function (raw) {
+      // stop typing so much to build the array of objects
+      var arr = [];
+   
+      _.each(raw, function (entry) {
+         var processedEntry = {};
+         
+         processedEntry.version = entry[0];
+         processedEntry.scale = entry[1];
+         if (entry[2]) {
+            processedEntry.year = entry[2];
+         }
+         if (entry[3]) {
+            processedEntry.month = entry[3];
+         }
+         if (entry[4]) {
+            processedEntry.day = entry[4];
+         }
+
+         arr.push(processedEntry);
+      });
+
+      return arr;
+   };
+
+   var X = {};
+   X.raw = processVersions([
+      // see http://en.wikipedia.org/wiki/X_Window_System
+      ['X1', 1, 1984, 06],
+      ['X6', 6, 1985, 01],
+      ['X9', 9, 1985, 09],
+      ['X10', 10, 1986],
+      ['X10R2', 10.2, 1986, 1],
+      ['X10R3', 10.3, 1986, 2],
+      ['X10R4', 10.4, 1986, 12],
+      ['X11', 11, 1987, 09, 15],
+      ['X11R2', 11.2, 1988, 02],
+      ['X11R3', 11.3, 1988, 10, 25],
+      ['X11R4', 11.4, 1989, 12, 22],
+      ['X11R5', 11.5, 1991, 09, 5],
+      ['X11R6', 11.6, 1994, 05, 16],
+      ['X11R6.1', 11.61, 1996, 03, 14],
+      ['X11R6.2', 11.62, 1996, 12, 23],
+      ['X11R6.3', 11.63, 1996, 12, 23],
+      ['X11R6.4', 11.64, 1998, 03, 31],
+      ['X11R6.5', 11.65, 2000],
+      ['X11R6.5.1', 11.651, 2000, 08, 20],
+      ['X11R6.6', 11.66, 2001, 04, 4],
+      ['X11R6.7.0', 11.670, 2004, 04, 6],
+      ['X11R6.8.0', 11.680, 2004, 09, 8],
+      ['X11R6.8.1', 11.681, 2004, 09, 17],
+      ['X11R6.8.2', 11.682, 2005, 02, 10],
+      ['X11R6.9', 11.69, 2005, 12, 21],
+      ['X11R7.0', 11.70, 2005, 12, 21],
+      ['X11R7.1', 11.71, 2006, 05, 22],
+      ['X11R7.2', 11.72, 2007, 02, 15],
+      ['X11R7.3', 11.73, 2007, 09, 6],
+      ['X11R7.4', 11.74, 2008, 09, 23],
+      ['X11R7.5', 11.75, 2009, 10, 26]
+   ]);
+
+   X.scaledDataset = [];
+   _.each(X.raw, function (x) {
+      scale = x.scale;
+      time = x.year +
+               (x.month ? '-' + x.month.toString() +
+                  (x.day ? '-' + x.day.toString() : '') :
+                  '');
+      X.scaledDataset.push([time, scale]);
+   });
+
+   X.simpleDataset = [];
+   _.each(X.raw, function (x, i) {
+      time = x.year +
+               (x.month ? '-' + x.month.toString() +
+                  (x.day ?  '-' + x.day.toString() : '') :
+                  '');
+      X.simpleDataset.push([time, i+1]);
+   });
+
+   X.graphable = {
+      // these to arrays share the same index (thank you, jqplot :P)
+      data: [
+         X.scaledDataset,
+         X.simpleDataset
+      ],
+      series: [
+         {label: 'Scaled by version number', showLine: true},
+         {label: 'Number of releases', showLine: false},
+      ]
+   };
+
+
+   // from scratch
+   document.getElementById('x').innerHTML = '';
+
+   // build plot
+   try {
+       $.jqplot.config.enablePlugins = true;
+
+       $.jqplot(
+           'x',  // below, there is an id='x'
+           X.graphable.data,
+           {
+               show: true,
+
+               title: '<strong>The X Window System</strong>',
+
+               series: X.graphable.series,
+
+               legend: {
+                  show: true,
+                  location: 'nw',
+                  xoffset: 24 // 12 by default
+               },
+
+               axes: {
+                   xaxis: {
+                       //label: 'Time'//,
+                       //min: 0
+                       renderer:$.jqplot.DateAxisRenderer,
+                       rendererOptions:{tickRenderer:$.jqplot.CanvasAxisTickRenderer},
+                       tickOptions:{
+                          //formatString:'%b %#d, %y', 
+                          formatString:'%Y-%m-%d', 
+                          //fontSize:'10pt', 
+                          fontFamily:'Verdana', 
+                          angle:-30
+                       }
+                   },
+                   yaxis: {
+                       min: 0
+                       //label: '...'
+                       //min: 1,
+                       //tickDistribution: 'power',
+                       //renderer: $.jqplot.LogAxisRenderer
+                   },
+               },
+      
+               highlighter: {
+                  sizeAdjust: 9
+               },
+
+               cursor: {
+                  show: false
+               }
+           }
+       );
+   } catch (e) {
+       if (e.name && e.message) {
+           alert(e.name + ': ' + e.type + ': ' + e.message);
+       }
+   }
+
+
+}); // ready
+</script>
+
+<style>
+   table.jqplot-table-legend,
+   td.jqplot-table-legend {
+      border: 0px;
+   }
+   div.jqplot-table-legend-swatch {
+      padding: 6px;
+      margin: 2px;
+   }
+</style>
+
+<!--
+<style>
+   #banner {
+      /* top left corner */ 
+      -webkit-transform-origin: 0 0;
+      -moz-transform-origin: 0 0;
+      -o-transform-origin: 0 0;
+
+      /* clockwise -> right 0, down -100% in the rotated frame */
+      -webkit-transform: rotate(90deg) translate(0, -100%);
+      -moz-transform: rotate(90deg) translate(0, -100%);
+      -o-transform: rotate(90deg) translate(0, -100%);
+   }
+</style>
+-->
+
+</head><body>
+
+   <div class='contentSection'>
+      <div class='contentHeader'> <h1>X Window System versions</h1> </div>
+
+      <p>With the recent discussion around the decision by Ubuntu's management
+         to adopt <a href='http://wayland.freedesktop.org'>Wayland</a>,
+         this came to mind again: the version numbers are crazy.
+         (I should run through Linux, next...)
+         </p>
+
+      <p>As of November 2010, X11R7.6 is in progress...
+         </p>
+      
+      <p>This chart compares the releases with the version numbers if you consider,
+         for example, "X11R5" to be "11.5" in decimal, and so on.  There are far
+         more important, often subjective, metrics that should be used 
+         to weigh decisions, but I present you this:
+         </p>
+
+      <div id='x' style='margin-top: 2em; margin-bottom: 2em; height: 500px'></div>
+
+   </div>
+
+</body></html>

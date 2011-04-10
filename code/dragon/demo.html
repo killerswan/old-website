@@ -1,0 +1,28 @@
+<html><!-- Kevin Cantu (c) 2011 -->
+<head>
+   <script src='./dragon.js'></script>
+
+   <style>
+      svg#fractal {
+         height: 500px; width: 700px;
+      }
+      svg path.dragon {
+         stroke: #f00;
+         stroke-width: 2;
+      }
+   </style>
+
+</head>
+<body>
+   <h1>Dragon Curve</h1>
+
+   <div>
+      <svg xmlns='http://www.w3.org/2000/svg' id='fractal'></svg>
+   </div>
+
+   <script>
+      DRAGON.fractal('fractal', [100,300], [500,300], 15, false, 700);
+   </script>
+
+</body>
+</html>

@@ -1,0 +1,51 @@
+/* Kevin Cantu (c) 2010 */
+div#cantuTitle {
+    text-align: center;
+    margin-bottom: 50px;
+    background-color: #f8f8f8;
+    border-bottom: 2px solid #f4f4f4;
+    color: #222;
+}
+h1.ct,
+h3.ct,
+ul.ct {
+    padding: 0;
+    margin: 0;
+}
+h1.ct,
+h3.ct,
+p.ct,
+ul.ct,
+li.ct {
+    /*font-family: "DejaVu Sans",Tahoma,"Droid Sans", sans-serif;*/
+    font-family: "DejaVu Sans", "Bitstream Vera Sans", Verdana, sans-serif;
+    display:inline;
+}
+h1.ct {
+    letter-spacing: -4px;
+}
+h3.ct {
+    letter-spacing: -1px;
+}
+li.ct:before {
+    content: " : ";
+}
+li.ct:first-child:before {
+    content: "";
+}
+ul.ct {
+    margin-left: 1em;
+    margin-right: 1em;
+}
+a.ct:link,
+a.ct:visited,
+a.ct:hover,
+a.ct:focus,
+a.ct:active {
+    text-decoration: none;
+    color: #5fa900;
+}
+a.ct:hover {
+    background-color: #5fa900;
+    color: #000;
+}
