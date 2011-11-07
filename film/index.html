@@ -1,8 +1,8 @@
 <!doctype html><html><head><meta charset='utf-8'><!-- Kevin Cantu © 2011 -->
 
-<title>Haskell "hello world" with `let`</title>
+<title>Movies to see</title>
 
-<base href='http://kevincantu.org/'>
+<base href='..'>
 <link href='./lib/delta/main.css'  type='text/css' rel='stylesheet'>
 <link href='./lib/delta/title.css' type='text/css' rel='stylesheet'>
 
@@ -10,195 +10,212 @@
 <script src='./lib/3p/underscore/underscore-min.js'></script>
 <script src='./lib/delta/title.js'></script>
 
-<script src='./lib/3p/prettify/src/prettify.js'></script> 
-<script src='./lib/3p/prettify/src/lang-hs.js'></script> 
-<script src='./lib/3p/prettify/src/lang-ml.js'></script> 
 
 <style>
-   table.operators tr td {
-      font-family: Inconsolata, Consolas, monospace
+   div.poster_left {
+      float: left;
+      margin-right: 1em;
+      margin-top: 0.5em;
+      margin-bottom: 0.5em;
+   }
+   div.poster_right {
+      float: right;
+      margin-left: 1em;
+      margin-top: 0.5em;
+      margin-bottom: 0.5em;
+   }
+   div#movies {
+      text-align: right;
+   }
+   form.imdbf {
+      text-align: center;
    }
 </style>
-
-<script>
-var _gaq = _gaq || [];
-_gaq.push(['_setAccount', 'UA-13261525-5']);
-_gaq.push(['_setDomainName', '.kevincantu.org']);
-_gaq.push(['_trackPageview']);
-
-$(document).ready(function() {
-   try {
-      var ga = document.createElement('script');
-      ga.type = 'text/javascript';
-      ga.async = true;
-      ga.src = ('https:' == document.location.protocol ?
-                  'https://ssl' : 'http://www') +
-                  '.google-analytics.com/ga.js';
-      var s = document.getElementsByTagName('script')[0];
-      s.parentNode.insertBefore(ga, s);
-   } catch (e) {}
-});
-</script>
 
 </head>
 <body>
 <div class='contentSection'>
-   <div class='contentHeader'> <h1>Haskell "hello world" with <code>let</code></h1></div>
+   <div class='contentHeader'><h1>Movies I need to see</h1></div>
 
-   <p>Several related things really bothered me about Haskell's symmetry
-      when I began learning Haskell, so I'd like to give other novices a heads up.
-      This brief post explains the essentials, including <code>let</code>.
-   </p>
+   <div id="movies">
 
-   <p>First, a straightforward program:
-   </p>
-
-<pre class='prettyprint lang-hs'>
-intro txt =
-   let
-      welcome = "Welcome! Today we will "
-   in
-      welcome ++ txt
-
-main =
-   let
-      plan = "talk about symmetry!"
-   in
-      do
-         let hello = intro plan
-         putStrLn hello
-</pre>
-
-   <p>It can be saved in a file, <code>hello.hs</code>, and run like so:
-   </p>
-<pre>$ runhaskell hello.hs
-Welcome! Today we will talk about symmetry!
-</pre>
-
-<p>The first thing you notice about the <code>let</code> keywords,
-especially if you have worked with F#, first, is
-that there are <em>none</em> at the top level!
-</p>
-<p>This is not because Haskell is a hideously asymmetric language: it is because
-this symmetry is simply implied.
-Each top level function declaration looks, actually, the same way it would if
-all of them were wrapped in <code>let</code> and <code>in</code> keywords, 
-with <code>main</code> called below that.  Imagine it was like this:
-</p>
-
-<style>
-.hl { color: #f00; }
-</style>
-
-<pre>
-<span class='hl'>let</span>
-   intro txt =
-      let
-         welcome = "Welcome! Today we will "
-      in
-         welcome ++ txt
-
-   main =
-      let
-         plan = "talk about symmetry!"
-      in
-         do
-            let hello = intro plan
-            putStrLn hello
-<span class='hl'>in
-   main</span>
-</pre>
+   <form class="imdbf" action="http://www.imdb.com/find"
+         target="_blank"
+         method="get">
+      <input type="text" value="tt" name="s" hidden>
+      <input type="text" value="" name="q" size="20">
+      <input type="submit" value="imdb">
+   </form>
 
 
-<p>The second thing you'll notice about these <code>let</code> keywords
-is that after the <code>let hello = ...</code> line, there is no matching
-<code>in</code> keyword!
-You may pause a moment to ask whether these pesky <code>in</code> keywords
-are even needed at all.
-In fact, you will rush to test this, by launching the REPL, <code>ghci</code>:
-</p>
-
-<pre>
-$ ghci
-Prelude&gt; let hello = "look at me swimming!"
-Prelude&gt; putStrLn hello
-look at me swimming!
-</pre>
-
-<p>The glow lasts for a moment, and then you try removing the <code>in</code> after the definitions
-of <code>welcome</code> and <code>plan</code> and you find rejection!!
-A parse error?
-</p>
-
-<pre>
-$ runhaskell hello.hs
-
-hello.hs:7:1: parse error (possibly incorrect indentation)
-</pre>
+   <div class="poster_left"> <img alt="" src="film/posters/nuda640.jpg"> </div>
 
 
-<p>The secret is two-fold.  First, the <code>let hello = ...</code> is special,
-because it is in a <code>do</code> block.  (Later, you'll learn how this special 
-<em>do block sub-language</em> works.)   Second, and most shockingly, to me:
-<code>ghci</code> provides a REPL wrapped in an implicit <code>do</code>.
-</p>
+4 Months, 3 Weeks and 2 Days  <br>
+Sophie Scholl: The Final Days <br>
+Before Sunrise <br>
+The Gymnast <br>
+The Man of My Life   <br>
+Private Fears in Public Places   <br>
+Alexander Nevsky  <br>
+Winter's Bone  <br>
+Starting Out in the Evening   <br>
+The Beach   <br>
+The Perfect Host  <br>
+Nosferatu: The Gothic Industrial Mix   <br>
+National Geographic: Vietnam's Unseen War <br>
+Hogfather   <br>
+Rin: Daughters of Mnemosyne: Complete  <br>
+Claymore <br>
+A Walk on the Moon   <br>
+Winter's Bone  <br>
+Killer of Sheep		   <br>
+The Kingdom		   <br>
+Up in the Air		   <br>
+Marie Antoinette		   <br>
+All the Real Girls		   <br>
+There Will Be Blood		   <br>
+Breach		   <br>
+The Last King of Scotland		   <br>
+Das Boot: Director's Cut		   <br>
+The Big Heat		   <br>
+The Magnificent Seven		   <br>
+The Jane Austen Book Club		   <br>
+Kinky Boots		   <br>
+Aguirre: The Wrath of God		   <br>
+Grizzly Man		   <br>
+Solaris		   <br>
+Total Recall		   <br>
+I'm Not Scared		   <br>
+The Bridge on the River Kwai		   <br>
+The New World		   <br>
+Blood and Black Lace		   <br>
+From Hell		   <br>
+Sleeping Beauty		   <br>
+Le Samourai		   <br>
+Judgment at Nuremberg		   <br>
+12 Angry Men		   <br>
+Hotel Rwanda		   <br>
+Two for the Road		   <br>
+Naked Killer		   <br>
+The Diving Bell and the Butterfly		   <br>
+Manufacturing Consent: Noam Chomsky		   <br>
+Out of Africa		   <br>
+The Thrill of It All!		   <br>
+Anne of the Thousand Days		   <br>
+Magnolia		   <br>
+The Mists of Avalon		   <br>
+Touch of Evil		   <br>
+The Last Seduction		   <br>
+The Bad Sleep Well		   <br>
+
+   <form class="imdbf" action="http://www.imdb.com/find"
+         target="_blank"
+         method="get">
+      <input type="text" value="tt" name="s" hidden>
+      <input type="text" value="" name="q" size="20">
+      <input type="submit" value="imdb">
+   </form>
+
+Amores Perros		   <br>
+Romance		   <br>
+Barbarella		   <br>
+Revolutionary Road		   <br>
+Body of Lies		   <br>
+Lisa Gerrard: Sanctuary		   <br>
+Strangers When We Meet		   <br>
+Waltz with Bashir		   <br>
+Orlando		   <br>
+A Walk on the Moon		   <br>
+Perfect Blue		   <br>
+Come Drink with Me		   <br>
+Gran Torino		   <br>
+Play Misty for Me		   <br>
+Elizabeth		   <br>
+Red Cliff: International Version: Part 1		   <br>
+Red Cliff: International Version: Part 2		   <br>
+Fantastic Mr. Fox		   <br>
+Outrage		   <br>
+City on Fire		   <br>
+The Suspect		   <br>
+
+<div class="poster_left"> <img alt="King Kong" src="film/posters/kong.jpg"> </div>
+
+Once Upon a Time in China		   <br>
+Four Sided Triangle		   <br>
+Infernal Affairs		   <br>
+Forbidden World:Director's Cut(AKA Mutant)		   <br>
+Le Trou		   <br>
+Last Year at Marienbad		   <br>
+Nathalie		   <br>
+Crime Wave / Decoy		   <br>
+The Long Goodbye		   <br>
+The Killers (1946): Disc 1		   <br>
+His Kind of Woman		   <br>
+The Postman Always Rings Twice		   <br>
+The Postman Always Rings Twice		   <br>
+Criss Cross		   <br>
+Jeremiah Johnson		   <br>
+Versus: Director's Cut		   <br>
+Superman: The Movie: Expanded Edition		   <br>
+Much Ado About Nothing		   <br>
+The Weight of Water		   <br>
+Superman II: The Richard Donner Cut		   <br>
+Love Actually		   <br>
+(500) Days of Summer		   <br>
+YPF		   <br>
+The Bourne Ultimatum		   <br>
+Casino Royale		   <br>
+Watchmen		   <br>
+The Big Bad Swim		   <br>
+Solaris		   <br>
+Holy Mountain		   <br>
+Supernova		   <br>
+Unforgiven		   <br>
+Bird		   <br>
+Little Ashes		   <br>
+Underworld: Rise of the Lycans		   <br>
+Fast & Furious		   <br>
+Terminator: Salvation		   <br>
+Whiteout		   <br>
+Transsiberian		   <br>
+The Barbarian Invasions		   <br>
+The Decline of the American Empire		   <br>
+Winter Sleepers		   <br>
+Cyrus		   <br>
+Cashback		   <br>
+Zatochi: The Blind Swordsman		   <br>
+The Perfect Host		   <br>
+Attack the Block		   <br>
+Fast Five   <br>
+Alatriste		   <br>
+Beyond the Black Rainbow		   <br>
+Blue Chips		   <br>
+Gay Days		   <br>
+Henri-Georges Clouzot's Inferno		   <br>
+In the Beginning		   <br>
+Playing with Fire		   <br>
+Split Second		   <br>
+Time and Tide		   <br>
+Vampire's Kiss <br>
 
 
-<p>To make it easy to copy and paste lines, employing this feature, 
-you can shuffle things around in the source file, like so:
-</p>
 
-<pre class='prettyprint lang-hs'>
-main =
-   do
-      let intro txt = "Welcome! Today we will " ++ txt
-      let plan      = "talk about symmetry!"
-      let hello     = intro plan
-      putStrLn hello
-</pre>
-
-<p>Then you can run it as before, or copy-paste only a portion into <code>ghci</code>, like this:
-</p>
-
-<pre>
-$ ghci
-Prelude&gt;       let intro txt = "Welcome! Today we will " ++ txt
-Prelude&gt;       let plan      = "talk about symmetry!"
-Prelude&gt;       let hello     = intro plan
-Prelude&gt;       putStrLn hello
-Welcome! Today we will talk about symmetry!
-</pre>
+   <form class="imdbf" action="http://www.imdb.com/find"
+         target="_blank"
+         method="get">
+      <input type="text" value="tt" name="s" hidden>
+      <input type="text" value="" name="q" size="20">
+      <input type="submit" value="imdb">
+   </form>
 
 
-<p>There is, however, a big shortcut.  To load all the code into <code>ghci</code>
-without even stressing at all about copy-paste errors, simply load the file itself
-using a ghci command.
-</p>
+<em>There are always more...</em>
 
-<p>The <code>:load</code> command lets us load a file or (module) into the runtime,
-so we can then call its functions.  (And if we had command line arguments to 
-the program, we can even use the <code>:main</code> command, with colon, 
-to test them.
-</p>
+   </div><!-- movies -->
 
-<pre>
-$ ghci
-Prelude&gt; :load hello.hs
-*Main&gt;   intro "play with hula hoops."
-"Welcome! Today we will play with hula hoops."
-</pre>
-
-
-
-
-<p>Cheers,
-<br>Kevin
-</p>
 </div>
-
-<script>
-   prettyPrint();
-</script>
 </body>
 </html>
+
 
