@@ -17,39 +17,97 @@
 
         <div style="float: right; margin-left: 1em; text-align: center">
             <img src="http://kevincantu.org/lib/images/centralCampusSnow.jpg">
-            <p style="margin-top: 0; font-style: italic">Iowa State University, evening in winter</p>
+            <p style="margin-top: 0; font-style: italic">Iowa State University, winter</p>
         </div>
 
-        <p>I have been writing little programs since we played around with
-            <a href="http://en.wikipedia.org/wiki/Logo_(programming_language)">LOGO</a>
-            in fourth grade, and from the moment I picked up <em>K&amp;R C</em>, I've been working
-            on a UNIX beard...  (This spring, I even found myself getting paid to hack in Lisp
-            within <a href="http://www.jwz.org/doc/emacs-timeline.html">Lucid Emacs</a>: that is
-            a long story.)
-
-            At the moment, however, this page is the home for a handful of new things: I've
-            just read <em>The Little Schemer</em> and am toying with bits of F#, Haskell and
-            <a href="http://www.yuiblog.com/crockford/">JavaScript</a>.  Enjoy!
+        <p>I have been hacking on software for ages, and I am always trying to understand more.
+            These are some recent examples of code and notes on stuff.  Enjoy!
         </p>
+
+<!--
+         <p>From the moment I picked up <em>K&amp;R C</em>, I've been growing
+            a UNIX beard.
+
+         </p>
+
+         <p>
+            I'm trying to absorb as much functional programming as I can, 
+            perhaps as an escape from the millions of lines of gnarly object oriented stuff I've 
+            seen.
+         </p>
+
+         <p>
+            Here, I've been exploring F#, JavaScript (and CoffeeScript), Scala, Haskell, and other languages.
+
+            &hearts;
+            &hearts;
+         </p>
+
+         <p>
+            I've written or analyzed reams of code in C, Bash, JavaScript, F#, Java, C++, Objective-C,
+            C++, Ruby, PHP, Perl, COBOL, and others.  I'm rather young for someone familiar with
+            <a href="http://www.jwz.org/doc/emacs-timeline.html">Lucid Emacs</a> and HyperCard.
+         </p>
+-->
+
 
         <h2 style="letter-spacing: -0.1em">Recent stuff</h2>
 
         <dl>
-<!--
-            <dt>(<a href='agents.html'>notes on agents</a>)
+            <dt><a href='https://github.com/killerswan/twitter-unfav'>twitter-unfav (github)</a>
             </dt>
-            <dd>I've been fooling around with F# and the Tumblr API
+            <dd>A Haskell program to delete old favorites on Twitter, 
+                using a modified <a href='https://github.com/killerswan/askitter'>askitter</a> library
+            </dd>
+
+            <dt><a href='./haskell-let.html'>Haskell "hello world" with `let`</a>
+            </dt>
+            <dd>An introduction I wish someone had given me two years ago, briefly
+                showing <code>let</code> syntaxes and the big difference in <code>ghci</code>
+            </dd>
+
+            <dt><a href='https://github.com/killerswan/Haskell-BLAKE'>BLAKE (github)</a>
+                (hackage: <a href='http://hackage.haskell.org/package/blakesum'>blakesum</a>,
+                <a href='http://hackage.haskell.org/package/blakesum-demo'>blakesum-demo</a>)
+            </dt>
+            <dd>An experimental Haskell implementation of the BLAKE SHA-3 candidate hash algorithms,
+                including BLAKE-256, BLAKE-512, BLAKE-224, and BLAKE-384.
+
+                (Based on the submitted <a href='http://131002.net/blake/blake.pdf'>BLAKE proposal</a>.)
+            </dd>
+
+            <dt><a href='./operators.html'>Operator precedence: F# and Haskell</a>
+            </dt>
+            <dd>Notes on operator precedence in Haskell and F#
+            </dd>
+
+
+            <dt><a href='https://github.com/killerswan/ninlil'>Ninlil, for Tumblr (github)</a>
+            </dt>
+            <dd>An F# experiment in reading, reblogging, and deleting posts using Tumblr's API (v1)
+            </dd>
+
+<!--
+            <dt><a href='https://github.com/killerswan/fs.vim'>fs.vim</a>
+            </dt>
+            <dd>Small fixes and experimentation with VIM syntax highlighting for F#
             </dd>
 -->
-            <dt><a href='dragon/dragon.html'>Dragon curve in JavaScript</a>
+
+            <dt><a href='./agents.html'>Notes on F# agents</a>
             </dt>
-            <dd>Fractal goodness! (Chrome.)
+            <dd>Fooling around with mailbox processing agents in F#
+            </dd>
+
+            <dt><a href='./dragon/dragon.html'>Dragon curve in JavaScript</a>
+            </dt>
+            <dd>Fractal goodness in SVG! (Tested with Chrome.)
             </dd>
 
             <dt><a href='http://log.kevincantu.org/2011/01/f-vs-haskell-vs-go-or-upgrade-mono.html'>Comparing F#, Go, and Haskell...</a>
             </dt>
             <dd>I did some rough testing of some sample programs written in F#, Go, and Haskell 
-               to see how efficient they can be at IO for <em>large</em> files.
+               to see how efficient they can be at IO for <em>large</em> files.  (With charts!)
             </dd>
 
             <dt><a href='http://log.kevincantu.org/2011/01/types-in-clojure.html'>A brief stab at Clojure</a>
@@ -59,7 +117,7 @@
 
             <dt><a href='versions.html'>X Window System versions</a>
             </dt>
-            <dd>Another plotting demo: this graph shows a (very rough) comparison of the apparent version
+            <dd>A JavaScript plotting demo: this graph shows a (very rough) comparison of the apparent version
                 numbers and the point releases of the eternal windowing system over time. 
                 (Works in Chrome).
             </dd>
@@ -78,10 +136,6 @@
                 from prettify.  This shows it in action.
             </dd>
 
-            <dt><a href="trumpCards.html">trumpCards</a></dt>
-            <dd>In progress...  (1) Tumblr JSON --> image display
-            </dd>
-
             <dt><a href="firstXHR.html">firstXHR</a></dt>
             <dd>This is a brief experiment with <code>XMLHttpRequest</code>.
             </dd>
@@ -94,24 +148,51 @@
             <dd>I'm experimenting with HTML5 geolocation.  I'm not saving your location, though.  Yet.
             </dd>
 
+<!--
+            <dt><a href="trumpCards.html">a test reading JSON</a>
+            </dt>
+            <dd>In progress...  (1) Tumblr JSON to image display
+            </dd>
+
             <dt><a href="hsOpts.html">hsOpts</a></dt>
             <dd>Isn't the syntax highlighting pretty? I'm trying to learn some basics about Haskell's
                 option and argument handling, so real programs that do things get easier to write!
             </dd>
+-->
 
             <dt><a href="excelGrep.html">excelGrep</a></dt>
             <dd>This is a tool for searching within Excel spreadsheets and then navigating
                 to the cells with resulting matches: one thing I wish was better done by Excel 2003,
                 at least.  I made this from an unholy combination of JavaScript, jQuery, and
                 ActiveX (sorry, it does require IE and Microsoft Excel). 
-                This one actually does something in only ~250 lines of JavaScript!</dd>
+                This one does something quite useful in only ~250 lines of JavaScript!</dd>
 
+<!--
             <dt><a href="august/images-and-iframes.html">images and iframes</a></dt>
             <dd>This was a very simple test of some things... (Watch out for alert boxes!)</dd>
 
             <dt><a href="july/test.html">scope</a></dt>
             <dd>This is a rough first look at closures and scope in JavaScript.  Don't mind me...</dd>
         </dl>
+-->
+
+
+        <h2 style="letter-spacing: -0.1em">Recommended links</h2>
+         <ul>
+            <li>Crockford's <em>JavaScript: The Good Parts</em> and 
+                  <a href='http://www.yuiblog.com/crockford/'>talks</a>
+            </li>
+            <li>Guy Steele, <a href='http://video.google.com/videoplay?docid=-8860158196198824415#'>Growing a Language</a>
+            </li>
+            <li><a href='http://www.ccs.neu.edu/home/matthias/BTLS/'>The Little Schemer</a>
+            </li>
+            <li><a href='http://www.ctocorner.com/fsharp/book/default.aspx'>The F# Survival Guide</a>
+            </li>
+            <li><a href='http://books.google.com/books?id=y3kaQxIns0oC&printsec=frontcover&dq=expert+F%23+2.0&source=bl&ots=fCPP1bkfsG&sig=r1faLBPBVDvBP6A5j1KKFNK1MAI&hl=en&ei=RFepTfixK4PhiALHstDvDA&sa=X&oi=book_result&ct=result&resnum=4&ved=0CCcQ6AEwAw#v=onepage&q&f=false'>Expert F# 2.0</a>
+            </li>
+         </ul>
+
+
 
       <div style="float: center; margin-top: 4em; margin-left: 1em; text-align: center">
          <a style='background-color: #fff' href='https://developer.mozilla.org/en/JavaScript/Reference/Global_Objects/Array' title='JS Array .slice'>
