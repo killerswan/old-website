@@ -1,0 +1,235 @@
+/* Kevin Cantu © 2010 */
+
+/*** LAYOUT ********************************************************/
+body {
+    margin: 0;
+    padding: 0;
+}
+
+/* a content section */
+.contentSection {
+    margin: auto;
+    margin-top: 80px;
+    margin-bottom: 50px;
+
+    max-width: 600px;
+
+    padding-left: 1em;
+    padding-right: 1em;
+}
+
+/* e.g. inserted images */
+#left {
+    float: left;
+    margin-right: 10px;
+}
+
+
+/*** FONTS ********************************************************/
+body {
+    font-family: Georgia, serif; 
+    font-size: 100%;
+}
+h1, h2, h3, h4, ul, ol, li, table, tr, th, td, dt, legend {
+    font-family: Helvetica, Arial, sans-serif;
+}
+code, pre {
+    font-family: Consolas, Inconsolata, monospace; /* TODO: Android? */
+}
+h1 {
+   letter-spacing: -3px;
+}
+h2 {
+   letter-spacing: -2px;
+}
+h3 {
+   letter-spacing: -1px;
+}
+
+/*** COLORS ********************************************************/
+
+/* BODY COLORS */
+body {
+    color: #383838;
+    background-color:  #fff;
+}
+
+/* common colors: 
+    green   5fa900
+    blue    5a7ac7
+    purple  a95fa9
+    pink    ff0f83
+    orange  ff4912
+    highlight yellow #ffb;
+    highlight yellow border: 2px solid #ff8;
+*/ 
+
+/* LINK COLORS */
+/*
+a:link, a:visited, a:hover, a:focus, a:active {
+    text-decoration: none;
+}
+*/
+
+/* REGULAR LINKS */
+/*
+a:link, a:focus, a:active {
+    color: #5fa900;
+}
+a:hover {
+    background-color: #5fa900;
+    color: #000;
+}
+*/
+
+/* VISITED LINKS */
+/*
+a:visited {
+    color: #a95fa9;
+}
+a:visited:hover {
+    color: #000;
+    background-color: #a95fa9;
+}
+*/
+
+
+/*** COMPONENTS ********************************************************/
+
+/*
+pre, code {
+   -moz-border-radius: 0.7em;
+   border-bottom-right-radius: 0.7em;
+   border-top-left-radius:     0.7em;
+   border-top-right-radius:    0.7em;
+   border-bottom-left-radius:  0.7em;
+}
+*/
+
+/* INSERTIONS */
+code {
+    color: #000;
+/*
+    background-color:  #f8f8f8;
+    color: #383838;
+*/
+}
+code:before {
+   content: "「"; /* U+300C */
+   color: #aaa;   /* U+300D */
+}
+code:after {
+   content: "」";
+   color: #aaa;
+}
+pre {
+    color: #000;
+    background-color:  #f4f4f4;
+    border: 2px solid #e0e0e0;
+    overflow: auto;
+    padding: 1em;
+    margin-bottom: 2em;
+}
+img {
+    padding: 0px;
+    margin: 0px;
+    border: 8px solid #e0e0e0;
+}
+blockquote {
+    margin-left: 10px;
+    margin-right: 10px;
+}
+
+
+/* TABLES */
+table {
+    /* table-layout: fixed; */
+    border-collapse: collapse;
+    margin-bottom: 2em;
+    margin-top: 1em;
+}
+table, th, td {
+    border: 2px solid #e0e0e0;
+    text-align: left;
+    padding: 2px;
+}
+th {
+    background-color:  #f4f4f4;
+}
+td.clickable {
+    cursor: pointer;
+}
+tr.shaded td {
+    background-color: #f8f8f8;
+}
+
+
+/* FIELDS AND FORMS */
+form {
+    margin-top: 1em;
+    margin-bottom: 2em;
+}
+fieldset {
+    color: #383838;
+    border: 2px solid #e0e0e0;
+    padding: 1em;
+}
+fieldset input {
+    color: #383838;
+}
+legend {
+    padding-left: 1em;
+    padding-right: 1em;
+    color: #383838;
+    border: 2px solid #e0e0e0;
+}
+
+
+/* LISTS */
+dt {
+    margin-top: 1em;
+}
+dd {
+    margin-bottom: 1em;
+}
+
+
+/*** PRETTIFY.JS ********************************************************/
+
+/* SPAN elements with the classes below are added by prettyprint. */
+.str { color: #5a7ac7; }               /* string */
+.kwd { color: #ff4912; }               /* keyword */
+.com { color: #777;/* #5fa900;*/ }     /* comment */
+.typ { color: #606; }                  /* type */
+.lit { /* color: #5fa900;*/ }          /* literal */
+.pun, .opn, .clo { color: #ff0f83; }   /* punctuation, ?, ? */
+.pln { /*color: #000; */}              /* plain punctuation */
+.tag { color: #008; }                  /* tag */
+.atn { color: #606; }                  /* attribute name */
+.atv { color: #080; }                  /* attribute value */
+.dec { color: #606; }                  /* declaration */
+
+/* Use higher contrast and font-styling for printable form. */
+@media print {
+  .str { color: #060; }
+  .kwd { color: #006; font-weight: bold; }
+  .com { color: #600; font-style: italic; }
+  .typ { color: #404; font-weight: bold; }
+  .lit { color: #044; }
+  .pun, .opn, .clo { color: #440; }
+  .pln { color: #000; }
+  .tag { color: #006; font-weight: bold; }
+  .atn { color: #404; }
+  .atv { color: #060; }
+}
+
+/* Put a border around prettyprinted code snippets. */
+/* pre.prettyprint { padding: 2px; border: 1px solid #888 } */
+
+/* Specify class=linenums on a pre to get line numbering */
+ol.linenums { margin-top: 0; margin-bottom: 0 } /* IE indents via margin-left */
+li.L0, li.L1, li.L2, li.L3, li.L5, li.L6, li.L7, li.L8 { list-style-type: none }
+/* Alternate shading for lines */
+li.L1, li.L3, li.L5, li.L7, li.L9 { /* background: #eee */ }
+
+

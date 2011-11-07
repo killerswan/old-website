@@ -1,0 +1,16 @@
+$ time ./blakesum_I.exe testheap.data
+b056be71a27c115febc421ee2a530f8569a735b67a05817fa20a5d536694875c18e61ca8181c24ec97914bc233f0b2f4d87a93ddc0e833c448d4a116516e8cb1 *testheap.data
+
+real    11m59.575s
+user    0m0.015s
+sys     0m0.015s
+
+Kevin@kpc ~/Desktop/Haskell-BLAKE
+$ ls -lh test
+testheap.data  tests.bat      tests.exe
+
+Kevin@kpc ~/Desktop/Haskell-BLAKE
+$ ls -lh testheap.data
+-rwx------+ 1 Kevin None 839M Jul  7 20:21 testheap.data
+
+

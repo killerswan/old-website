@@ -1,0 +1,244 @@
+<style> a.info{    position:relative;    z-index:24;    color:#000;    text-decoration:none}  a.info:hover{z-index:25;} a.info span{display: none} a.info:hover span{ /*the span will display just on :hover state*/    display:block;    position:absolute;    top:2em; left:2em; width:15em;    border:1px solid #0cf;    background-color:#cff; color:#000;    text-align: center} </style><pre>{-# LANGUAGE BangPatterns #-}
+module Data.Digest.SHA3.Candidate.BLAKE (blake256, blake512, blake224, blake384)
+       where
+import Data.Bits
+import Data.Word
+import Data.Int
+import Data.List
+import qualified Data.ByteString.Lazy as B
+import qualified Data.Vector.Storable as V
+ 
+initialValues224 :: V.Vector Word32
+initialValues224
+  = <a class=info href="#"><span>10</span><font style="background-color: #00ffffff">V.fromList
+      <a class=info href="#"><span>9</span><font style="background-color: #00ffffff">[3238371032, 914150663, 812702999, 4144912697, 4290775857, 1750603025,
+       1694076839, 3204075428]</font></a></font></a>
+ 
+initialValues256 :: V.Vector Word32
+initialValues256
+  = <a class=info href="#"><span>21</span><font style="background-color: #00ffffff">V.fromList
+      <a class=info href="#"><span>20</span><font style="background-color: #00ffffff">[1779033703, 3144134277, 1013904242, 2773480762, 1359893119, 2600822924,
+       528734635, 1541459225]</font></a></font></a>
+ 
+constants256 :: V.Vector Word32
+constants256
+  = <a class=info href="#"><span>40</span><font style="background-color: #00ffffff">V.fromList
+      <a class=info href="#"><span>39</span><font style="background-color: #00ffffff">[608135816, 2242054355, 320440878, 57701188, 2752067618, 698298832, 137296536,
+       3964562569, 1160258022, 953160567, 3193202383, 887688300, 3232508343,
+       3380367581, 1065670069, 3041331479]</font></a></font></a>
+ 
+initialValues384 :: V.Vector Word64
+initialValues384
+  = <a class=info href="#"><span>51</span><font style="background-color: #00ffffff">V.fromList
+      <a class=info href="#"><span>50</span><font style="background-color: #00ffffff">[14680500436340154072, 7105036623409894663, 10473403895298186519,
+       1526699215303891257, 7436329637833083697, 10282925794625328401,
+       15784041429090275239, 5167115440072839076]</font></a></font></a>
+ 
+initialValues512 :: V.Vector Word64
+initialValues512
+  = <a class=info href="#"><span>62</span><font style="background-color: #00ffffff">V.fromList
+      <a class=info href="#"><span>61</span><font style="background-color: #00ffffff">[7640891576956012808, 13503953896175478587, 4354685564936845355,
+       11912009170470909681, 5840696475078001361, 11170449401992604703,
+       2270897969802886507, 6620516959819538809]</font></a></font></a>
+ 
+constants512 :: V.Vector Word64
+constants512
+  = <a class=info href="#"><span>81</span><font style="background-color: #00ffffff">V.fromList
+      <a class=info href="#"><span>80</span><font style="background-color: #00ffffff">[2611923443488327891, 1376283091369227076, 11820040416388919760,
+       589684135938649225, 4983270260364809079, 13714699805381954668,
+       13883517620612518109, 4577018097722394903, 10526836309316205339,
+       15073842237943035308, 3458046377305235383, 13322122606961655446,
+       13437774018240085913, 2639559389850201335, 577009281997405206,
+       7163292796296056425]</font></a></font></a>
+ 
+sigmaTable :: [[Int]]
+sigmaTable
+  = <a class=info href="#"><span>252</span><font style="background-color: #00ffffff">[<a class=info href="#"><span>98</span><font style="background-color: #00ffffff">[0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15]</font></a>,
+     <a class=info href="#"><span>115</span><font style="background-color: #00ffffff">[14, 10, 4, 8, 9, 15, 13, 6, 1, 12, 0, 2, 11, 7, 5, 3]</font></a>,
+     <a class=info href="#"><span>132</span><font style="background-color: #00ffffff">[11, 8, 12, 0, 5, 2, 15, 13, 10, 14, 3, 6, 7, 1, 9, 4]</font></a>,
+     <a class=info href="#"><span>149</span><font style="background-color: #00ffffff">[7, 9, 3, 1, 13, 12, 11, 14, 2, 6, 5, 10, 4, 0, 15, 8]</font></a>,
+     <a class=info href="#"><span>166</span><font style="background-color: #00ffffff">[9, 0, 5, 7, 2, 4, 10, 15, 14, 1, 11, 12, 6, 8, 3, 13]</font></a>,
+     <a class=info href="#"><span>183</span><font style="background-color: #00ffffff">[2, 12, 6, 10, 0, 11, 8, 3, 4, 13, 7, 5, 15, 14, 1, 9]</font></a>,
+     <a class=info href="#"><span>200</span><font style="background-color: #00ffffff">[12, 5, 1, 15, 14, 13, 4, 10, 0, 7, 6, 3, 9, 2, 8, 11]</font></a>,
+     <a class=info href="#"><span>217</span><font style="background-color: #00ffffff">[13, 11, 7, 14, 12, 1, 3, 9, 5, 0, 15, 4, 8, 6, 2, 10]</font></a>,
+     <a class=info href="#"><span>234</span><font style="background-color: #00ffffff">[6, 15, 14, 9, 11, 3, 0, 8, 12, 2, 13, 7, 1, 4, 10, 5]</font></a>,
+     <a class=info href="#"><span>251</span><font style="background-color: #00ffffff">[10, 2, 8, 4, 7, 6, 1, 5, 15, 11, 9, 14, 3, 12, 13, 0]</font></a>]</font></a>
+ 
+bitshift ::
+           (Bits a, V.Storable a) =>
+           BLAKE a -> Int -> (a, a, a, a) -> V.Vector a -> Int -> (a, a, a, a)
+bitshift config ii (a, b, c, d) messageblock rnd
+  = <a class=info href="#"><span>347</span><font style="background-color: #ddff00">let constants' = <a class=info href="#"><span>255</span><font style="background-color: #00ffffff">constants config</font></a>
+        (rot0, rot1, rot2, rot3) = <a class=info href="#"><span>258</span><font style="background-color: #00ffffff">rotations config</font></a>
+        sigma n = <a class=info href="#"><span>266</span><font style="background-color: #fffc00"><a class=info href="#"><span>264</span><font style="background-color: #3dff00">sigmaTable !! <a class=info href="#"><span>263</span><font style="background-color: #00ffffff">(<a class=info href="#"><span>262</span><font style="background-color: #00ffffff">rnd `mod` 10</font></a>)</font></a></font></a> !! n</font></a>
+        messageword n = <a class=info href="#"><span>271</span><font style="background-color: #24ff00">messageblock V.! <a class=info href="#"><span>270</span><font style="background-color: #00ffffff">sigma n</font></a></font></a>
+        constant n = <a class=info href="#"><span>276</span><font style="background-color: #31ff00">constants' V.! <a class=info href="#"><span>275</span><font style="background-color: #00ffffff">sigma n</font></a></font></a>
+        i2 = <a class=info href="#"><span>279</span><font style="background-color: #49ff00">2 * ii</font></a>
+        a' = <a class=info href="#"><span>295</span><font style="background-color: #31ff00"><a class=info href="#"><span>282</span><font style="background-color: #00ffffff">a + b</font></a> + <a class=info href="#"><span>294</span><font style="background-color: #00ffffff">(<a class=info href="#"><span>293</span><font style="background-color: #00ffffff"><a class=info href="#"><span>286</span><font style="background-color: #00ffffff">messageword <a class=info href="#"><span>285</span><font style="background-color: #00ffffff">(i2)</font></a></font></a> `xor` <a class=info href="#"><span>292</span><font style="background-color: #00ffffff">constant <a class=info href="#"><span>291</span><font style="background-color: #00ffffff">(<a class=info href="#"><span>290</span><font style="background-color: #00ffffff">i2 + 1</font></a>)</font></a></font></a></font></a>)</font></a></font></a>
+        d' = <a class=info href="#"><span>301</span><font style="background-color: #00ffffff"><a class=info href="#"><span>299</span><font style="background-color: #00ffffff">(<a class=info href="#"><span>298</span><font style="background-color: #24ff00">d `xor` a'</font></a>)</font></a> `rotateR` rot0</font></a>
+        c' = <a class=info href="#"><span>304</span><font style="background-color: #00ffffff">c + d'</font></a>
+        b' = <a class=info href="#"><span>310</span><font style="background-color: #00ffffff"><a class=info href="#"><span>308</span><font style="background-color: #00ffffff">(<a class=info href="#"><span>307</span><font style="background-color: #00ffffff">b `xor` c'</font></a>)</font></a> `rotateR` rot1</font></a>
+        a'' = <a class=info href="#"><span>326</span><font style="background-color: #3dff00"><a class=info href="#"><span>313</span><font style="background-color: #00ffffff">a' + b'</font></a> + <a class=info href="#"><span>325</span><font style="background-color: #00ffffff">(<a class=info href="#"><span>324</span><font style="background-color: #00ffffff"><a class=info href="#"><span>319</span><font style="background-color: #00ffffff">messageword <a class=info href="#"><span>318</span><font style="background-color: #00ffffff">(<a class=info href="#"><span>317</span><font style="background-color: #00ffffff">i2 + 1</font></a>)</font></a></font></a> `xor` <a class=info href="#"><span>323</span><font style="background-color: #24ff00">constant <a class=info href="#"><span>322</span><font style="background-color: #00ffffff">(i2)</font></a></font></a></font></a>)</font></a></font></a>
+        d'' = <a class=info href="#"><span>332</span><font style="background-color: #00ffffff"><a class=info href="#"><span>330</span><font style="background-color: #00ffffff">(<a class=info href="#"><span>329</span><font style="background-color: #00ffffff">d' `xor` a''</font></a>)</font></a> `rotateR` rot2</font></a>
+        c'' = <a class=info href="#"><span>335</span><font style="background-color: #00ffffff">c' + d''</font></a>
+        b'' = <a class=info href="#"><span>341</span><font style="background-color: #00ffffff"><a class=info href="#"><span>339</span><font style="background-color: #00ffffff">(<a class=info href="#"><span>338</span><font style="background-color: #00ffffff">b' `xor` c''</font></a>)</font></a> `rotateR` rot3</font></a>
+      in <a class=info href="#"><span>346</span><font style="background-color: #00ffffff">(a'', b'', c'', d'')</font></a></font></a>
+ 
+blakeRound ::
+             (V.Storable a, Bits a) =>
+             BLAKE a -> V.Vector a -> V.Vector a -> Int -> V.Vector a
+blakeRound config messageblock state rnd
+  = <a class=info href="#"><span>493</span><font style="background-color: #31ff00">let g (ii, four) = <a class=info href="#"><span>358</span><font style="background-color: #00ffffff"><a class=info href="#"><span>356</span><font style="background-color: #49ff00"><a class=info href="#"><span>354</span><font style="background-color: #24ff00"><a class=info href="#"><span>352</span><font style="background-color: #00ffffff"><a class=info href="#"><span>350</span><font style="background-color: #00ffffff">bitshift config</font></a> ii</font></a> four</font></a> messageblock</font></a> rnd</font></a>
+        applyColumns state'
+          = <a class=info href="#"><span>427</span><font style="background-color: #00ffffff">let s' = <a class=info href="#"><span>361</span><font style="background-color: #fff300">(V.!) state'</font></a> in
+              <a class=info href="#"><span>426</span><font style="background-color: #00ffffff"><a class=info href="#"><span>364</span><font style="background-color: #00ffffff">map g</font></a>
+                <a class=info href="#"><span>425</span><font style="background-color: #00ffffff">[<a class=info href="#"><span>379</span><font style="background-color: #00ffffff">(0, <a class=info href="#"><span>378</span><font style="background-color: #00ffffff">(<a class=info href="#"><span>368</span><font style="background-color: #00ffffff">s' 0</font></a>, <a class=info href="#"><span>371</span><font style="background-color: #00ffffff">s' 4</font></a>, <a class=info href="#"><span>374</span><font style="background-color: #00ffffff">s' 8</font></a>, <a class=info href="#"><span>377</span><font style="background-color: #00ffffff">s' 12</font></a>)</font></a>)</font></a>, <a class=info href="#"><span>394</span><font style="background-color: #00ffffff">(1, <a class=info href="#"><span>393</span><font style="background-color: #00ffffff">(<a class=info href="#"><span>383</span><font style="background-color: #00ffffff">s' 1</font></a>, <a class=info href="#"><span>386</span><font style="background-color: #00ffffff">s' 5</font></a>, <a class=info href="#"><span>389</span><font style="background-color: #00ffffff">s' 9</font></a>, <a class=info href="#"><span>392</span><font style="background-color: #00ffffff">s' 13</font></a>)</font></a>)</font></a>,
+                 <a class=info href="#"><span>409</span><font style="background-color: #00ffffff">(2, <a class=info href="#"><span>408</span><font style="background-color: #00ffffff">(<a class=info href="#"><span>398</span><font style="background-color: #00ffffff">s' 2</font></a>, <a class=info href="#"><span>401</span><font style="background-color: #00ffffff">s' 6</font></a>, <a class=info href="#"><span>404</span><font style="background-color: #00ffffff">s' 10</font></a>, <a class=info href="#"><span>407</span><font style="background-color: #00ffffff">s' 14</font></a>)</font></a>)</font></a>, <a class=info href="#"><span>424</span><font style="background-color: #00ffffff">(3, <a class=info href="#"><span>423</span><font style="background-color: #00ffffff">(<a class=info href="#"><span>413</span><font style="background-color: #00ffffff">s' 3</font></a>, <a class=info href="#"><span>416</span><font style="background-color: #00ffffff">s' 7</font></a>, <a class=info href="#"><span>419</span><font style="background-color: #00ffffff">s' 11</font></a>, <a class=info href="#"><span>422</span><font style="background-color: #00ffffff">s' 15</font></a>)</font></a>)</font></a>]</font></a></font></a></font></a>
+        applyDiagonals
+          [(c00, c01, c02, c03), (c10, c11, c12, c13), (c20, c21, c22, c23),
+           (c30, c31, c32, c33)]
+          = <a class=info href="#"><span>460</span><font style="background-color: #00ffffff"><a class=info href="#"><span>430</span><font style="background-color: #24ff00">map g</font></a>
+              <a class=info href="#"><span>459</span><font style="background-color: #00ffffff">[<a class=info href="#"><span>437</span><font style="background-color: #00ffffff">(4, <a class=info href="#"><span>436</span><font style="background-color: #00ffffff">(c00, c11, c22, c33)</font></a>)</font></a>, <a class=info href="#"><span>444</span><font style="background-color: #00ffffff">(5, <a class=info href="#"><span>443</span><font style="background-color: #00ffffff">(c10, c21, c32, c03)</font></a>)</font></a>,
+               <a class=info href="#"><span>451</span><font style="background-color: #00ffffff">(6, <a class=info href="#"><span>450</span><font style="background-color: #00ffffff">(c20, c31, c02, c13)</font></a>)</font></a>, <a class=info href="#"><span>458</span><font style="background-color: #00ffffff">(7, <a class=info href="#"><span>457</span><font style="background-color: #00ffffff">(c30, c01, c12, c23)</font></a>)</font></a>]</font></a></font></a>
+        applyDiagonals _ = <a class=info href="#"><span>463</span><font style="background-color: #00ffffff">error "applyDiagonals: fail"</font></a>
+        manualSpin
+          [(d00, d01, d02, d03), (d10, d11, d12, d13), (d20, d21, d22, d23),
+           (d30, d31, d32, d33)]
+          = <a class=info href="#"><span>482</span><font style="background-color: #56ff00">V.fromList
+              <a class=info href="#"><span>481</span><font style="background-color: #24ff00">[d00, d10, d20, d30, d31, d01, d11, d21, d22, d32, d02, d12, d13, d23, d33, d03]</font></a></font></a>
+        manualSpin _ = <a class=info href="#"><span>485</span><font style="background-color: #00ffffff">error "manualSpin: fail"</font></a>
+      in <a class=info href="#"><span>492</span><font style="background-color: #00ffffff">manualSpin $ <a class=info href="#"><span>491</span><font style="background-color: #00ffffff">applyDiagonals $ <a class=info href="#"><span>490</span><font style="background-color: #00ffffff">applyColumns state</font></a></font></a></font></a></font></a>
+ 
+initialState ::
+               (V.Storable a, Bits a) => BLAKE a -> V.Vector a -> [a] -> [a] -> V.Vector a
+initialState config h s t
+  = <a class=info href="#"><span>532</span><font style="background-color: #00ffffff">let constants' = <a class=info href="#"><span>496</span><font style="background-color: #00ffffff">constants config</font></a>
+        partialConstants = <a class=info href="#"><span>501</span><font style="background-color: #00ffffff"><a class=info href="#"><span>499</span><font style="background-color: #00ffffff">V.take 8</font></a> constants'</font></a>
+        counter = <a class=info href="#"><span>516</span><font style="background-color: #00ffffff">V.fromList <a class=info href="#"><span>515</span><font style="background-color: #00ffffff">[<a class=info href="#"><span>505</span><font style="background-color: #00ffffff">t !! 1</font></a>, <a class=info href="#"><span>508</span><font style="background-color: #00ffffff">t !! 1</font></a>, <a class=info href="#"><span>511</span><font style="background-color: #00ffffff">t !! 0</font></a>, <a class=info href="#"><span>514</span><font style="background-color: #00ffffff">t !! 0</font></a>]</font></a></font></a>
+        stateAndCount = <a class=info href="#"><span>521</span><font style="background-color: #00ffffff"><a class=info href="#"><span>519</span><font style="background-color: #00ffffff">V.fromList s</font></a> V.++ counter</font></a>
+        chainPlusStuff = <a class=info href="#"><span>528</span><font style="background-color: #00ffffff"><a class=info href="#"><span>526</span><font style="background-color: #00ffffff"><a class=info href="#"><span>524</span><font style="background-color: #00ffffff">V.zipWith xor</font></a> stateAndCount</font></a> partialConstants</font></a>
+      in <a class=info href="#"><span>531</span><font style="background-color: #00ffffff">h V.++ chainPlusStuff</font></a></font></a>
+ 
+compress ::
+           (V.Storable a, Bits a) =>
+           BLAKE a -> [a] -> V.Vector a -> (V.Vector a, [a]) -> V.Vector a
+compress config salt h (m, t)
+  = <a class=info href="#"><span>583</span><font style="background-color: #00ffffff">let rounds' = <a class=info href="#"><span>535</span><font style="background-color: #00ffffff">rounds config</font></a>
+        initial = <a class=info href="#"><span>544</span><font style="background-color: #00ffffff"><a class=info href="#"><span>542</span><font style="background-color: #00ffffff"><a class=info href="#"><span>540</span><font style="background-color: #00ffffff"><a class=info href="#"><span>538</span><font style="background-color: #00ffffff">initialState config</font></a> h</font></a> salt</font></a> t</font></a>
+        v = <a class=info href="#"><span>560</span><font style="background-color: #00ffffff"><a class=info href="#"><span>554</span><font style="background-color: #00ffffff"><a class=info href="#"><span>552</span><font style="background-color: #00ffffff">foldl <a class=info href="#"><span>551</span><font style="background-color: #00ffffff">(<a class=info href="#"><span>550</span><font style="background-color: #00ffffff"><a class=info href="#"><span>548</span><font style="background-color: #00ffffff">blakeRound config</font></a> m</font></a>)</font></a></font></a> initial</font></a> <a class=info href="#"><span>559</span><font style="background-color: #00ffffff">[0 .. <a class=info href="#"><span>558</span><font style="background-color: #00ffffff">rounds' - 1</font></a>]</font></a></font></a>
+        (v0, v1) = <a class=info href="#"><span>565</span><font style="background-color: #00ffffff"><a class=info href="#"><span>563</span><font style="background-color: #00ffffff">V.splitAt 8</font></a> v</font></a>
+        s' = <a class=info href="#"><span>568</span><font style="background-color: #00ffffff">V.fromList salt</font></a>
+        s'' = <a class=info href="#"><span>571</span><font style="background-color: #00ffffff">s' V.++ s'</font></a>
+      in <a class=info href="#"><span>582</span><font style="background-color: #00ffffff"><a class=info href="#"><span>580</span><font style="background-color: #31ff00"><a class=info href="#"><span>578</span><font style="background-color: #00ffffff"><a class=info href="#"><span>576</span><font style="background-color: #00ffffff"><a class=info href="#"><span>574</span><font style="background-color: #00ffffff">V.zipWith4 xor4</font></a> h</font></a> s''</font></a> v0</font></a> v1</font></a></font></a>
+  where xor4 a b c d = <a class=info href="#"><span>590</span><font style="background-color: #00ffffff"><a class=info href="#"><span>588</span><font style="background-color: #00ffffff"><a class=info href="#"><span>586</span><font style="background-color: #00ffffff">a `xor` b</font></a> `xor` c</font></a> `xor` d</font></a>
+ 
+toByteString ::
+               (Integral a, Bits a, V.Storable a) => Int -> V.Vector a -> B.ByteString
+toByteString size mydata
+  = <a class=info href="#"><span>629</span><font style="background-color: #00ffffff">let octets = <a class=info href="#"><span>593</span><font style="background-color: #00ffffff">size `div` 8</font></a>
+        g w n = <a class=info href="#"><span>599</span><font style="background-color: #00ffffff">w `shiftR` <a class=info href="#"><span>598</span><font style="background-color: #00ffffff">(<a class=info href="#"><span>597</span><font style="background-color: #00ffffff">n * 8</font></a>)</font></a></font></a>
+        toBytes w = <a class=info href="#"><span>615</span><font style="background-color: #00ffffff"><a class=info href="#"><span>605</span><font style="background-color: #00ffffff">V.map <a class=info href="#"><span>604</span><font style="background-color: #00ffffff">(<a class=info href="#"><span>603</span><font style="background-color: #00ffffff">g w</font></a>)</font></a></font></a> $ <a class=info href="#"><span>614</span><font style="background-color: #00ffffff">V.fromList $ <a class=info href="#"><span>613</span><font style="background-color: #00ffffff">reverse <a class=info href="#"><span>612</span><font style="background-color: #00ffffff">[0 .. <a class=info href="#"><span>611</span><font style="background-color: #00ffffff">octets - 1</font></a>]</font></a></font></a></font></a></font></a>
+      in <a class=info href="#"><span>628</span><font style="background-color: #00ffffff">B.pack $ <a class=info href="#"><span>627</span><font style="background-color: #00ffffff">V.toList $ <a class=info href="#"><span>626</span><font style="background-color: #00ffffff"><a class=info href="#"><span>620</span><font style="background-color: #00ffffff">V.map fromIntegral</font></a> $ <a class=info href="#"><span>625</span><font style="background-color: #00ffffff"><a class=info href="#"><span>623</span><font style="background-color: #00ffffff">V.concatMap toBytes</font></a> mydata</font></a></font></a></font></a></font></a></font></a>
+ 
+blocks ::
+         (Bits a, Integral a, Num a, V.Storable a) =>
+         BLAKE a -> B.ByteString -> [(V.Vector a, [a])]
+blocks config message'
+  = <a class=info href="#"><span>753</span><font style="background-color: #00ffffff">let wordSize' = <a class=info href="#"><span>632</span><font style="background-color: #00ffffff">wordSize config</font></a>
+        loop counter message
+          = <a class=info href="#"><span>747</span><font style="background-color: #00ffffff">let (m, ms) = <a class=info href="#"><span>640</span><font style="background-color: #00ffffff"><a class=info href="#"><span>638</span><font style="background-color: #00ffffff">B.splitAt <a class=info href="#"><span>637</span><font style="background-color: #00ffffff">(<a class=info href="#"><span>636</span><font style="background-color: #00ffffff">wordSize' * 2</font></a>)</font></a></font></a> message</font></a>
+                len = <a class=info href="#"><span>645</span><font style="background-color: #00ffffff">8 * <a class=info href="#"><span>644</span><font style="background-color: #00ffffff">B.length m</font></a></font></a>
+                counter' = <a class=info href="#"><span>652</span><font style="background-color: #00ffffff"><a class=info href="#"><span>648</span><font style="background-color: #00ffffff">(<a class=info href="#"><span>647</span><font style="background-color: #00ffffff">counter :: Integer</font></a>)</font></a> + <a class=info href="#"><span>651</span><font style="background-color: #00ffffff">fromIntegral len</font></a></font></a>
+                counterMSW = <a class=info href="#"><span>661</span><font style="background-color: #00ffffff">fromIntegral $ <a class=info href="#"><span>660</span><font style="background-color: #00ffffff">counter' `shiftR` <a class=info href="#"><span>659</span><font style="background-color: #00ffffff">(<a class=info href="#"><span>658</span><font style="background-color: #00ffffff"><a class=info href="#"><span>657</span><font style="background-color: #00ffffff">fromIntegral wordSize'</font></a> :: Int</font></a>)</font></a></font></a></font></a>
+                counterLSW = <a class=info href="#"><span>664</span><font style="background-color: #00ffffff">fromIntegral counter'</font></a>
+                splitCounter = <a class=info href="#"><span>667</span><font style="background-color: #00ffffff">[counterMSW, counterLSW]</font></a>
+              in
+              <a class=info href="#"><span>746</span><font style="background-color: #00ffffff">if <a class=info href="#"><span>677</span><font style="background-color: #00ffffff"><a class=info href="#"><span>673</span><font style="background-color: #00ffffff">len < <a class=info href="#"><span>672</span><font style="background-color: #00ffffff">(<a class=info href="#"><span>671</span><font style="background-color: #00ffffff">16 * wordSize'</font></a>)</font></a></font></a> || <a class=info href="#"><span>676</span><font style="background-color: #00ffffff">ms == B.empty</font></a></font></a> then
+                <a class=info href="#"><span>729</span><font style="background-color: #00ffffff">let padded = <a class=info href="#"><span>684</span><font style="background-color: #00ffffff">m `B.append` <a class=info href="#"><span>683</span><font style="background-color: #00ffffff"><a class=info href="#"><span>681</span><font style="background-color: #00ffffff">makePadding config</font></a> len</font></a></font></a>
+                    final = <a class=info href="#"><span>691</span><font style="background-color: #00ffffff"><a class=info href="#"><span>689</span><font style="background-color: #00ffffff"><a class=info href="#"><span>687</span><font style="background-color: #00ffffff">makeWords wordSize'</font></a> padded</font></a> ++ splitCounter</font></a>
+                  in
+                  <a class=info href="#"><span>728</span><font style="background-color: #00ffffff">case <a class=info href="#"><span>694</span><font style="background-color: #00ffffff">length final</font></a> of
+                      16 -> <a class=info href="#"><span>701</span><font style="background-color: #00ffffff">[<a class=info href="#"><span>700</span><font style="background-color: #00ffffff">(<a class=info href="#"><span>698</span><font style="background-color: #00ffffff">(<a class=info href="#"><span>697</span><font style="background-color: #00ffffff">V.fromList final</font></a>)</font></a>, splitCounter)</font></a>]</font></a>
+                      32 -> <a class=info href="#"><span>724</span><font style="background-color: #00ffffff">[<a class=info href="#"><span>711</span><font style="background-color: #00ffffff">(<a class=info href="#"><span>709</span><font style="background-color: #00ffffff">(<a class=info href="#"><span>708</span><font style="background-color: #00ffffff">V.fromList $ <a class=info href="#"><span>707</span><font style="background-color: #00ffffff"><a class=info href="#"><span>705</span><font style="background-color: #00ffffff">take 16</font></a> final</font></a></font></a>)</font></a>, splitCounter)</font></a>,
+                             <a class=info href="#"><span>723</span><font style="background-color: #00ffffff">(<a class=info href="#"><span>719</span><font style="background-color: #00ffffff">(<a class=info href="#"><span>718</span><font style="background-color: #00ffffff">V.fromList $ <a class=info href="#"><span>717</span><font style="background-color: #00ffffff"><a class=info href="#"><span>715</span><font style="background-color: #00ffffff">drop 16</font></a> final</font></a></font></a>)</font></a>, <a class=info href="#"><span>722</span><font style="background-color: #00ffffff">[0, 0]</font></a>)</font></a>]</font></a>
+                      _ -> <a class=info href="#"><span>727</span><font style="background-color: #00ffffff">error "we have created a monster! padding --> nonsense"</font></a></font></a></font></a>
+                else <a class=info href="#"><span>745</span><font style="background-color: #00ffffff"><a class=info href="#"><span>739</span><font style="background-color: #00ffffff">(<a class=info href="#"><span>737</span><font style="background-color: #00ffffff">(<a class=info href="#"><span>736</span><font style="background-color: #24ff00">V.fromList $ <a class=info href="#"><span>735</span><font style="background-color: #00ffffff"><a class=info href="#"><span>733</span><font style="background-color: #00ffffff">makeWords wordSize'</font></a> m</font></a></font></a>)</font></a>, splitCounter)</font></a> : <a class=info href="#"><span>744</span><font style="background-color: #00ffffff"><a class=info href="#"><span>742</span><font style="background-color: #00ffffff">loop counter'</font></a> ms</font></a></font></a></font></a></font></a>
+      in <a class=info href="#"><span>752</span><font style="background-color: #00ffffff"><a class=info href="#"><span>750</span><font style="background-color: #00ffffff">loop 0</font></a> message'</font></a></font></a>
+ 
+nfoldl :: Int64 -> (B.ByteString -> a) -> B.ByteString -> [a]
+nfoldl n fn xs
+  = <a class=info href="#"><span>781</span><font style="background-color: #00ffffff">let (x, xs') = <a class=info href="#"><span>758</span><font style="background-color: #00ffffff"><a class=info href="#"><span>756</span><font style="background-color: #00ffffff">B.splitAt n</font></a> xs</font></a> in
+      <a class=info href="#"><span>780</span><font style="background-color: #00ffffff">case <a class=info href="#"><span>761</span><font style="background-color: #00ffffff">B.length x</font></a> of
+          0 -> <a class=info href="#"><span>762</span><font style="background-color: #00ffffff">[]</font></a>
+          len | <a class=info href="#"><span>765</span><font style="background-color: #00ffffff">len < n</font></a> -> <a class=info href="#"><span>768</span><font style="background-color: #00ffffff">error "nfoldl: didn't have n remaining"</font></a>
+          _ -> <a class=info href="#"><span>779</span><font style="background-color: #00ffffff"><a class=info href="#"><span>771</span><font style="background-color: #00ffffff">fn x</font></a> : <a class=info href="#"><span>778</span><font style="background-color: #00ffffff"><a class=info href="#"><span>776</span><font style="background-color: #00ffffff"><a class=info href="#"><span>774</span><font style="background-color: #00ffffff">nfoldl n</font></a> fn</font></a> xs'</font></a></font></a></font></a></font></a>
+ 
+growWord :: (Integral a, Bits a) => B.ByteString -> a
+growWord = <a class=info href="#"><span>786</span><font style="background-color: #00ffffff"><a class=info href="#"><span>784</span><font style="background-color: #3dff00">B.foldl' shiftAcc</font></a> 0</font></a>
+  where shiftAcc acc x = <a class=info href="#"><span>796</span><font style="background-color: #00ffffff"><a class=info href="#"><span>792</span><font style="background-color: #00ffffff">(<a class=info href="#"><span>791</span><font style="background-color: #00ffffff"><a class=info href="#"><span>789</span><font style="background-color: #00ffffff">fromIntegral acc</font></a> `shift` 8</font></a>)</font></a> + <a class=info href="#"><span>795</span><font style="background-color: #00ffffff">fromIntegral x</font></a></font></a>
+ 
+makeWords :: (Bits a, Integral a) => Int64 -> B.ByteString -> [a]
+makeWords n ss = <a class=info href="#"><span>806</span><font style="background-color: #00ffffff"><a class=info href="#"><span>804</span><font style="background-color: #00ffffff"><a class=info href="#"><span>802</span><font style="background-color: #00ffffff">nfoldl <a class=info href="#"><span>801</span><font style="background-color: #00ffffff">(<a class=info href="#"><span>800</span><font style="background-color: #00ffffff">n `div` 8</font></a>)</font></a></font></a> growWord</font></a> ss</font></a>
+ 
+makePadding :: BLAKE a -> Int64 -> B.ByteString
+makePadding config len
+  = <a class=info href="#"><span>865</span><font style="background-color: #00ffffff">let wordSize' = <a class=info href="#"><span>809</span><font style="background-color: #00ffffff">wordSize config</font></a>
+        paddingTerminator' = <a class=info href="#"><span>812</span><font style="background-color: #00ffffff">paddingTerminator config</font></a>
+        targetbits = <a class=info href="#"><span>818</span><font style="background-color: #00ffffff"><a class=info href="#"><span>816</span><font style="background-color: #00ffffff">(<a class=info href="#"><span>815</span><font style="background-color: #00ffffff">14 * wordSize'</font></a>)</font></a> - 2</font></a>
+        zerobits = <a class=info href="#"><span>827</span><font style="background-color: #00ffffff"><a class=info href="#"><span>822</span><font style="background-color: #00ffffff">(<a class=info href="#"><span>821</span><font style="background-color: #00ffffff">targetbits - len</font></a>)</font></a> `mod` <a class=info href="#"><span>826</span><font style="background-color: #00ffffff">(<a class=info href="#"><span>825</span><font style="background-color: #00ffffff">16 * wordSize'</font></a>)</font></a></font></a>
+        zerobytes = <a class=info href="#"><span>835</span><font style="background-color: #00ffffff"><a class=info href="#"><span>833</span><font style="background-color: #00ffffff">(<a class=info href="#"><span>832</span><font style="background-color: #00ffffff"><a class=info href="#"><span>830</span><font style="background-color: #00ffffff">zerobits - 7</font></a> - 7</font></a>)</font></a> `div` 8</font></a>
+        zbs = <a class=info href="#"><span>843</span><font style="background-color: #00ffffff"><a class=info href="#"><span>838</span><font style="background-color: #00ffffff">B.take zerobytes</font></a> <a class=info href="#"><span>842</span><font style="background-color: #00ffffff">(<a class=info href="#"><span>841</span><font style="background-color: #00ffffff">B.repeat 0</font></a>)</font></a></font></a>
+      in
+      <a class=info href="#"><span>864</span><font style="background-color: #00ffffff">case zerobits of
+          z | <a class=info href="#"><span>847</span><font style="background-color: #00ffffff">z == 6</font></a> -> <a class=info href="#"><span>852</span><font style="background-color: #00ffffff">B.singleton $ <a class=info href="#"><span>851</span><font style="background-color: #00ffffff">128 + paddingTerminator'</font></a></font></a>
+          z | <a class=info href="#"><span>855</span><font style="background-color: #00ffffff">z > 6</font></a> -> <a class=info href="#"><span>860</span><font style="background-color: #00ffffff"><a class=info href="#"><span>858</span><font style="background-color: #00ffffff">128 `B.cons` zbs</font></a> `B.snoc` paddingTerminator'</font></a>
+          _ -> <a class=info href="#"><span>863</span><font style="background-color: #00ffffff">error "assumption: adjustment of the input bits should be 0 `mod` 8 "</font></a></font></a></font></a>
+ 
+blake ::
+        (V.Storable a, Bits a, Integral a) =>
+        BLAKE a -> B.ByteString -> B.ByteString -> B.ByteString
+blake config salt message
+  = <a class=info href="#"><span>907</span><font style="background-color: #00ffffff">let initialValues' = <a class=info href="#"><span>868</span><font style="background-color: #00ffffff">initialValues config</font></a>
+        wordSize' = <a class=info href="#"><span>871</span><font style="background-color: #00ffffff">wordSize config</font></a>
+        fromWtoB' = <a class=info href="#"><span>874</span><font style="background-color: #00ffffff">fromWtoB config</font></a>
+        salt' = <a class=info href="#"><span>879</span><font style="background-color: #00ffffff"><a class=info href="#"><span>877</span><font style="background-color: #00ffffff">makeWords wordSize'</font></a> salt</font></a>
+      in
+      <a class=info href="#"><span>906</span><font style="background-color: #00ffffff">if <a class=info href="#"><span>884</span><font style="background-color: #00ffffff"><a class=info href="#"><span>882</span><font style="background-color: #00ffffff">length salt'</font></a> /= 4</font></a> then <a class=info href="#"><span>887</span><font style="background-color: #00ffffff">error "blake: your salt is not four words"</font></a> else
+        <a class=info href="#"><span>905</span><font style="background-color: #00ffffff">fromWtoB' $
+          <a class=info href="#"><span>904</span><font style="background-color: #00ffffff"><a class=info href="#"><span>898</span><font style="background-color: #00ffffff"><a class=info href="#"><span>896</span><font style="background-color: #00ffffff">foldl' <a class=info href="#"><span>895</span><font style="background-color: #00ffffff">(<a class=info href="#"><span>894</span><font style="background-color: #00ffffff"><a class=info href="#"><span>892</span><font style="background-color: #00ffffff">compress config</font></a> salt'</font></a>)</font></a></font></a> initialValues'</font></a> $ <a class=info href="#"><span>903</span><font style="background-color: #00ffffff"><a class=info href="#"><span>901</span><font style="background-color: #00ffffff">blocks config</font></a> message</font></a></font></a></font></a></font></a></font></a>
+ 
+data BLAKE a = BLAKE{initialValues :: V.Vector a, constants :: V.Vector a,
+                     rotations :: (Int, Int, Int, Int), rounds :: Int, paddingTerminator :: Word8,
+                     wordSize :: Int64, fromWtoB :: V.Vector a -> B.ByteString}
+ 
+blake256 :: B.ByteString -> B.ByteString -> B.ByteString
+blake256 salt message
+  = <a class=info href="#"><span>930</span><font style="background-color: #00ffffff">let config
+          = <a class=info href="#"><span>922</span><font style="background-color: #00ffffff">BLAKE{initialValues = initialValues256, constants = constants256,
+                  rotations = <a class=info href="#"><span>914</span><font style="background-color: #00ffffff">(16, 12, 8, 7)</font></a>, rounds = 14, paddingTerminator = 1, wordSize = 32,
+                  fromWtoB = <a class=info href="#"><span>921</span><font style="background-color: #00ffffff"><a class=info href="#"><span>920</span><font style="background-color: #00ffffff">toByteString 32</font></a> :: V.Vector Word32 -> B.ByteString</font></a>}</font></a>
+      in <a class=info href="#"><span>929</span><font style="background-color: #00ffffff"><a class=info href="#"><span>927</span><font style="background-color: #00ffffff"><a class=info href="#"><span>925</span><font style="background-color: #00ffffff">blake config</font></a> salt</font></a> message</font></a></font></a>
+ 
+blake512 :: B.ByteString -> B.ByteString -> B.ByteString
+blake512 salt message
+  = <a class=info href="#"><span>953</span><font style="background-color: #00ffffff">let config
+          = <a class=info href="#"><span>945</span><font style="background-color: #00ffffff">BLAKE{initialValues = initialValues512, constants = constants512,
+                  rotations = <a class=info href="#"><span>937</span><font style="background-color: #00ffffff">(32, 25, 16, 11)</font></a>, rounds = 16, paddingTerminator = 1, wordSize = 64,
+                  fromWtoB = <a class=info href="#"><span>944</span><font style="background-color: #00ffffff"><a class=info href="#"><span>943</span><font style="background-color: #00ffffff">toByteString 64</font></a> :: V.Vector Word64 -> B.ByteString</font></a>}</font></a>
+      in <a class=info href="#"><span>952</span><font style="background-color: #00ffffff"><a class=info href="#"><span>950</span><font style="background-color: #00ffffff"><a class=info href="#"><span>948</span><font style="background-color: #00ffffff">blake config</font></a> salt</font></a> message</font></a></font></a>
+ 
+blake224 :: B.ByteString -> B.ByteString -> B.ByteString
+blake224 salt message
+  = <a class=info href="#"><span>980</span><font style="background-color: #00ffffff">let config
+          = <a class=info href="#"><span>968</span><font style="background-color: #00ffffff">BLAKE{initialValues = initialValues224, constants = constants256,
+                  rotations = <a class=info href="#"><span>960</span><font style="background-color: #00ffffff">(16, 12, 8, 7)</font></a>, rounds = 14, paddingTerminator = 0, wordSize = 32,
+                  fromWtoB = <a class=info href="#"><span>967</span><font style="background-color: #00ffffff"><a class=info href="#"><span>966</span><font style="background-color: #00ffffff">toByteString 32</font></a> :: V.Vector Word32 -> B.ByteString</font></a>}</font></a>
+      in <a class=info href="#"><span>979</span><font style="background-color: #00ffffff"><a class=info href="#"><span>971</span><font style="background-color: #00ffffff">B.take 28</font></a> $ <a class=info href="#"><span>978</span><font style="background-color: #00ffffff"><a class=info href="#"><span>976</span><font style="background-color: #00ffffff"><a class=info href="#"><span>974</span><font style="background-color: #00ffffff">blake config</font></a> salt</font></a> message</font></a></font></a></font></a>
+ 
+blake384 :: B.ByteString -> B.ByteString -> B.ByteString
+blake384 salt message
+  = <a class=info href="#"><span>1007</span><font style="background-color: #00ffffff">let config
+          = <a class=info href="#"><span>995</span><font style="background-color: #00ffffff">BLAKE{initialValues = initialValues384, constants = constants512,
+                  rotations = <a class=info href="#"><span>987</span><font style="background-color: #00ffffff">(32, 25, 16, 11)</font></a>, rounds = 16, paddingTerminator = 0, wordSize = 64,
+                  fromWtoB = <a class=info href="#"><span>994</span><font style="background-color: #00ffffff"><a class=info href="#"><span>993</span><font style="background-color: #00ffffff">toByteString 64</font></a> :: V.Vector Word64 -> B.ByteString</font></a>}</font></a>
+      in <a class=info href="#"><span>1006</span><font style="background-color: #00ffffff"><a class=info href="#"><span>998</span><font style="background-color: #00ffffff">B.take 48</font></a> $ <a class=info href="#"><span>1005</span><font style="background-color: #00ffffff"><a class=info href="#"><span>1003</span><font style="background-color: #00ffffff"><a class=info href="#"><span>1001</span><font style="background-color: #00ffffff">blake config</font></a> salt</font></a> message</font></a></font></a></font></a></pre>

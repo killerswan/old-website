@@ -1,0 +1,103 @@
+<!doctype html><html><head><meta charset='utf-8'><!-- Kevin Cantu © 2011 -->
+
+<title>Wave</title>
+
+<base href='http://kevincantu.org/'>
+<link href='./lib/delta/main.css'  type='text/css' rel='stylesheet'>
+<link href='./lib/delta/title.css' type='text/css' rel='stylesheet'>
+
+<script src='./lib/3p/jquery/jquery-1.4.3.min.js'></script>
+<script src='./lib/3p/underscore/underscore-min.js'></script>
+<script src='./lib/delta/title.js'></script>
+
+<script src='./lib/3p/prettify/src/prettify.js'></script> 
+<script src='./lib/3p/prettify/src/lang-hs.js'></script> 
+<script src='./lib/3p/prettify/src/lang-ml.js'></script> 
+
+<style>
+   table.operators tr td {
+      font-family: Inconsolata, Consolas, monospace
+   }
+</style>
+
+<script>
+var _gaq = _gaq || [];
+_gaq.push(['_setAccount', 'UA-13261525-5']);
+_gaq.push(['_setDomainName', '.kevincantu.org']);
+_gaq.push(['_trackPageview']);
+
+$(document).ready(function() {
+   try {
+      var ga = document.createElement('script');
+      ga.type = 'text/javascript';
+      ga.async = true;
+      ga.src = ('https:' == document.location.protocol ?
+                  'https://ssl' : 'http://www') +
+                  '.google-analytics.com/ga.js';
+      var s = document.getElementsByTagName('script')[0];
+      s.parentNode.insertBefore(ga, s);
+   } catch (e) {}
+});
+</script>
+
+</head>
+<body>
+<div class='contentSection'>
+   <div class='contentHeader'> <h1>Google Wave</h1></div>
+
+   <p>It has now been quite a while, but I was briefly very excited about Google's Wave project, 
+     particularly the protocol itself and federated servers.</p>
+  
+ 
+  <p>I saw it as a possible solution to one of the most frustrating processes we regularly have experienced
+    at work: rather than email back and forth copies of a Word document with tracked changes, it would
+    be much nicer to collaboratively edit a single Wave message.</p>
+  
+  <p>If Google's open sourced federated version of server software, and other implementations took off, I saw 
+    this as a spectacular way to, as Google suggested, replace some big uses of email.  We would be able to
+  run our own, trustworthy servers, send encrypted messages to other servers, and manage these messages with
+  collaborative editing and change tracking!</p>
+  
+  <p>Google's open source implementation, FedOne, lacked a persistent storage system or a pretty UI, it 
+    allowed an interesting look at and testing of the protocol.  Wave servers negotiated XMPP connections,
+    which could be authenticated with SSL/TLS and encrypted, and then exchanged XMPP messages carrying the
+    Wave protocol itself.
+  </p>
+
+  <p>When I started playing with things, I wrote a <a href="./code/wave/howto.html">Wave HOWTO</a> and started talking to all the other people hacking around with Wave.
+  
+  In the process, I found and wrestled with interesting issues with, for example,  
+  <a href='http://code.google.com/p/wave-protocol/issues/detail?id=49'>server-to-server negotiation</a> 
+  (<a href='https://bitbucket.org/killerswan/wave-protocol-kshh/diff/src/org/waveprotocol/wave/examples/fedone/federation/xmpp/XmppDisco.java?diff2=f77326b8f09d&diff1=21e6c3db105f'>XmppDisco.java</a>, 
+    <a href='./code/wave/wave-protocol-kshh-f77326b8f09d.diff'>patch</a>) 
+  and 
+  <a href='http://code.google.com/p/wave-protocol/issues/detail?id=58'>discovery</a>.
+  
+  </p>
+  
+    <p>Although Google's own implementation, "Google Wave", had a brief moment in the sun, and 
+      third parties were being encouraged to develop compatible services (such as Novell Pulse), things 
+      gradually slowed to a halt.
+      
+  I don't know what Google's official metrics for success or failure of the project were, but now it is 
+    mostly history, relegated to an <a href='http://incubator.apache.org/wave/'>Apache incubator</a>.
+  </p>
+  
+  <p>I think Google, however, did two things wrong.  First, they did not negotiate the arrangements with Yahoo
+    and Microsoft that would have been necessary (at the very least) to get Wave's protocol on a track 
+    to replace email.  Second, they targeted it incorrectly: rather than talk extensively about uses like 
+    the complicated collaborative document editing that they had designed it for and users like me saw such promise in,
+    they made it look like an instant messaging platform.
+  </p>
+  
+  
+  <p>I do hope that someday, though, somebody makes the right tool to ease my document shuffling chaos...</p>
+
+
+</div>
+
+<script>
+</script>
+</body>
+</html>
+

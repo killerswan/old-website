@@ -1,0 +1,204 @@
+<!doctype html><html><head><meta charset='utf-8'><!-- Kevin Cantu © 2011 -->
+
+<title>Haskell "hello world" with `let`</title>
+
+<base href='http://kevincantu.org/'>
+<link href='./lib/delta/main.css'  type='text/css' rel='stylesheet'>
+<link href='./lib/delta/title.css' type='text/css' rel='stylesheet'>
+
+<script src='./lib/3p/jquery/jquery-1.4.3.min.js'></script>
+<script src='./lib/3p/underscore/underscore-min.js'></script>
+<script src='./lib/delta/title.js'></script>
+
+<script src='./lib/3p/prettify/src/prettify.js'></script> 
+<script src='./lib/3p/prettify/src/lang-hs.js'></script> 
+<script src='./lib/3p/prettify/src/lang-ml.js'></script> 
+
+<style>
+   table.operators tr td {
+      font-family: Inconsolata, Consolas, monospace
+   }
+</style>
+
+<script>
+var _gaq = _gaq || [];
+_gaq.push(['_setAccount', 'UA-13261525-5']);
+_gaq.push(['_setDomainName', '.kevincantu.org']);
+_gaq.push(['_trackPageview']);
+
+$(document).ready(function() {
+   try {
+      var ga = document.createElement('script');
+      ga.type = 'text/javascript';
+      ga.async = true;
+      ga.src = ('https:' == document.location.protocol ?
+                  'https://ssl' : 'http://www') +
+                  '.google-analytics.com/ga.js';
+      var s = document.getElementsByTagName('script')[0];
+      s.parentNode.insertBefore(ga, s);
+   } catch (e) {}
+});
+</script>
+
+</head>
+<body>
+<div class='contentSection'>
+   <div class='contentHeader'> <h1>Haskell "hello world" with <code>let</code></h1></div>
+
+   <p>Several related things really bothered me about Haskell's symmetry
+      when I began learning Haskell, so I'd like to give other novices a heads up.
+      This brief post explains the essentials, including <code>let</code>.
+   </p>
+
+   <p>First, a straightforward program:
+   </p>
+
+<pre class='prettyprint lang-hs'>
+intro txt =
+   let
+      welcome = "Welcome! Today we will "
+   in
+      welcome ++ txt
+
+main =
+   let
+      plan = "talk about symmetry!"
+   in
+      do
+         let hello = intro plan
+         putStrLn hello
+</pre>
+
+   <p>It can be saved in a file, <code>hello.hs</code>, and run like so:
+   </p>
+<pre>$ runhaskell hello.hs
+Welcome! Today we will talk about symmetry!
+</pre>
+
+<p>The first thing you notice about the <code>let</code> keywords,
+especially if you have worked with F#, first, is
+that there are <em>none</em> at the top level!
+</p>
+<p>This is not because Haskell is a hideously asymmetric language: it is because
+this symmetry is simply implied.
+Each top level function declaration looks, actually, the same way it would if
+all of them were wrapped in <code>let</code> and <code>in</code> keywords, 
+with <code>main</code> called below that.  Imagine it was like this:
+</p>
+
+<style>
+.hl { color: #f00; }
+</style>
+
+<pre>
+<span class='hl'>let</span>
+   intro txt =
+      let
+         welcome = "Welcome! Today we will "
+      in
+         welcome ++ txt
+
+   main =
+      let
+         plan = "talk about symmetry!"
+      in
+         do
+            let hello = intro plan
+            putStrLn hello
+<span class='hl'>in
+   main</span>
+</pre>
+
+
+<p>The second thing you'll notice about these <code>let</code> keywords
+is that after the <code>let hello = ...</code> line, there is no matching
+<code>in</code> keyword!
+You may pause a moment to ask whether these pesky <code>in</code> keywords
+are even needed at all.
+In fact, you will rush to test this, by launching the REPL, <code>ghci</code>:
+</p>
+
+<pre>
+$ ghci
+Prelude&gt; let hello = "look at me swimming!"
+Prelude&gt; putStrLn hello
+look at me swimming!
+</pre>
+
+<p>The glow lasts for a moment, and then you try removing the <code>in</code> after the definitions
+of <code>welcome</code> and <code>plan</code> and you find rejection!!
+A parse error?
+</p>
+
+<pre>
+$ runhaskell hello.hs
+
+hello.hs:7:1: parse error (possibly incorrect indentation)
+</pre>
+
+
+<p>The secret is two-fold.  First, the <code>let hello = ...</code> is special,
+because it is in a <code>do</code> block.  (Later, you'll learn how this special 
+<em>do block sub-language</em> works.)   Second, and most shockingly, to me:
+<code>ghci</code> provides a REPL wrapped in an implicit <code>do</code>.
+</p>
+
+
+<p>To make it easy to copy and paste lines, employing this feature, 
+you can shuffle things around in the source file, like so:
+</p>
+
+<pre class='prettyprint lang-hs'>
+main =
+   do
+      let intro txt = "Welcome! Today we will " ++ txt
+      let plan      = "talk about symmetry!"
+      let hello     = intro plan
+      putStrLn hello
+</pre>
+
+<p>Then you can run it as before, or copy-paste only a portion into <code>ghci</code>, like this:
+</p>
+
+<pre>
+$ ghci
+Prelude&gt;       let intro txt = "Welcome! Today we will " ++ txt
+Prelude&gt;       let plan      = "talk about symmetry!"
+Prelude&gt;       let hello     = intro plan
+Prelude&gt;       putStrLn hello
+Welcome! Today we will talk about symmetry!
+</pre>
+
+
+<p>There is, however, a big shortcut.  To load all the code into <code>ghci</code>
+without even stressing at all about copy-paste errors, simply load the file itself
+using a ghci command.
+</p>
+
+<p>The <code>:load</code> command lets us load a file or (module) into the runtime,
+so we can then call its functions.  (And if we had command line arguments to 
+the program, we can even use the <code>:main</code> command, with colon, 
+to test them.
+</p>
+
+<pre>
+$ ghci
+Prelude&gt; :load hello.hs
+*Main&gt;   intro "play with hula hoops."
+"Welcome! Today we will play with hula hoops."
+</pre>
+
+
+
+
+<p>Cheers,
+<br>Kevin
+</p>
+</div>
+
+<script>
+   prettyPrint();
+</script>
+</body>
+</html>
+

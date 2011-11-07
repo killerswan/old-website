@@ -1,0 +1,228 @@
+# HG changeset patch -- Bitbucket.org
+# Project wave-protocol-kshh
+# URL http://bitbucket.org/killerswan/wave-protocol-kshh/overview/
+# User Kevin Cantu <kevincantu@gmail.com>
+# Date 1255595906 25200
+# Node ID f77326b8f09dd2f4a97bd34b3f9a5bb3b49ecfd7
+# Parent 0bf003ae4aae3d4997418ec95b8f5983983d9285
+fixed discovery of remote wave service JIDs (testing)
+
+--- a/test/org/waveprotocol/wave/examples/fedone/federation/xmpp/XmppDiscoTest.java
++++ b/test/org/waveprotocol/wave/examples/fedone/federation/xmpp/XmppDiscoTest.java
+@@ -161,7 +161,7 @@ public class XmppDiscoTest extends TestC
+ 
+   /**
+    * Tests stage 3 of disco. Inject a disco#info into the disco code (one that
+-   * doesn't match wave) and check callback gets run with null.
++   * doesn't match wave) and check that the callback isn't run.
+    */
+   public void testDiscoInfoResultPubsub() {
+     disco.pendingDiscoMap.put(XmppTestUtil.TEST_IQ_ID, discoCallback);
+@@ -172,39 +172,12 @@ public class XmppDiscoTest extends TestC
+     assertEquals(1, mockComponent.packetsSent);
+     Packet packet = mockComponent.lastPacketSent;
+     assertEquals(EXPECTED_DISCO_INFO_GET_PUBSUB, packet.toString());
+-    // create a wave disco result, inject into disco.
++    // create a non-wave disco result, inject into disco.
+     disco.processDiscoInfoResult(createDiscoInfo(false /* not wave */));
+     assertEquals(1, mockComponent.packetsSent);
+-    assertEquals(null, discoCallback.getResult());
++    assertEquals("not-run-yet", discoCallback.getResult());
+   }
+ 
+-  /**
+-   * Tests stage 3 of disco. Inject a disco#items into the disco code with
+-   * pubsub, then wave. Then give it pubsub's disco#info, and check it then
+-   * sends a disco#info for wave.
+-   */
+-  public void testDiscoInfoResultPubsubAndWave() {
+-    disco.pendingDiscoMap.put(XmppTestUtil.TEST_IQ_ID, discoCallback);
+-    // create with no wave, pubsub
+-    IQ discoItemsResult = createDiscoItems(true, true);
+-    // Start the process.
+-    disco.processDiscoItemsResult(discoItemsResult);
+-    assertEquals(1, mockComponent.packetsSent);
+-    assertEquals(EXPECTED_DISCO_INFO_GET_PUBSUB,
+-                 mockComponent.lastPacketSent.toString());
+-
+-    // create a non-wave disco result, inject into disco.
+-    disco.processDiscoInfoResult(createDiscoInfo(false /* not wave */));
+-    assertEquals(2, mockComponent.packetsSent);
+-    assertEquals(EXPECTED_DISCO_INFO_GET,
+-                 mockComponent.lastPacketSent.toString());
+-    assertEquals("not-run-yet", discoCallback.getResult());
+-
+-    // create a non-wave disco result, inject into disco.
+-    disco.processDiscoInfoResult(createDiscoInfo(true /* wave */));
+-    assertEquals(2, mockComponent.packetsSent);
+-    assertEquals(XmppTestUtil.TEST_REMOTE_WAVE_JID, discoCallback.getResult());
+-  }
+ 
+   /**
+    * Tests that if disco is started for a remote server for which we already
+
+--- a/run-client-console.sh
++++ b/run-client-console.sh
+@@ -1,15 +1,17 @@
+-#!/bin/bash
++#!/bin/sh
+ 
+ # This script will start the FedOne wave client.
+ #
+ 
++cd "$(dirname "$0")"
++
+ if [ -f run-config.sh ] ; then
+-  . run-config.sh
++  . ./run-config.sh
+ else
+   echo "You need to copy run-config.sh.example to run-config.sh and configure" ; exit 1
+ fi
+ 
+-if [[ $# != 1 ]]; then
++if [ $# != 1 ]; then
+   echo "usage: ${0} <username EXCLUDING DOMAIN>"
+ else
+   USER_NAME=$1@$WAVE_SERVER_DOMAIN_NAME
+
+--- a/run-agent-echoey.sh
++++ b/run-agent-echoey.sh
+@@ -1,10 +1,12 @@
+-#!/bin/bash
++#!/bin/sh
+ 
+ # This script will start the Echoey the FedOne wave agent.
+ #
+ 
++cd "$(dirname "$0")"
++
+ if [ -f run-config.sh ] ; then
+-  . run-config.sh
++  . ./run-config.sh
+ else
+   echo "You need to copy run-config.sh.example to run-config.sh and configure" ; exit 1
+ fi
+
+--- a/src/org/waveprotocol/wave/examples/fedone/federation/xmpp/XmppDisco.java
++++ b/src/org/waveprotocol/wave/examples/fedone/federation/xmpp/XmppDisco.java
+@@ -159,7 +159,6 @@ public class XmppDisco {
+     if (callback != null) {
+       DiscoItemIterator discoIter =
+           new DiscoItemIterator(iq, this.component, callback);
+-      discoIter.run(null);
+     } else {
+       logger.fine("got unexpected iq items result " + iq);
+     }
+@@ -167,7 +166,7 @@ public class XmppDisco {
+ 
+   /**
+    * Handles a disco info result for a remote JID, triggers the callback. When
+-   * we're walking through remote JIDs, we'll see these.
++   * we're receiving responses from remote JIDs, we'll see these.
+    *
+    * @param iq the IQ packet.
+    */
+@@ -190,7 +189,6 @@ public class XmppDisco {
+    */
+   private class DiscoItemIterator implements RpcCallback<IQ> {
+ 
+-    private final List<String> candidateJids = new ArrayList<String>();
+     private final String serverName;
+     private final WaveXmppComponent waveComponent;
+     private final RpcCallback<String> callback;
+@@ -198,6 +196,7 @@ public class XmppDisco {
+ 
+     /**
+      * Constructor. Extracts the JIDs from the disco#items response.
++     * Then requests disco#info for each JID.
+      *
+      * @param itemsIQ   the disco#items response
+      * @param component the parent wave component
+@@ -215,19 +214,24 @@ public class XmppDisco {
+       for (Element item : items) {
+         Attribute jid = item.attribute("jid");
+         if (jid != null) {
+-          candidateJids.add(jid.getValue());
++          IQ request = new IQ();
++          request.setType(IQ.Type.get);
++          request.setID(component.generateId());
++          request.setChildElement("query", WaveXmppComponent.NAMESPACE_DISCO_INFO);
++          request.setTo(jid.getValue());
++          request.setFrom(waveComponent.componentJID);
++          inProgressDiscoMap.put(request.getID(), this);
++          waveComponent.sendPacket(request, true, /* retry */null);
+         }
+       }
+     }
+ 
+     /**
+-     * Process a result (if supplied) and check for a matching feature. If
+-     * found, trigger the callback JID. If not found, send a request for the
+-     * next JID. If none remain, trigger the callback with the value null.
++     * Process a result and check for a matching feature. If
++     * found, trigger the callback JID.
+      */
+     @SuppressWarnings("unchecked")
+     public void run(IQ infoResult) {
+-      if (infoResult != null) { // first time, no result.
+         // check the result to see if it matches wave.
+         //noinspection unchecked
+         List<Element> features =
+@@ -243,24 +247,6 @@ public class XmppDisco {
+             return;
+           }
+         }
+-
+-      }
+-      // take the next candidateJID, run a disco info against it.
+-      if (candidateJids.isEmpty()) {
+-        // ran out of candidates
+-        logger.info("Couldn't find wave on " + serverName);
+-        this.callback.run(null);
+-        return;
+-      }
+-      String candidate = candidateJids.remove(0);
+-      IQ request = new IQ();
+-      request.setType(IQ.Type.get);
+-      request.setID(component.generateId());
+-      request.setChildElement("query", WaveXmppComponent.NAMESPACE_DISCO_INFO);
+-      request.setTo(candidate);
+-      request.setFrom(waveComponent.componentJID);
+-      inProgressDiscoMap.put(request.getID(), this);
+-      waveComponent.sendPacket(request, true, /* retry */null);
+     }
+   }
+ }
+
+--- a/run-server.sh
++++ b/run-server.sh
+@@ -3,8 +3,10 @@
+ # This script will start the FedOne wave server.
+ #
+ 
++cd "$(dirname "$0")"
++
+ if [ -f run-config.sh ] ; then
+-  . run-config.sh
++  . ./run-config.sh
+ else
+   echo "You need to copy run-config.sh.example to run-config.sh and configure" ; exit 1
+ fi
+@@ -17,7 +19,7 @@ java -jar dist/fedone-server-$FEDONE_VER
+   --xmpp_server_ip=$XMPP_SERVER_IP \
+   --xmpp_server_port=$XMPP_SERVER_PORT \
+   --xmpp_server_secret $XMPP_SERVER_SECRET \
+-  --xmpp_server_ping="" \
++  --xmpp_server_ping="acmewave.com" \
+   --certificate_private_key=$PRIVATE_KEY_FILENAME \
+   --certificate_files=$CERTIFICATE_FILENAME_LIST \
+   --certificate_domain=$CERTIFICATE_DOMAIN_NAME \
+
+--- a/.hgignore
++++ b/.hgignore
+@@ -7,3 +7,5 @@ bin
+ build
+ dist
+ run-config.sh
++*.swp
++*.log

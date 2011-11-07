@@ -1,0 +1,294 @@
+<!doctype html><html><head><meta charset='utf-8'><!-- Kevin Cantu © 2011 -->
+
+<title>Operator precedence: F# and Haskell</title>
+
+<base href='http://kevincantu.org/'>
+<link href='./lib/delta/main.css'  type='text/css' rel='stylesheet'>
+<link href='./lib/delta/title.css' type='text/css' rel='stylesheet'>
+
+<script src='./lib/3p/jquery/jquery-1.4.3.min.js'></script>
+<script src='./lib/3p/underscore/underscore-min.js'></script>
+<script src='./lib/delta/title.js'></script>
+
+<script src='./lib/3p/prettify/src/prettify.js'></script> 
+<script src='./lib/3p/prettify/src/lang-hs.js'></script> 
+<script src='./lib/3p/prettify/src/lang-ml.js'></script> 
+
+<style>
+   table.operators tr td {
+      font-family: Inconsolata, Consolas, monospace
+   }
+</style>
+
+<script>
+var _gaq = _gaq || [];
+_gaq.push(['_setAccount', 'UA-13261525-5']);
+_gaq.push(['_setDomainName', '.kevincantu.org']);
+_gaq.push(['_trackPageview']);
+
+$(document).ready(function() {
+   try {
+      var ga = document.createElement('script');
+      ga.type = 'text/javascript';
+      ga.async = true;
+      ga.src = ('https:' == document.location.protocol ?
+                  'https://ssl' : 'http://www') +
+                  '.google-analytics.com/ga.js';
+      var s = document.getElementsByTagName('script')[0];
+      s.parentNode.insertBefore(ga, s);
+   } catch (e) {}
+});
+</script>
+
+</head>
+<body>
+<div class='contentSection'>
+   <div class='contentHeader'> <h1>Operator precedence: F# and Haskell</h1></div>
+
+   <p>Earlier this week I was looking at <a href='http://fssnip.net/4o'>a beautiful snippet</a> of F#
+      which defines a better backwards pipe operator: <code>^&lt;|</code>.
+   </p>
+
+<pre class='prettyprint lang-fs'>
+let inline (^&lt;|) f a = f a
+</pre>
+
+   <p>This got me thinking...</p>
+
+
+<h2>Haskell
+</h2>
+
+   <p>In Haskell the precedence of
+      an operator can be defined arbitrarily, via the <code>infix</code>, 
+      <code>infixr</code>, and <code>infixl</code> commands.
+
+      The Haskell 2010 report describes many of the defaults
+      (<a href='http://www.haskell.org/onlinereport/haskell2010/haskellch4.html#x10-820004.4.2'>§4.4.2</a>), like so:
+   </p>
+
+   <table class='operators'>
+      <tr>
+         <th>Precedence</th>
+         <th>Left associative operators</th>
+         <th>Non-associative operators</th>
+         <th>Right associative operators</th>
+      </tr>
+      <tr>
+         <td>9</td>
+         <td>!!</td>
+         <td> </td>
+         <td>.</td>
+      </tr>
+      <tr>
+         <td>8</td>
+         <td> </td>
+         <td> </td>
+         <td>^, ^^, **</td>
+      </tr>
+      <tr>
+         <td>7</td>
+         <td>*, /, `div`, `mod`, `rem`, `quot`</td>
+         <td> </td>
+         <td> </td>
+      </tr>
+      <tr>
+         <td>6</td>
+         <td>+, -</td>
+         <td> </td>
+         <td> </td>
+      </tr>
+      <tr>
+         <td>5</td>
+         <td> </td>
+         <td> </td>
+         <td>:, ++</td>
+      </tr>
+      <tr>
+         <td>4</td>
+         <td> </td>
+         <td>==, /=, &lt;, &lt;=, &gt;, &gt;=, `elem`, `notElem`</td>
+         <td> </td>
+      </tr>
+      <tr>
+         <td>3</td>
+         <td> </td>
+         <td> </td>
+         <td>&amp;&amp;</td>
+      </tr>
+      <tr>
+         <td>2</td>
+         <td> </td>
+         <td> </td>
+         <td>||</td>
+      </tr>
+      <tr>
+         <td>1</td>
+         <td>&gt;&gt;, &gt;&gt;=</td>
+         <td> </td>
+         <td> </td>
+      </tr>
+      <tr>
+         <td>0</td>
+         <td> </td>
+         <td> </td>
+         <td>$, $!, `seq`</td>
+      </tr>
+   </table>
+
+
+   <p>Therefore all the built in operators, operators in libraries, and 
+      so on behave however they're defined.  For example this Haskell code:
+   </p> 
+
+<pre class='prettyprint lang-hs'>
+map (3*) $ [1,2,5] !! 1 : []
+</pre>
+
+   <p>Returns: [6]
+   </p>
+
+   <p>But this doesn't compile because the <code>!!</code>
+      is of higher precedence and therefore <code>[1]:1</code> would
+      be evaluated:
+   </p>
+
+<pre class='prettyprint lang-hs'>
+map (3*) $ [1] : [1,2,4] !! 1
+</pre>
+
+   <p>The fixity and precedence of operators in libraries can
+      be checked in GHCi with the <code>:info</code> command:
+   </p>
+
+<pre>
+<em>Prelude&gt;</em> <strong>:module Control.Applicative</strong>
+<em>Prelude Control.Applicative&gt;</em> <strong>:info &lt;$&gt;</strong>
+(&lt;$&gt;) :: (Functor f) =&gt; (a -&gt; b) -&gt; f a -&gt; f b
+  	-- Defined in Data.Functor
+infixl 4 &lt;$&gt;
+<em>Prelude Control.Applicative&gt;</em> <strong>:info &lt;*&gt;</strong>
+class (Functor f) =&gt; Applicative f where
+  ...
+  (&lt;*&gt;) :: f (a -&gt; b) -&gt; f a -&gt; f b
+  ...
+  	-- Defined in Control.Applicative
+infixl 4 &lt;*&gt;
+<em>Prelude Control.Applicative&gt;</em>
+</pre>
+
+   <p>(Note: applicative functors seem 
+      <a href='http://learnyouahaskell.com/functors-applicative-functors-and-monoids'>pretty awesome!</a>)
+   </p>
+
+   <p>By default, an operator behaves as if it were <code>infixl 9</code>.
+   </p>
+
+
+<h2>F#
+</h2>
+
+   <p>F#, on the other hand, uses the initial character of the operator,
+      and a predefined list of operator precedence.
+   </p>
+
+   <p><a href='http://msdn.microsoft.com/en-us/library/dd233228.aspx'>MSDN 
+      describes</a> the operator precedence, which behaves like so 
+      (highest to lowest, 26 levels):
+   </p>
+
+   <table class='operators'>
+      <tr>
+         <th>Left associative operators</th>
+         <th>Non-associative operators</th>
+         <th>Right associative operators</th>
+      </tr>
+      <tr>  <td>f&lt;types&gt;</td>  <td></td>  <td></td>  </tr>
+      <tr>  <td>f(x)</td>  <td></td>  <td></td>  </tr>
+      <tr>  <td>.</td>  <td></td>  <td></td>  </tr>
+      <tr>  <td>prefix operators (+op, -op, %, %%, &amp;, &amp;&amp;, !op, ~op)</td>  <td></td>  <td></td>  </tr>
+      <tr>  <td></td>  <td></td>  <td>| (pattern match)</td>  </tr>
+      <tr>  <td>f x (function application)</td>  <td></td>  <td></td>  </tr>
+      <tr>  <td></td>  <td></td>  <td>** op</td>  </tr>
+      <tr>  <td>* op, / op, % op</td>  <td></td>  <td></td>  </tr>
+      <tr>  <td>- op, + op, (binary)</td>  <td></td>  <td></td>  </tr>
+      <tr>  <td></td>  <td>:?&gt;, :?</td>  <td></td>  </tr>
+      <tr>  <td></td>  <td></td>  <td>::</td>  </tr>
+      <tr>  <td></td>  <td></td>  <td>^ op</td>  </tr>
+      <tr>  <td>&amp;&amp;&amp;, |||, ^^^, ~~~, &lt;&lt;&lt;, &gt;&gt;&gt;</td>  <td></td>  <td></td>  </tr>
+      <tr>  <td>&lt; op, &gt; op, =, | op, &amp; op</td>  <td></td>  <td></td>  </tr>
+      <tr>  <td>&amp;, &amp;&amp;</td>  <td></td>  <td></td>  </tr>
+      <tr>  <td>or, ||</td>  <td></td>  <td></td>  </tr>
+      <tr>  <td></td>  <td>,</td>  <td></td>  </tr>
+      <tr>  <td></td>  <td></td>  <td>:=</td>  </tr>
+      <tr>  <td></td>  <td></td>  <td>-&gt;</td>  </tr>
+      <tr>  <td></td>  <td>if</td>  <td></td>  </tr>
+      <tr>  <td></td>  <td>function, fun, match, try</td>  <td></td>  </tr>
+      <tr>  <td></td>  <td>let</td>  <td></td>  </tr>
+      <tr>  <td></td>  <td></td>  <td>;</td>  </tr>
+      <tr>  <td>| (pipe)</td>  <td></td>  <td></td>  </tr>
+      <tr>  <td></td>  <td></td>  <td>when</td>  </tr>
+      <tr>  <td></td>  <td></td>  <td>as</td>  </tr>
+   </table>
+
+   <p>The difference between the built in <code>&lt;|</code> and the 
+      new <code>^&lt;|</code> is based on that, entirely.
+      (Above, you'll see the <code>|</code> for pipes is in the
+      lower left and the <code>^</code> is near the middle row right.)
+   </p>
+
+<pre class='prettyprint lang-fs'>
+let inline (&lt;|) f a = f a     // built in
+let inline (^&lt;|) f a = f a    // new
+</pre>
+
+   <p>This means that the <code>^&lt;|</code> operator gets 
+      a higher priority than the <code>|&gt;</code> operator --
+      like the built in <code>&lt;|</code> -- but the new one is 
+      right associative, so it behaves like Haskell's <code>$</code>.
+      
+      This allows things like those given by Stephen Swenson <a href='http://fssnip.net/4o'>in the snippet</a>:
+   </p>
+
+<pre class='prettyprint lang-fs'>
+module AssociativityComparison =
+    let forward_pipe = 
+        {1..10} |&gt; Seq.map (fun x -&gt; x + 3) |&gt; Seq.toList
+    
+    let normal_backward_pipe = 
+        Seq.toList &lt;| (Seq.map (fun x -&gt; x + 3) &lt;| {1..10})
+    
+    let high_prec_right_assoc_backward_pipe = 
+        Seq.toList ^&lt;| Seq.map (fun x -&gt; x + 3) ^&lt;| {1..10}
+
+module PrecedenceComparison =
+    let normal_backward_pipe  = 
+        {1..10} |&gt; (Seq.map &lt;| (fun x -&gt; x + 3))
+   
+    let high_prec_right_assoc_backward_pipe = 
+        {1..10} |&gt; Seq.map ^&lt;| fun x -&gt; x + 3
+</pre>
+      
+
+<p>This will be useful!
+</p>
+
+<p>-- Kevin
+</p>
+
+<br>
+
+<iframe width="425" height="349" 
+        src="http://www.youtube.com/embed/4TYv2PhG89A" 
+        frameborder="0" allowfullscreen></iframe>
+
+
+
+</div>
+
+<script>
+   prettyPrint();
+</script>
+</body>
+</html>
+

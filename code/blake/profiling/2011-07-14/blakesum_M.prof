@@ -1,0 +1,86 @@
+	Fri Jul 15 00:16 2011 Time and Allocation Profiling Report  (Final)
+
+	   blakesum +RTS -N -p -hy -RTS -a 512 Next_700.pdf
+
+	total time  =        2.34 secs   (117 ticks @ 20 ms)
+	total alloc = 1,972,589,800 bytes  (excludes profiling overheads)
+
+COST CENTRE                    MODULE               %time %alloc
+
+bitshift                       SHA3.BLAKE            65.8   58.2
+blakeRound                     SHA3.BLAKE            14.5   20.0
+growWord                       SHA3.BLAKE            12.0   13.9
+compress                       SHA3.BLAKE             3.4    2.2
+makeWords                      SHA3.BLAKE             1.7    0.0
+nfoldl                         SHA3.BLAKE             0.9    2.5
+rotations                      SHA3.BLAKE             0.0    1.5
+
+
+                                                                                               individual    inherited
+COST CENTRE              MODULE                                               no.    entries  %time %alloc   %time %alloc
+
+MAIN                     MAIN                                                   1           0   0.0    0.0   100.0  100.0
+ main                    Main                                                 426           2   0.0    0.0   100.0  100.0
+  printHashes            Main                                                 430           5   0.0    0.0   100.0  100.0
+   printHash             Main                                                 432           2   0.0    0.0   100.0  100.0
+    unstreamChunks/inner Data.Text.Lazy.Fusion                                478          12   0.0    0.0     0.0    0.0
+     unstreamChunks/resize Data.Text.Lazy.Fusion                                479           2   0.0    0.0     0.0    0.0
+    unstreamChunks/outer Data.Text.Lazy.Fusion                                477           2   0.0    0.0     0.0    0.0
+    encodeUtf8/resize    Data.Text.Encoding                                   473          30   0.0    0.0     0.0    0.0
+    getHash512           Main                                                 433           1   0.0    0.0   100.0  100.0
+     textDigest          Main                                                 466           1   0.0    0.0     0.0    0.0
+      unstreamChunks/inner Data.Text.Lazy.Fusion                                470         128   0.0    0.0     0.0    0.0
+       unstreamChunks/resize Data.Text.Lazy.Fusion                                471           6   0.0    0.0     0.0    0.0
+      unstreamChunks/outer Data.Text.Lazy.Fusion                                468           2   0.0    0.0     0.0    0.0
+     blake512            SHA3.BLAKE                                           434           1   0.0    0.0   100.0  100.0
+      toByteString       SHA3.BLAKE                                           465           1   0.0    0.0     0.0    0.0
+      blake              SHA3.BLAKE                                           435           1   0.0    0.0   100.0  100.0
+       compress          SHA3.BLAKE                                           444        9426   3.4    2.2    85.5   82.9
+        initialState     SHA3.BLAKE                                           452       84834   0.9    1.0     0.9    1.0
+         constants       SHA3.BLAKE                                           453        9426   0.0    0.0     0.0    0.0
+        blakeRound       SHA3.BLAKE                                           448      150816  14.5   20.0    81.2   79.7
+         bitshift        SHA3.BLAKE                                           449     1206528  65.8   58.2    66.7   59.7
+          constants      SHA3.BLAKE                                           458     2413056   0.9    0.0     0.9    0.0
+          rotations      SHA3.BLAKE                                           450           0   0.0    1.5     0.0    1.5
+        rounds           SHA3.BLAKE                                           447        9426   0.0    0.0     0.0    0.0
+       initialValues     SHA3.BLAKE                                           442           1   0.0    0.0     0.0    0.0
+       blocks            SHA3.BLAKE                                           440           1   0.0    0.6    14.5   17.1
+        makePadding      SHA3.BLAKE                                           459           1   0.0    0.0     0.0    0.0
+         paddingTerminator SHA3.BLAKE                                           462           1   0.0    0.0     0.0    0.0
+         wordSize        SHA3.BLAKE                                           460           1   0.0    0.0     0.0    0.0
+        makeWords        SHA3.BLAKE                                           454        9425   1.7    0.0    14.5   16.5
+         nfoldl          SHA3.BLAKE                                           455      452445   0.9    2.5    12.8   16.4
+          growWord       SHA3.BLAKE                                           456           0  12.0   13.9    12.0   13.9
+        wordSize         SHA3.BLAKE                                           441           1   0.0    0.0     0.0    0.0
+       fromWtoB          SHA3.BLAKE                                           439           1   0.0    0.0     0.0    0.0
+       makeWords         SHA3.BLAKE                                           437           1   0.0    0.0     0.0    0.0
+        nfoldl           SHA3.BLAKE                                           438          12   0.0    0.0     0.0    0.0
+         growWord        SHA3.BLAKE                                           446           0   0.0    0.0     0.0    0.0
+       wordSize          SHA3.BLAKE                                           436           1   0.0    0.0     0.0    0.0
+   fileMapWithPath       Main                                                 431           1   0.0    0.0     0.0    0.0
+  options                Main                                                 428           0   0.0    0.0     0.0    0.0
+ CAF                     Main                                                 420          19   0.0    0.0     0.0    0.0
+  printHash              Main                                                 474           0   0.0    0.0     0.0    0.0
+   unstreamChunks/inner  Data.Text.Lazy.Fusion                                476           2   0.0    0.0     0.0    0.0
+   unstreamChunks/outer  Data.Text.Lazy.Fusion                                475           2   0.0    0.0     0.0    0.0
+  textDigest             Main                                                 467           0   0.0    0.0     0.0    0.0
+  defaultOpts            Main                                                 429           1   0.0    0.0     0.0    0.0
+  options                Main                                                 427           1   0.0    0.0     0.0    0.0
+ CAF                     Data.Typeable                                        418           2   0.0    0.0     0.0    0.0
+ CAF                     Text.Read.Lex                                        387           4   0.0    0.0     0.0    0.0
+ CAF                     GHC.Int                                              383           2   0.0    0.0     0.0    0.0
+ CAF                     GHC.IO.Handle.FD                                     357           2   0.0    0.0     0.0    0.0
+ CAF                     GHC.IO.FD                                            341           6   0.0    0.0     0.0    0.0
+ CAF                     System.Event.Thread                                  339           3   0.0    0.0     0.0    0.0
+ CAF                     System.Event.Internal                                333           2   0.0    0.0     0.0    0.0
+ CAF                     GHC.IO.Encoding.Iconv                                315           2   0.0    0.0     0.0    0.0
+ CAF                     GHC.Conc.Signal                                      312           1   0.0    0.0     0.0    0.0
+ CAF                     SHA3.BLAKE                                           307          58   0.0    0.0     0.0    0.0
+  blocks                 SHA3.BLAKE                                           464           0   0.0    0.0     0.0    0.0
+  blake512               SHA3.BLAKE                                           463           0   0.0    0.0     0.0    0.0
+  makePadding            SHA3.BLAKE                                           461           0   0.0    0.0     0.0    0.0
+  sigmaTable             SHA3.BLAKE                                           457           1   0.0    0.0     0.0    0.0
+  constants512           SHA3.BLAKE                                           451           1   0.0    0.0     0.0    0.0
+  growWord               SHA3.BLAKE                                           445           1   0.0    0.0     0.0    0.0
+  initialValues512       SHA3.BLAKE                                           443           1   0.0    0.0     0.0    0.0
+ CAF                     Data.ByteString.Lazy                                 282           1   0.0    0.0     0.0    0.0

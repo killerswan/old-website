@@ -1,0 +1,5 @@
+commit d83af6c95400762f3a5e55bddcf0fc0f3fca8017
+Author: Kevin Cantu <me@kevincantu.org>
+Date:   Sat Jul 16 01:36:18 2011 -0700
+
+    visual-prof back on

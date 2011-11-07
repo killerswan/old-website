@@ -1,0 +1,121 @@
+<!doctype html>
+<html>
+<head>
+<title>^Setting Up a Google Wave Federation Prototype System</title>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+<meta name="copyright" content="Kevin Cantu (c) 2009-2010">
+
+<style>
+    body {
+        font-family: Helvetica, Arial, Verdana, Bitstream Vera Sans, sans-serif;
+        color:             #444;
+        background-color:  #fff;
+    }
+    #paper {
+        margin: 2px;
+    }
+    blockquote {
+        margin-left: 10px;
+        margin-right: 10px;
+    }
+    h1 {
+        font-family: Helvetica, Arial, Tahoma, Verdana, sans-serif;
+        letter-spacing: -4px;
+    }
+    a:link,a:hover,a:focus,a:active {
+        color:   #5fa900;
+    }
+    a:visited {
+        color:   #a95fa9; /* 5a7ac7 */
+    }
+    a:link,a:visited,a:hover,a:focus,a:active {
+        text-decoration: none;
+    }
+    a:hover {
+        background-color:  #5fa900;
+        color:             #000;
+    }
+    code {
+        font-family: Consolas, Inconsolata, monospace;
+        font-size: larger;
+        background-color:  #ddd;
+        color:             #000;
+    }
+</style>
+
+
+</head>
+<body>
+<div id="paper">
+
+<h1>Setting Up a Google Wave Federation Prototype System</h1>
+<p>Kevin Cantu, 21 October 2009<br/><em>You can 'wave' to me at <a>kevin@killerswan.com</a>!</em></p>
+
+<h2>OVERVIEW</h2>
+
+<p>Generally speaking, you're going to set up a system where:
+</p>
+<ol><li>Openfire is an XMPP (Jabber) service, which is used for different servers communicating with each other (federation).
+</li><li>The Google Wave Federation Prototype Server (FedOne) provides the meaty wave features.
+</li><li>The GWFP Client provides a very rough (i.e., shitty) user interface to this.
+</li></ol>
+
+<p>The XMPP service must see the world and be addressable via, e.g., "domain.test".
+The GWFP-Server must see the XMPP service and the world and be addressable via "wave.domain.test".
+The GWFP-Client must see the GWFP-Server.
+</p>
+
+<p>Then you can wave to people and have them wave to you using "name@domain.test".
+</p>
+
+<p>The XMPP server to server protocol likes port 5269 (by RFC standard), the GWFP-Server is set up to talk to the XMPP service as a component on port 5275 (by default), and the GWFP-Client can communicate with the GWFP-Server on 9876 (by default).
+</p>
+
+<h2>STEP BY STEP</h2>
+
+<p>First, follow the <a href="http://code.google.com/p/wave-protocol/wiki/Installation">instructions Google provided</a>.
+</p>
+
+<p>
+There, you will install openfire, then download and build GWFP.  
+This source code can be retrieved using 
+<a href="http://hgbook.red-bean.com/">mercurial</a>: 
+</p>
+<pre><code>hg clone https://wave-protocol.googlecode.com/hg/ wave-protocol
+</code></pre>
+
+<!--
+<p>You'll also have to do two additional tweaks to Openfire, 
+<a href="http://jamespurser.com.au/blog/Wave_Reference_Server_-_A_Startup_Guide">
+as James Purser describes</a>, to disable Pubsub and Group Chat.  
+First, create a property <code>xmpp.pubsub.enabled</code> with the value 
+<code>false</code>.  
+Second, delete the "conference" domain under Group Chat, as James describes.
+</p>
+-->
+
+<p>For federation, you should create 
+<a href="http://code.google.com/p/wave-protocol/wiki/Certificates">certificates</a> 
+using something like this, giving your domain name as "Common Name":
+</p><pre><code>openssl genrsa 1024 | openssl pkcs8 -topk8 -nocrypt -out killerswan.key
+openssl req -new -x509 -nodes -sha1 -days 365 -key killerswan.key -out killerswan.cert</code></pre>
+
+<h2>MISC</h2>
+<p>My latest patches can be found <a href="http://bitbucket.org/killerswan/wave-protocol-kshh/wiki/Home">here</a>.</p>
+<p>Currently, these are my SRV records: <a href="http://dopeman.org/xmpp_srv_test/?domain=killerswan.com">a</a>, <a href="http://dopeman.org/xmpp_srv_test/?domain=wave.killerswan.com">b</a>.</p>
+
+<!--
+<p>You may also need to create these links:</p>
+<pre><code>ln -s wave-protocol/third_party/runtime/google_collect/google-collect-1.0-rc2.jar wave-protocol/third_party/
+ln -s wave-protocol/third_party/runtime/protobuf/protobuf-java-2.1.0.jar wave-protocol/third_party/
+</code></pre>
+
+<h2>SRV records</h2>
+
+<p>A summary of what I've done to change from a config for waves to kevin@<strong>ocean.</strong>killerswan.com to kevin@killerswan.com is on the way.  I'm looking for confirmation I've done it right...  :P</p>
+-->
+
+
+</div> <!-- end paper -->
+</body>
+</html>
