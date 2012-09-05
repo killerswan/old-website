@@ -6,4 +6,3 @@ http://code.google.com/p/google-code-prettify/
 http://documentcloud.github.com/underscore/
 http://code.google.com/p/flot/
 http://www.jqplot.com/
-http://pivotal.github.com/jasmine/
