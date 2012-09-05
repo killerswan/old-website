@@ -20,52 +20,56 @@
             <p style="margin-top: 0; font-style: italic">Iowa State University, winter</p>
         </div>
 
-        <p>I have been hacking on software for ages, and I am always trying to understand more.
-            These are some recent examples of code and notes on stuff.  Enjoy!
+        <p>I have been hacking on software for ages, and I am always teaching myself new things.
+            These are some recent examples, though <a href='https://github.com/killerswan'>my github</a> will be more current.  Enjoy!
         </p>
-
-<!--
-         <p>From the moment I picked up <em>K&amp;R C</em>, I've been growing
-            a UNIX beard.
-
-         </p>
-
-         <p>
-            I'm trying to absorb as much functional programming as I can, 
-            perhaps as an escape from the millions of lines of gnarly object oriented stuff I've 
-            seen.
-         </p>
-
-         <p>
-            Here, I've been exploring F#, JavaScript (and CoffeeScript), Scala, Haskell, and other languages.
-
-            &hearts;
-            &hearts;
-         </p>
-
-         <p>
-            I've written or analyzed reams of code in C, Bash, JavaScript, F#, Java, C++, Objective-C,
-            C++, Ruby, PHP, Perl, COBOL, and others.  I'm rather young for someone familiar with
-            <a href="http://www.jwz.org/doc/emacs-timeline.html">Lucid Emacs</a> and HyperCard.
-         </p>
--->
-
 
         <h2 style="letter-spacing: -0.1em">Recent code</h2>
         <dl>
+
+
+<dt><a href='https://github.com/killerswan/triad'>Triad</a>
+</dt>
+<dd>I'm experimenting with an app which uses the <em>scrypt</em> hash to generate more easily memorizable passwords
+in Python, including a Kivy GUI (for Android, Linux).
+<p>
+The name refers to a Sherlock Holmes episode which inspired this algorithm!
+</dd>
+
+<dt><a href='https://github.com/mozilla/rust'>Rust</a>
+</dt>
+<dd>
+    Rust is Mozilla's new concurrent programming language, and 
+    I've been contributing to Rust's standard libraries a lot, lately, and maintaining the Ubuntu PPA packages.
+
+    <p> A couple of highlights you might like are my implementations of the Alioth k-nucleotide and chameneos-redux concurrency benchmarks, which you'll find <a href='https://github.com/mozilla/rust/tree/master/src/test/bench'>here</a>.
+</dd>
+
+
+<dt><a href='https://github.com/killerswan/askitter'>Askitter</a>
+</dt>
+<dd>
+    I've been maintaining and contributing to my fork of these Haskell bindings to the Twitter API.
+    Amongst other things, I've worked extensively with the following:
+    <ol>
+      <li><a href='https://github.com/killerswan/twitter-upload'>twitter-upload</a>, a program to upload and post images in tweets
+      </li>
+      <li><a href='https://github.com/killerswan/twitter-unfav'>twitter-unfav</a>, a program to remove old favorites from Twitter
+      </li>
+      <li><a href='https://github.com/killerswan/hoauth/'>hoauth</a>, a library used by Askitter for both OAuth and (via libcurl) SSL
+      </li>
+
+      </ol>
+            
+
+
             <dt><a href='https://github.com/killerswan/stanford-cs240h'>Stanford CS240h labs</a>
             </dt>
             <dd>My version of each lab from the Mazieres and O'Sullivan course, CS240h: Functional Systems in Haskell (2011).
                 Lab 2 uses a Hilbert R-Tree to store the coordinates of a set of rectangles and to spatially query them.
             </dd>
 
-            <dt><a href='https://github.com/killerswan/twitter-unfav'>twitter-unfav (github)</a>
-            </dt>
-            <dd>A Haskell program to delete old favorites on Twitter, 
-                using a modified <a href='https://github.com/killerswan/askitter'>askitter</a> library
-            </dd>
-
-            <dt><a href='https://github.com/killerswan/Haskell-BLAKE'>BLAKE (github)</a>
+            <dt><a href='https://github.com/killerswan/Haskell-BLAKE'>Haskell-BLAKE</a>
                 (hackage: <a href='http://hackage.haskell.org/package/blakesum'>blakesum</a>,
                 <a href='http://hackage.haskell.org/package/blakesum-demo'>blakesum-demo</a>)
             </dt>
@@ -75,7 +79,7 @@
                 (Based on the submitted <a href='http://131002.net/blake/blake.pdf'>BLAKE proposal</a>.)
             </dd>
 
-            <dt><a href='https://github.com/killerswan/ninlil'>Ninlil, for Tumblr (github)</a>
+            <dt><a href='https://github.com/killerswan/ninlil'>Ninlil, for Tumblr</a>
             </dt>
             <dd>An F# experiment in reading, reblogging, and deleting posts using Tumblr's API (v1)
             </dd>
@@ -88,9 +92,8 @@
             <dt><a href="excelGrep.html">excelGrep</a></dt>
             <dd>This is a tool for searching within Excel spreadsheets and then navigating
                 to the cells with resulting matches: one thing I wish was better done by Excel 2003,
-                at least.  I made this from an unholy combination of JavaScript, jQuery, and
-                ActiveX (sorry, it does require IE and Microsoft Excel). 
-                This one does something quite useful in only ~250 lines of JavaScript! (Note: may be broken by recent IE updates?)</dd>
+                at least.  (Sorry, this does require IE and Microsoft Excel...) 
+                This is quite useful in only ~250 lines of JavaScript! (Note: may be broken by recent IE updates?)</dd>
 
         </dl>
 
@@ -116,10 +119,12 @@
             </dd>
 -->
 
+<!--
             <dt><a href='./agents.html'>Notes on F# agents</a>
             </dt>
             <dd>Fooling around with mailbox processing agents in F#
             </dd>
+-->
 
             <dt><a href='http://log.kevincantu.org/2011/01/f-vs-haskell-vs-go-or-upgrade-mono.html'>Comparing F#, Go, and Haskell...</a>
             </dt>
@@ -132,12 +137,14 @@
             <dd>Attempting to do a bit of IO in Clojure...
             </dd>
 
+<!--
             <dt><a href='versions.html'>X Window System versions</a>
             </dt>
             <dd>A JavaScript plotting demo: this graph shows a (very rough) comparison of the apparent version
                 numbers and the point releases of the eternal windowing system over time. 
                 (Works in Chrome).
             </dd>
+-->
 
             <dt><a href='canvasBasics.html'>HTML5 Canvas Basics</a></dt>
             <dd>An exploration of the <code>&lt;canvas&gt;</code> tag and properties...
@@ -147,6 +154,7 @@
             <dd>Hijinks with JavaScript objects and prototypes, with examples in the primate family tree!
             </dd>
 
+<!--
             <dt><a href="prettifyXHR.html">prettifyXHR</a></dt>
             <dd>I've created a script which provides a function which can use XMLHttpRequest 
                 to retrieve a file, then inserts it into the document and applies syntax highlighting
@@ -160,6 +168,7 @@
             <dt><a href="inputFile.html">inputFile</a></dt>
             <dd>I'm experimenting with the HTML5 FileReader and toying with Flot and jqPlot graphs...
             </dd>
+-->
 
             <dt><a href="orbital.html">orbital</a></dt>
             <dd>I'm experimenting with HTML5 geolocation.  I'm not saving your location, though.  Yet.
@@ -187,12 +196,14 @@
 -->
 
 
-        <h2 style="letter-spacing: -0.1em">Recommended links</h2>
+        <h2 style="letter-spacing: -0.1em">Some recommended links</h2>
          <ul>
-            <li>Crockford's <em>JavaScript: The Good Parts</em> and 
-                  <a href='http://www.yuiblog.com/crockford/'>talks</a>
+            <li>Rich Hickey's <a href='http://www.infoq.com/presentations/Simple-Made-Easy'>Simple Made Easy</a>
             </li>
             <li>Guy Steele, <a href='http://video.google.com/videoplay?docid=-8860158196198824415#'>Growing a Language</a>
+            </li>
+            <li>Crockford's <em>JavaScript: The Good Parts</em> and 
+                  <a href='http://www.yuiblog.com/crockford/'>talks</a>
             </li>
             <li><a href='http://www.ccs.neu.edu/home/matthias/BTLS/'>The Little Schemer</a>
             </li>

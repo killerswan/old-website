@@ -22,26 +22,30 @@ var prettifyXHR = (function () {
 
     // load the main prettify script
     var j = document.createElement("script");
-    j.src = "http://kevincantu.org/lib/3p/prettify/src/prettify.js";
+    j.src = "http://kevincantu.org/lib/3p/prettify/prettify-2011-06/prettify.js";
     h.appendChild(j);
 
     // specific languages available
-    var srclib = "http://kevincantu.org/lib/3p/prettify/src/";
+    var srclib = "http://kevincantu.org/lib/3p/prettify/prettify-2011-06/";
     var availableLanguages = [
         // BESIDES THE DEFAULT LIST at kevincantu.org/lib/3p/prettify/
         "lang-apollo",
+        "lang-clj",
         "lang-css",
         "lang-go",
         "lang-hs",
         "lang-lisp",
         "lang-lua",
         "lang-ml",
+        "lang-n",
         "lang-proto",
         "lang-scala",
         "lang-sql",
+        "lang-tex",
         "lang-vb",
         "lang-vhdl",
         "lang-wiki",
+        "lang-xq"
         "lang-yaml"
     ];
 
