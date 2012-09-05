@@ -12,6 +12,7 @@ Disallow: /*.png
 
 Disallow: /*.mp3
 Disallow: /*.tar.gz
+Disallow: /*.tgz
 Disallow: /*.zip
 Disallow: /*.tar.bz2
 
