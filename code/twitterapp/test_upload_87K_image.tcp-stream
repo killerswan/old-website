@@ -1,0 +1,34 @@
+POST /1/statuses/update_with_media.json HTTP/1.1
+Host: upload.twitter.com
+Accept: */*
+Content-Length: 90552
+Authorization: OAuth oauth_signature="Pcr5Pjuxgex19qTyAD6Xb3s9B8Y%3D",oauth_consumer_key="FQxpAZCd5lo7UWX1Yl4bQ",oauth_nonce="2777541992162834814",oauth_timestamp="1332729759",oauth_signature_method="HMAC-SHA1",oauth_version="1.0",oauth_token="14367955-75c7MltIP9IT81eoGbKJWzkpnvvHtzaOJvahFYfLt"
+Content-Type: multipart/form-data; boundary=IUAULYYZQZFMFNFGLJAIDLLEMLRSRXJTUMILZKQUMDTZGKAOCK
+
+--IUAULYYZQZFMFNFGLJAIDLLEMLRSRXJTUMILZKQUMDTZGKAOCK
+Content-Disposition: form-data; name="status"
+
+testing more...
+--IUAULYYZQZFMFNFGLJAIDLLEMLRSRXJTUMILZKQUMDTZGKAOCK
+Content-Disposition: form-data; name="media[]"; filename="blank_name"
+Content-Type: application/octet-stream
+
+
+....
+HTTP/1.1 400 Bad Request
+Date: Mon, 26 Mar 2012 02:42:34 GMT
+Server: hi
+Vary: Accept-Encoding
+Content-Length: 226
+Connection: close
+Content-Type: text/html; charset=iso-8859-1
+
+<!DOCTYPE HTML PUBLIC "-//IETF//DTD HTML 2.0//EN">
+<html><head>
+<title>400 Bad Request</title>
+</head><body>
+<h1>Bad Request</h1>
+<p>Your browser sent a request that this server could not understand.<br />
+</p>
+</body></html>
+

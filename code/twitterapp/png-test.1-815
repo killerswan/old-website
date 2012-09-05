@@ -1,0 +1,18 @@
+POST /1/statuses/update_with_media.json HTTP/1.1
+Host: upload.twitter.com
+Accept: */*
+Content-Length: 535
+Authorization: OAuth oauth_signature="CgkHVF%2F0vOcU9ZKTHvvLcemLvfQ%3D",oauth_consumer_key="FQxpAZCd5lo7UWX1Yl4bQ",oauth_nonce="8904263576263025814",oauth_timestamp="1332739383",oauth_signature_method="HMAC-SHA1",oauth_version="1.0",oauth_token="14367955-75c7MltIP9IT81eoGbKJWzkpnvvHtzaOJvahFYfLt"
+Content-Type: multipart/form-data; boundary=UHXTKWORSMVUSUYYHKMLJJYNPQMETRVSDWLPSVPAWUMODTIUHI
+
+--UHXTKWORSMVUSUYYHKMLJJYNPQMETRVSDWLPSVPAWUMODTIUHI
+Content-Disposition: form-data; name="status"
+
+how about a very small PNG
+--UHXTKWORSMVUSUYYHKMLJJYNPQMETRVSDWLPSVPAWUMODTIUHI
+Content-Disposition: form-data; name="media[]"; filename="blank_name"
+Content-Type: application/octet-stream
+
+
+‰PNG
+

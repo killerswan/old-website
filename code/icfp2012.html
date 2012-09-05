@@ -1,0 +1,241 @@
+<!doctype html><html><head><meta charset='utf-8'><!-- Kevin Cantu © 2011 -->
+
+<title>ICFP Programming Competition 2012</title>
+
+<base href='http://kevincantu.org/'>
+<link href='./lib/delta/main.css'  type='text/css' rel='stylesheet'>
+<link href='./lib/delta/title.css' type='text/css' rel='stylesheet'>
+
+<script src='./lib/3p/jquery/jquery-1.4.3.min.js'></script>
+<script src='./lib/3p/underscore/underscore-min.js'></script>
+<script src='./lib/delta/title.js'></script>
+
+<script src='./lib/3p/prettify/src/prettify.js'></script> 
+<script src='./lib/3p/prettify/src/lang-hs.js'></script> 
+
+</head>
+<body>
+<div class='contentSection'>
+   <div class='contentHeader'> <h1>ICFP Programming Competition 2012</h1></div>
+
+<p>
+This weekend, I was on a team in the
+<a href='http://icfpcontest2012.wordpress.com/'>ICFP Programming Contest 2012</a>.
+Between early Friday and late Sunday night, my small international 
+team wrote a several thousand lines of Haskell to make a program which
+chooses robot <code>R</code> paths through a mine to a lift <code>L</code>
+to collect lambdas <code>\</code> which are worth points,
+while avoiding being crushed by falling rocks <code>*</code> and higher order rocks <code>@</code>,
+drowning in floods,
+being trapped by excessive beard growth <code>W</code>, or
+being troubled by the occasional trampoline.
+
+<p>
+This is one such map, though our programs may be tested against maps of up
+to 1000 by 1000 elements.
+
+<pre>
+#################
+# \\\\#   *  *  #
+#  ##   !!#..@. ####
+#*    @...####.....#
+#\\   \@...........#
+#\  # .\@    #  #.########
+#\  # ..\@   #   ..      #
+#\  # .. \@  #   ..      #
+#\  # *.. \@    #######  #
+#\  # ###  \@   #     #W #
+### #       \@  #     ##L#
+#...#@@**@@**\@ #
+#R ..........!\##
+#################
+</pre>
+
+<p>
+Although we'd originally hoped to submit something by the lightning
+deadline (24 hours after contest start), we really barely made it
+under the wire in the wee hours of Monday morning.  This was kind of a
+marathon: not every year's contest judges even give awards for
+the lightning round, and this problem was not trivial.
+
+<p>
+I had a ball working with my mostly Australian team (Alex Mason, Ben Sinclair, Mark Wotton, Thomas Sewell, and Trevor L. McDonell), although 
+my body still isn't sure what time zone it belongs in!
+
+<p>
+In writing ~700 lines of Haskell in three days while reading many more,
+I learned quite a bit more about the language, too. This is a fun 
+example, below.  
+
+<h2>Simulation</h2>
+First, each element on the board is defined like so:
+
+<pre class='prettyprint lang-hs'>
+data BoardElement
+    = Robot
+    | Rock {-# UNPACK #-} !Char
+    | Earth
+    | LiftClosed
+    | LiftOpen
+    | Wall
+    | Lambda
+    | Razor
+    | Beard
+    | Trampoline {-# UNPACK #-} !Char
+    | Target     {-# UNPACK #-} !Int
+    | Empty
+    deriving ( Eq )
+</pre>
+
+<p>
+Here, we read a list of metadata instructions to build tables allowing us to
+look up which trampoline will launch the robot to which target, and
+then read the map of the board to build tables allowing us to lookup where
+each target is  and where all the targets pointing to a trapoline are.
+
+<p>
+We're using <a href='http://hackage.haskell.org/packages/archive/hashmap/1.3.0.1/doc/html/Data-HashMap.html'>Data.HashMap</a> as <code>HM</code>.
+
+<pre class='prettyprint lang-hs'>
+readTrampolines :: [String] -&gt; Board -&gt; Trampolines
+readTrampolines meta board = Trampolines jumps targets trampolines
+  where
+    -- Parse the meta-data
+    --
+    bounce ("trampoline":x:"targets":y:_)
+      | [f]     &lt;- x
+      , [(t,_)] &lt;- reads y
+      , inRange ('a','i') f
+      , inRange (1,9) t
+      = Just (toUpper f,t)
+    bounce _
+      = Nothing
+
+    -- Turn the (trampoline,target) pairs produced from the meta-data into both
+    -- forward and reverse lookup maps
+    --
+    js          = mapMaybe bounce $ map (words . map toLower) meta
+    ts          = findTrampolines board
+
+    jumps       = HM.fromList js
+    targets     = HM.fromList (findTargets board)
+    trampolines = foldl (\m (t,p) -&gt; HM.insertWith (++) (jumps HM.! t) [p] m) HM.empty ts
+
+
+findTrampolines :: Board -&gt; [(Char, Position)]
+findTrampolines (Board b) = mapMaybe keep (assocs b)
+  where
+    keep (pos, Trampoline c) = Just (c,pos)
+    keep _                   = Nothing
+
+findTargets :: Board -&gt; [(Int, Position)]
+findTargets (Board b) = mapMaybe keep (assocs b)
+  where
+    keep (pos, Target i) = Just (i, pos)
+    keep _               = Nothing
+</pre>
+
+
+Then when the robot moves,
+if the robot has stepped on a trampoline we perform a jump.
+
+<pre class='prettyprint lang-hs'>
+moveRobot :: State -&gt; Move -&gt; Position
+moveRobot state dir =
+  let next              = move dir old
+      old@(x,y)         = st_robot state
+      Board board       = st_board state
+      trampoline        = st_trampolines state
+  in
+  case board !? next of
+
+      {- ... -}
+
+      Trampoline t
+        | Just i   &lt;- HM.lookup t (t_jump   trampoline)
+        , Just new &lt;- HM.lookup i (t_target trampoline)
+        -&gt; new
+
+      {- ... -}
+</pre>
+
+<p>
+And in the first phase of the board update after the robot stepped on the trampoline, 
+we erase the duplicate trampolines, like so (with other cases elided).
+
+<p>
+Note the <a href='http://www.haskell.org/haskellwiki/Pattern_guard'>PatternGuards</a>,
+although here I'm showing the <code>otherwise</code> cases.
+
+<pre class='prettyprint lang-hs'>
+applyMove :: Move -&gt; State -&gt; State
+applyMove dir st
+  {- ... -}
+
+  | otherwise
+  = let --
+        -- first, move the robot
+        --
+        phase1
+          {- ... -}
+
+          -- move!
+          | otherwise
+          = runSTUArray $ do
+
+              let (x,y) = pos
+              new &lt;- thaw board
+
+              {- ... -}
+
+              -- check the if robot stepped on a trampoline. If so, remove all
+              -- the trampolines that point to the target destination
+              case board ! move dir pos of
+                Trampoline t
+                  | Just i  &lt;- HM.lookup t (t_jump        trampoline)
+                  , Just ts &lt;- HM.lookup i (t_trampolines trampoline)
+                  -&gt; do forM_ ts $ \tr -&gt; writeArray new tr Empty
+
+                  | otherwise
+                  -&gt; error "internal error: phase1: trampolines"
+
+                _ -&gt; return ()
+
+              -- update robot position
+              writeArray new pos  Empty
+              writeArray new pos' Robot
+              return new
+
+    {- ... -}
+</pre>
+
+
+<p>
+Each snapshot board is an immutable
+<a href='http://hackage.haskell.org/packages/archive/array/latest/doc/html/Data-Array-Unboxed.html#t:UArray'>unboxed array</a> of elements, but the function
+<code><a href='http://hackage.haskell.org/packages/archive/array/latest/doc/html/Data-Array-ST.html#v:runSTUArray'>runSTUArray</a></code>
+allows us to create a new immutable array, which we build using <code>writeArray</code>
+with a thawed (mutable) copy of the old board.
+
+<p>
+This still doesn't give us everything we might like, but it worked!
+
+
+<p>
+--
+<br>
+Kevin Cantu
+<br>
+17 July 2012
+
+</div>
+
+<script>
+  prettyPrint();
+</script>
+</body>
+</html>
+
+
+
+
