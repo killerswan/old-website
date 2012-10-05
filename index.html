@@ -2,11 +2,6 @@
 
    <title>Kevin Cantu</title>
 
-   <base href='http://kevincantu.org/'>
-   <link href="./lib/betaTitle.css" type="text/css" rel="stylesheet">
-   <link href="./lib/betaLayout.css" type="text/css" rel="stylesheet">
-   <link href="./lib/betaTypography.css" type="text/css" rel="stylesheet">
-
    <style>
       div#photoCover {
          background: #000 url('./lib/images/plant.jpg') no-repeat;
@@ -17,6 +12,7 @@
          padding-right: 0;
          padding-bottom: 50px;
       }
+
       div#photoOverlay {
          color: #fff;
          background-color: rgba(34, 34, 34, 0.60);
@@ -25,9 +21,23 @@
          border-left: 0;
          border-right: 0;
       }
+
+      a:link, a:focus, a:active, a:hover, a:visited, a:visited:hover {
+          color: #5fa900;
+          text-decoration: none;
+      }
    </style>
+
+   <!-- <base href='http://kevincantu.org/'> -->
+
+   <link href='./lib/delta/main.css'  type='text/css' rel='stylesheet'>
+   <link href='./lib/delta/title.css' type='text/css' rel='stylesheet'>
+
+   <script src='./lib/3p/jquery/jquery-1.8.1.min.js'></script>
+   <script src='./lib/3p/underscore/1.3.3/underscore-min.js'></script>
+   <script src='./lib/delta/title.js'></script>
 </head>
-<body><script src="./lib/betaTitle.js"></script>
+<body>
 
    <div id="photoCover" class="contentSection">
       <div id="photoOverlay">
@@ -50,14 +60,15 @@
 
       </div>
    </div>
+
 <noscript>
    <h1>KevinCantu.org</h1>
    <ul>
       <li><a href=".">Main</a></li>
       <li><a href="./code">Code</a></li>
-      <li><a href="http://log.kevincantu.org/">Log</a></li>
       <li><a href="http://www.flickr.com/photos/kevin751">Flickr</a></li>
       <li><a href="http://twitter.com/#!/killerswan">Twitter</a></li>
    </ul>
 </noscript>
+
 </body></html>
