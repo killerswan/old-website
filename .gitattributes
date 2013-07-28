@@ -1,0 +1,28 @@
+*.txt    text
+*.png    -text
+
+.gitattributes    eol=lf
+.gitignore        eol=lf
+*.js     eol=lf
+*.htm    eol=lf
+*.html   eol=lf
+*.css    eol=lf
+*.sh     eol=lf
+*.py     eol=lf
+*.pl     eol=lf
+*.rb     eol=lf
+
+*.cgi       eol=lf
+.htaccess   eol=lf
+.htdigest   eol=lf
+passwords   eol=lf
+
+*.bat    eol=crlf
+*.fs     eol=crlf
+*.fsx    eol=crlf
+*.fx     eol=crlf
+*.fsproj eol=crlf
+*.csproj eol=crlf
+*.vbproj eol=crlf
+*.vcproj eol=crlf
+
