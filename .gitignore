@@ -1,4 +1,5 @@
 # git ls-files --others --exclude-from=.git/info/exclude
+# git ls-files --others --exclude-from=.gitignore
 
 *~
 .*.sw[nop]
@@ -14,4 +15,4 @@ bin/
 
 private/
 backupZips/
-*.wmv
+/3p/
