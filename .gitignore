@@ -1,18 +1,15 @@
-# git ls-files --others --exclude-from=.git/info/exclude
-# git ls-files --others --exclude-from=.gitignore
-
 *~
 .*.sw[nop]
-*.user
 Thumbs.db
-obj/
-bin/
 *.pyc
 *.suo
-*.log
-#*.min.js
-#*.min.js.map
+obj/
+bin/
+Output/
 
 private/
 backupZips/
 /3p/
+
+# git ls-files --others --exclude-from=.git/info/exclude
+# git ls-files --others --exclude-from=.gitignore

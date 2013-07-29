@@ -1,16 +1,25 @@
 *.txt    text
+
 *.png    -text
+*.jpg    -text
+*.gif    -text
+*.doc    -text
+*.xls    -text
 
 .gitattributes    eol=lf
 .gitignore        eol=lf
-*.js     eol=lf
+*.md     eol=lf
 *.htm    eol=lf
 *.html   eol=lf
 *.css    eol=lf
 *.sh     eol=lf
+*.bash   eol=lf
+*.js     eol=lf
 *.py     eol=lf
 *.pl     eol=lf
 *.rb     eol=lf
+*.hs     eol=lf
+*.cabal  eol=lf
 
 *.cgi       eol=lf
 .htaccess   eol=lf
@@ -18,9 +27,11 @@
 passwords   eol=lf
 
 *.bat    eol=crlf
+*.cmd    eol=crlf
 *.fs     eol=crlf
 *.fsx    eol=crlf
-*.fx     eol=crlf
+*.fsi    eol=crlf
+*.cs     eol=crlf
 *.fsproj eol=crlf
 *.csproj eol=crlf
 *.vbproj eol=crlf
