@@ -1,7 +1,6 @@
 *~
 .*.sw[nop]
 Thumbs.db
-*.pyc
 *.suo
 obj/
 bin/
@@ -11,5 +10,27 @@ private/
 backupZips/
 /3p/
 
-# git ls-files --others --exclude-from=.git/info/exclude
-# git ls-files --others --exclude-from=.gitignore
+*.exe
+*~
+*.o
+*.so
+*.tmp
+*.lock
+.DS_Store
+
+*.dSYM
+.rust
+*.dylib
+*.rlib
+
+*.pyc
+*.pyo
+
+obj
+bin
+/build/
+/dist/
+/wheelhouse/
+
+/*.egg-info/
+/venv/
