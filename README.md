@@ -18,11 +18,7 @@ I'm testing out the [just-the-docs](https://pmarsceill.github.io/just-the-docs/)
 # Build
 
 ```
-# rm Gemfile.lock
 bundle install
-
 bundle update
-
-bundle exec just-the-docs rake search:init
 bundle exec jekyll serve
 ```
