@@ -20,5 +20,5 @@ I'm testing out the [just-the-docs](https://pmarsceill.github.io/just-the-docs/)
 ```
 bundle install
 bundle update
-bundle exec jekyll serve
+bundle exec jekyll serve --trace --incremental --livereload
 ```
