@@ -1,0 +1,13 @@
+User-agent: *
+
+Disallow: /temp/
+Disallow: /archive/
+Disallow: /resume/
+Disallow: /ars/
+Disallow: /images/
+Disallow: /style/
+Disallow: /3p/mirror/living/
+
+Disallow: _site
+Disallow: Gem*
+Disallow: _*
